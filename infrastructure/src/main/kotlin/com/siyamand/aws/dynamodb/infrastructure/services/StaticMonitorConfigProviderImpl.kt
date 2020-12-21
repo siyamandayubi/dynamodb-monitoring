@@ -2,16 +2,16 @@ package com.siyamand.aws.dynamodb.infrastructure.services
 
 import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
 
-class MonitorConfigProviderImpl: MonitorConfigProvider {
-    override fun getMonitoringConfigTable(): String {
-        TODO("Not yet implemented")
+class StaticMonitorConfigProviderImpl: MonitorConfigProvider {
+    override fun getMonitoringConfigMetadataTable(): String {
+        return "_MonigoringMetadata"
     }
 
     override fun getTableNamePreFix(): String {
-        TODO("Not yet implemented")
+        return "_Aggregate"
     }
 
     override fun getFunctionNamePrefix(): String {
-        TODO("Not yet implemented")
+        return "_AggregateFunc"
     }
 }

@@ -5,6 +5,7 @@ import com.siyamand.aws.dynamodb.core.repositories.RoleRepository
 import com.siyamand.aws.dynamodb.core.repositories.TableRepository
 import com.siyamand.aws.dynamodb.core.repositories.TokenRepository
 import com.siyamand.aws.dynamodb.core.services.CredentialProvider
+import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilderImpl
 import com.siyamand.aws.dynamodb.infrastructure.repositories.LambdaRepositoryImpl
@@ -12,6 +13,7 @@ import com.siyamand.aws.dynamodb.infrastructure.repositories.RoleRepositoryImpl
 import com.siyamand.aws.dynamodb.infrastructure.repositories.TableRepositoryImpl
 import com.siyamand.aws.dynamodb.infrastructure.repositories.TokenRepositoryImpl
 import com.siyamand.aws.dynamodb.infrastructure.services.CredentialProviderImpl
+import com.siyamand.aws.dynamodb.infrastructure.services.StaticMonitorConfigProviderImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -27,6 +29,11 @@ open class InfrastructureConfiguration() {
     @Bean
     open fun getCredentialProvider(): CredentialProvider {
         return CredentialProviderImpl()
+    }
+
+    @Bean
+    open fun getMonitoringConfigProvider(): MonitorConfigProvider{
+        return StaticMonitorConfigProviderImpl()
     }
 
     @Bean

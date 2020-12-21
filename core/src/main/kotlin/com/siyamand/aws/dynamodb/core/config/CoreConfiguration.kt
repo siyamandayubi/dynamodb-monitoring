@@ -1,5 +1,7 @@
 package com.siyamand.aws.dynamodb.core.config
 
+import com.siyamand.aws.dynamodb.core.builders.MetadataTableBuilder
+import com.siyamand.aws.dynamodb.core.builders.MetadataTableBuilderImpl
 import com.siyamand.aws.dynamodb.core.repositories.LambdaRepository
 import com.siyamand.aws.dynamodb.core.repositories.RoleRepository
 import com.siyamand.aws.dynamodb.core.repositories.TableRepository
@@ -13,6 +15,19 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+    @Bean
+    open fun getMetadataTableBuilder(): MetadataTableBuilder {
+        return MetadataTableBuilderImpl()
+    }
+
+    @Bean
+    open fun getMonitoringTableAggregate(
+            monitorConfigProvider: MonitorConfigProvider,
+            tableRepository: TableRepository,
+            metadataTableBuilder: MetadataTableBuilder): MetadataService {
+        return MetadataServiceImpl(metadataTableBuilder, monitorConfigProvider, tableRepository)
+    }
+
     @Bean
     open fun getTableService(
             tableRepository: TableRepository,
