@@ -1,8 +1,11 @@
 package com.siyamand.aws.dynamodb.core.entities
 
 class TableDetailEntity(
+        val arn: String,
+        val tableName: String,
         val attributes: MutableList<TableAttribute>,
-        val keySchema: MutableList<TableKeyScheme>
+        val keySchema: MutableList<TableKeyScheme>,
+        val tableStatus: String
 ) {
 }
 

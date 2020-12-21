@@ -43,11 +43,15 @@ class TableRepositoryImplTest {
         tableRepository.withRegion("us-east-2").withToken(TokenCredentialEntity("", "", "", null))
 
         val result = runBlocking { tableRepository.getDetail("test") }
-        assertEquals(result.attributes.size, 2, "have two attributes in output")
-        assertEquals(result.attributes[0].attributeName, attributes[0].attributeName())
-        assertEquals(result.attributes[0].attributeType, attributes[0].attributeType())
-        assertEquals(result.attributes[1].attributeName, attributes[1].attributeName())
-        assertEquals(result.attributes[1].attributeType, attributes[1].attributeType())
+        if (result == null) {
+            throw Exception("Result is null")
+        } else {
+            assertEquals(result.attributes.size, 2, "have two attributes in output")
+            assertEquals(result.attributes[0].attributeName, attributes[0].attributeName())
+            assertEquals(result.attributes[0].attributeType, attributes[0].attributeType())
+            assertEquals(result.attributes[1].attributeName, attributes[1].attributeName())
+            assertEquals(result.attributes[1].attributeType, attributes[1].attributeType())
+        }
     }
 
     @Test
@@ -62,7 +66,7 @@ class TableRepositoryImplTest {
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
         tableRepository.withRegion("us-east-2").withToken(TokenCredentialEntity("", "", "", null))
 
-        val tables =  tableRepository.getList()
+        val tables = tableRepository.getList()
         assertEquals(tables.size, 2, "output size is wrong")
         assertEquals(tables[0].name, "table1", "item one not match")
         assertEquals(tables[1].name, "table2", "item two not match")
@@ -74,7 +78,7 @@ class TableRepositoryImplTest {
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
         tableRepository.withRegion("").withToken(TokenCredentialEntity("", "", "", null))
 
-        val exception: Exception = assertThrows {GlobalScope.launch { tableRepository.getList() } }
+        val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
 
         assertNotNull(exception, "empty region must throw an exception")
         assert(exception is IllegalArgumentException)
@@ -86,7 +90,7 @@ class TableRepositoryImplTest {
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
         tableRepository.withRegion("us-east-2")
 
-        val exception: Exception = assertThrows {GlobalScope.launch { tableRepository.getList() } }
+        val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
 
         assertNotNull(exception, "empty region must throw an exception")
         assert(exception is IllegalArgumentException)

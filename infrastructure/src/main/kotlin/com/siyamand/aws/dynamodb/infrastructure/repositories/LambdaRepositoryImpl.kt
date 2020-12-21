@@ -21,7 +21,7 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override fun add(t: FunctionEntity) {
+    override suspend fun add(t: FunctionEntity) {
         TODO("Not yet implemented")
     }
 

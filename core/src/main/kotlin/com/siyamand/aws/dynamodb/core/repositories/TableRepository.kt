@@ -9,5 +9,6 @@ import org.springframework.stereotype.Component
 interface TableRepository : AWSCRUDRepository<TableEntity, TableRepository> {
     // Read this one
     // https://www.baeldung.com/spring-boot-kotlin-coroutines
-    suspend fun getDetail(tableName: String): TableDetailEntity
+    suspend fun getDetail(tableName: String): TableDetailEntity?
+    suspend fun add(t: TableDetailEntity)
 }

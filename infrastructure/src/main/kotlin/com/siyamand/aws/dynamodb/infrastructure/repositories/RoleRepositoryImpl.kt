@@ -27,7 +27,7 @@ class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleReposit
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override fun add(t: RoleEntity) {
+    override suspend fun add(t: RoleEntity) {
         TODO("Not yet implemented")
     }
 
