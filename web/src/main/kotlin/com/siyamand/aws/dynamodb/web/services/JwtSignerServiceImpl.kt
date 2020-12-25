@@ -17,7 +17,7 @@ import java.util.*
 
 class JwtSignerServiceImpl(private val environment: Environment) : JwtSignerService {
 
-    override fun createJwt(userId: String, secretKey: String, sessionToken: String, date: Date?): String {
+    override fun createJwt(userId: String, secretKey: String, sessionToken: String, date: Date): String {
         //https://medium.com/@jaidenashmore/jwt-authentication-in-spring-boot-webflux-6880c96247c7
         val privateKeyStr: String? = environment.getProperty("sec_private_key");
 
