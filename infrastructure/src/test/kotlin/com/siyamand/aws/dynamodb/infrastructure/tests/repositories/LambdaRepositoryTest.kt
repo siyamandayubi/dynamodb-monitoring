@@ -1,7 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.tests.repositories
 
 import com.siyamand.aws.dynamodb.core.entities.TokenCredentialEntity
-import com.siyamand.aws.dynamodb.core.repositories.LambdaRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.repositories.LambdaRepositoryImpl
 import io.mockk.every
@@ -27,7 +26,7 @@ class LambdaRepositoryTest {
         every { clientBuilder.buildAsyncAwsLambda(any(), any()).listFunctions() } returns CompletableFuture.completedFuture(listFunctionsResponse)
 
         val lambdaRepository = LambdaRepositoryImpl(clientBuilder)
-        lambdaRepository.withRegion("us-east-2").withToken(TokenCredentialEntity("", "", "", null))
+        lambdaRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
         val result = runBlocking { lambdaRepository.getList() }
         assertEquals(result.size, 2)
         assertEquals(result[0].name, "t1")

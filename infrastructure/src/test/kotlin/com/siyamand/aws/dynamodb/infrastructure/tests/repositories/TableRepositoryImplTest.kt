@@ -40,7 +40,7 @@ class TableRepositoryImplTest {
 
         every { clientBuilder.buildAsyncDynamodb(any(), any()).describeTable(any<DescribeTableRequest>()) } returns CompletableFuture.completedFuture(describeTableResponse)
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.withRegion("us-east-2").withToken(TokenCredentialEntity("", "", "", null))
+        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
         val result = runBlocking { tableRepository.getDetail("test") }
         if (result == null) {
@@ -64,7 +64,7 @@ class TableRepositoryImplTest {
 
 
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.withRegion("us-east-2").withToken(TokenCredentialEntity("", "", "", null))
+        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
         val tables = tableRepository.getList()
         assertEquals(tables.size, 2, "output size is wrong")
@@ -76,7 +76,7 @@ class TableRepositoryImplTest {
     fun testGetList_Check_regionEmptyMustThrowIllegalArgumentException() {
         val clientBuilder: ClientBuilder = mockk<ClientBuilder>()
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.withRegion("").withToken(TokenCredentialEntity("", "", "", null))
+        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
         val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
 
@@ -88,7 +88,6 @@ class TableRepositoryImplTest {
     fun testGetList_Check_noTokenMustThrowIllegalArgumentException() {
         val clientBuilder: ClientBuilder = mockk<ClientBuilder>()
         val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.withRegion("us-east-2")
 
         val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
 

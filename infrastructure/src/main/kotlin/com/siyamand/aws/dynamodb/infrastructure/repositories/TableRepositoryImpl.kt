@@ -15,9 +15,7 @@ import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest
 
 
-class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository {
-    private var token: CredentialEntity? = null
-    private var region: String = "us-east-2";
+class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository, AwsBaseRepositoryImpl() {
 
     override suspend fun getDetail(tableName: String): TableDetailEntity? {
         val db = asyncDynamoDb()
@@ -31,10 +29,6 @@ class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepos
         val response = db.listTables().thenApply { tablesResponse -> tablesResponse.tableNames().map { name -> TableEntity(name, null) } }
 
         return fromFuture(response).awaitFirst()
-    }
-
-    override suspend fun add(t: TableEntity) {
-        NotImplementedError()
     }
 
     override suspend fun add(t: TableDetailEntity) {
@@ -51,15 +45,6 @@ class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepos
         mono.awaitFirst()
     }
 
-    override fun edit(t: TableEntity) {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete(t: TableEntity) {
-        TODO("Not yet implemented")
-    }
-
-
     private fun asyncDynamoDb(): DynamoDbAsyncClient {
         if (this.token == null) {
             throw IllegalArgumentException("token is not provider")
@@ -71,15 +56,5 @@ class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepos
 
         val credential = CredentialMapper.convert(this.token!!)
         return clientBuilder.buildAsyncDynamodb(region, credential)
-    }
-
-    override fun withToken(token: CredentialEntity): TableRepository {
-        this.token = token
-        return this
-    }
-
-    override fun withRegion(region: String): TableRepository {
-        this.region = region
-        return this
     }
 }

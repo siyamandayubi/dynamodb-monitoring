@@ -11,7 +11,7 @@ class RoleServiceImpl(
         val credential = credentialProvider.getCredential()
                 ?: throw SecurityException("No Credential has been provided");
 
-        roleRepository.withToken(credential);
+        roleRepository.initialize(credential, credentialProvider.getRegion());
         return roleRepository.getList()
     }
 }

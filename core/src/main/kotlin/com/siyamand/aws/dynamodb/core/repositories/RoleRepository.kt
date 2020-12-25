@@ -4,5 +4,6 @@ import com.siyamand.aws.dynamodb.core.entities.RoleEntity
 import org.springframework.stereotype.Component
 
 @Component
-interface RoleRepository: AWSCRUDRepository<RoleEntity, RoleRepository> {
+interface RoleRepository: AWSBaseRepository {
+    suspend fun getList(): List<RoleEntity>
 }

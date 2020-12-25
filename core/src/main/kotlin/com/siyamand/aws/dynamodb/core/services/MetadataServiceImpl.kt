@@ -7,7 +7,7 @@ import com.siyamand.aws.dynamodb.core.entities.TableEntity
 import com.siyamand.aws.dynamodb.core.entities.TableKeyScheme
 import com.siyamand.aws.dynamodb.core.entities.monitoring.MonitoringMetadataEntity
 import com.siyamand.aws.dynamodb.core.repositories.TableRepository
-
+import kotlinx.coroutines.awaitAll
 class MetadataServiceImpl(
         private  val metadataTableBuilder: MetadataTableBuilder,
         private val monitorConfigProvider: MonitorConfigProvider,
@@ -15,7 +15,9 @@ class MetadataServiceImpl(
 
     private var monitoringMetadataEntity: MonitoringMetadataEntity? = null
     override suspend fun load(): MonitoringMetadataEntity {
-        TODO("Not yet implemented")
+        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
+        var detail = tableRepository.getDetail(tableName)
+        return  MonitoringMetadataEntity(tableName, 1,"CREATED")
     }
 
     override suspend fun create() {

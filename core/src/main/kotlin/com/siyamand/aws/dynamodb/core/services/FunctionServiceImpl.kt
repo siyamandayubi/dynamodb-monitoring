@@ -8,7 +8,7 @@ class FunctionServiceImpl(private val lambdaRepository: LambdaRepository, privat
         val credential = credentialProvider.getCredential()
                 ?: throw SecurityException("No Credential has been provided");
 
-        lambdaRepository.withToken(credential);
+        lambdaRepository.initialize(credential, credentialProvider.getRegion());
         return lambdaRepository.getList()
     }
 }

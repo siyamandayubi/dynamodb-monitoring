@@ -34,4 +34,8 @@ class CredentialProviderImpl : CredentialProvider {
 
         return null
     }
+
+    override fun getRegion(): String {
+        return "us-east-2"
+    }
 }

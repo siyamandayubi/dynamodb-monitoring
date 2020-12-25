@@ -1,17 +1,11 @@
 package com.siyamand.aws.dynamodb.infrastructure.config
 
-import com.siyamand.aws.dynamodb.core.repositories.LambdaRepository
-import com.siyamand.aws.dynamodb.core.repositories.RoleRepository
-import com.siyamand.aws.dynamodb.core.repositories.TableRepository
-import com.siyamand.aws.dynamodb.core.repositories.TokenRepository
+import com.siyamand.aws.dynamodb.core.repositories.*
 import com.siyamand.aws.dynamodb.core.services.CredentialProvider
 import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilderImpl
-import com.siyamand.aws.dynamodb.infrastructure.repositories.LambdaRepositoryImpl
-import com.siyamand.aws.dynamodb.infrastructure.repositories.RoleRepositoryImpl
-import com.siyamand.aws.dynamodb.infrastructure.repositories.TableRepositoryImpl
-import com.siyamand.aws.dynamodb.infrastructure.repositories.TokenRepositoryImpl
+import com.siyamand.aws.dynamodb.infrastructure.repositories.*
 import com.siyamand.aws.dynamodb.infrastructure.services.CredentialProviderImpl
 import com.siyamand.aws.dynamodb.infrastructure.services.StaticMonitorConfigProviderImpl
 import org.springframework.context.annotation.Bean
@@ -21,6 +15,11 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @ComponentScan
 open class InfrastructureConfiguration() {
+    @Bean
+    open fun getTableItemRepository(clientBuilder: ClientBuilder):TableItemRepository{
+        return TableItemRepositoryImpl(clientBuilder)
+    }
+
     @Bean
     open fun getTableRepository(clientBuilder: ClientBuilder): TableRepository {
         return TableRepositoryImpl(clientBuilder)
