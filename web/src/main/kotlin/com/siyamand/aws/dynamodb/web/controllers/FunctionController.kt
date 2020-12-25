@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class FunctionController(private val functionService: FunctionService) {
-    @GetMapping("/functions")
+    @GetMapping("/api/functions")
     suspend fun getFunctions(): HttpEntity<List<FunctionEntity>> {
         return ResponseEntity(functionService.getFunctions(), HttpStatus.OK)
     }

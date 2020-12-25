@@ -19,18 +19,18 @@ import java.net.http.HttpResponse
 
 @RestController
 class TableController(private val tableService: TableService) {
-    @GetMapping("/tables")
+    @GetMapping("/api/tables")
     suspend fun getTables(): HttpEntity<Mono<List<TableEntity>>> {
         return ResponseEntity(Mono.just(tableService.getTables()), HttpStatus.OK)
     }
 
-    @GetMapping("/tables/{name}")
+    @GetMapping("/api/tables/{name}")
     fun getTableDetail(@PathVariable name: String) = mono(Unconfined) {
         //return ResponseEntity(tableService.getTableDetail(tableName), HttpStatus.OK)
         tableService.getTableDetail(name)
     }
 
-    @GetMapping("/tables1/{name}")
+    @GetMapping("/api/tables1/{name}")
     suspend fun getTableDetail1(@PathVariable("name") name: String): HttpEntity<TableDetailEntity> {
         //return ResponseEntity(tableService.getTableDetail(tableName), HttpStatus.OK)
         val entity = tableService.getTableDetail(name)

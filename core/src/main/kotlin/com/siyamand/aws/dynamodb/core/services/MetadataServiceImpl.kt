@@ -25,7 +25,6 @@ class MetadataServiceImpl(
             tableRepository.add(metadataTableBuilder.build(monitorConfigProvider))
             detail = tableRepository.getDetail(tableName)
         }
-        TODO("Not yet implemented")
     }
 
 }

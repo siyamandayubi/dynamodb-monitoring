@@ -36,8 +36,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getAuthenticationService(): AuthenticationService {
-        return AuthenticationServiceImpl()
+    open fun getAuthenticationService(tokenRepository: TokenRepository): AuthenticationService {
+        return AuthenticationServiceImpl(tokenRepository)
     }
 
     @Bean
