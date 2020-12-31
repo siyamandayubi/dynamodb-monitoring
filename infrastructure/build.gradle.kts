@@ -19,6 +19,8 @@ dependencies {
     implementation("software.amazon.awssdk:dynamodb")
     implementation("software.amazon.awssdk:sts")
     implementation("software.amazon.awssdk:lambda")
+    implementation("software.amazon.awssdk:resourcegroupstaggingapi")
+    implementation("software.amazon.awssdk:arns")
     implementation("software.amazon.awssdk:iam")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")

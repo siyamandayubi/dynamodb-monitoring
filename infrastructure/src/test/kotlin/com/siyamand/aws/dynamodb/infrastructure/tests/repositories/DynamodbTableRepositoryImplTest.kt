@@ -2,7 +2,7 @@ package com.siyamand.aws.dynamodb.infrastructure.tests.repositories
 
 import com.siyamand.aws.dynamodb.core.entities.TokenCredentialEntity
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
-import com.siyamand.aws.dynamodb.infrastructure.repositories.TableRepositoryImpl
+import com.siyamand.aws.dynamodb.infrastructure.repositories.DynamodbTableRepositoryImpl
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.GlobalScope
@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 @ExtendWith(SpringExtension::class)
-class TableRepositoryImplTest {
+class DynamodbTableRepositoryImplTest {
     @Test
     fun testGetDetail_CheckOutput() {
         val clientBuilder: ClientBuilder = mockk<ClientBuilder>()
@@ -39,10 +39,10 @@ class TableRepositoryImplTest {
                 .build()
 
         every { clientBuilder.buildAsyncDynamodb(any(), any()).describeTable(any<DescribeTableRequest>()) } returns CompletableFuture.completedFuture(describeTableResponse)
-        val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
+        val dynamodbTableRepository: DynamodbTableRepositoryImpl = DynamodbTableRepositoryImpl(clientBuilder)
+        dynamodbTableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
-        val result = runBlocking { tableRepository.getDetail("test") }
+        val result = runBlocking { dynamodbTableRepository.getDetail("test") }
         if (result == null) {
             throw Exception("Result is null")
         } else {
@@ -63,10 +63,10 @@ class TableRepositoryImplTest {
         every { clientBuilder.buildAsyncDynamodb(any(), any()).listTables() } returns completableFuture
 
 
-        val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
+        val dynamodbTableRepository: DynamodbTableRepositoryImpl = DynamodbTableRepositoryImpl(clientBuilder)
+        dynamodbTableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
-        val tables = tableRepository.getList()
+        val tables = dynamodbTableRepository.getList()
         assertEquals(tables.size, 2, "output size is wrong")
         assertEquals(tables[0].name, "table1", "item one not match")
         assertEquals(tables[1].name, "table2", "item two not match")
@@ -75,10 +75,10 @@ class TableRepositoryImplTest {
     @Test
     fun testGetList_Check_regionEmptyMustThrowIllegalArgumentException() {
         val clientBuilder: ClientBuilder = mockk<ClientBuilder>()
-        val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
-        tableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
+        val dynamodbTableRepository: DynamodbTableRepositoryImpl = DynamodbTableRepositoryImpl(clientBuilder)
+        dynamodbTableRepository.initialize(TokenCredentialEntity("", "", "", null),"us-east-2")
 
-        val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
+        val exception: Exception = assertThrows { GlobalScope.launch { dynamodbTableRepository.getList() } }
 
         assertNotNull(exception, "empty region must throw an exception")
         assert(exception is IllegalArgumentException)
@@ -87,9 +87,9 @@ class TableRepositoryImplTest {
     @Test
     fun testGetList_Check_noTokenMustThrowIllegalArgumentException() {
         val clientBuilder: ClientBuilder = mockk<ClientBuilder>()
-        val tableRepository: TableRepositoryImpl = TableRepositoryImpl(clientBuilder)
+        val dynamodbTableRepository: DynamodbTableRepositoryImpl = DynamodbTableRepositoryImpl(clientBuilder)
 
-        val exception: Exception = assertThrows { GlobalScope.launch { tableRepository.getList() } }
+        val exception: Exception = assertThrows { GlobalScope.launch { dynamodbTableRepository.getList() } }
 
         assertNotNull(exception, "empty region must throw an exception")
         assert(exception is IllegalArgumentException)

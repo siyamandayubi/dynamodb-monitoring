@@ -13,9 +13,12 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition
 import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest
+import software.amazon.awssdk.services.dynamodb.model.GetRecordsRequest
+import software.amazon.awssdk.services.resourcegroupstaggingapi.model.GetResourcesRequest
+import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 
 
-class TableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository, AwsBaseRepositoryImpl() {
+class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository, AwsBaseRepositoryImpl() {
 
     override suspend fun getDetail(tableName: String): TableDetailEntity? {
         val db = asyncDynamoDb()

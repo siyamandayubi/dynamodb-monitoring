@@ -1,8 +1,7 @@
 package com.siyamand.aws.dynamodb.core.services
 
-import com.siyamand.aws.dynamodb.core.entities.monitoring.MonitoringMetadataEntity
+import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
 
 interface MetadataService {
-    suspend fun create()
-    suspend fun load(): MonitoringMetadataEntity
+    fun getMonitoredTables(): List<ResourceEntity>
 }

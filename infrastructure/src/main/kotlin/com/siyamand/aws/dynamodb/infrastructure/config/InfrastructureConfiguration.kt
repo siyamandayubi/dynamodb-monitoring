@@ -14,15 +14,20 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan
-open class InfrastructureConfiguration() {
+open class InfrastructureConfiguration {
     @Bean
-    open fun getTableItemRepository(clientBuilder: ClientBuilder):TableItemRepository{
-        return TableItemRepositoryImpl(clientBuilder)
+    open fun getResourceRepository(clientBuilder: ClientBuilder): ResourceRepository {
+        return ResourceRepositoryImpl(clientBuilder)
+    }
+
+    @Bean
+    open fun getTableItemRepository(clientBuilder: ClientBuilder): TableItemRepository {
+        return DynamodbTableItemRepositoryImpl(clientBuilder)
     }
 
     @Bean
     open fun getTableRepository(clientBuilder: ClientBuilder): TableRepository {
-        return TableRepositoryImpl(clientBuilder)
+        return DynamodbTableRepositoryImpl(clientBuilder)
     }
 
     @Bean
@@ -31,7 +36,7 @@ open class InfrastructureConfiguration() {
     }
 
     @Bean
-    open fun getMonitoringConfigProvider(): MonitorConfigProvider{
+    open fun getMonitoringConfigProvider(): MonitorConfigProvider {
         return StaticMonitorConfigProviderImpl()
     }
 
@@ -41,17 +46,17 @@ open class InfrastructureConfiguration() {
     }
 
     @Bean
-    open fun getLambdaRepository(clientBuilder: ClientBuilder): LambdaRepository{
+    open fun getLambdaRepository(clientBuilder: ClientBuilder): LambdaRepository {
         return LambdaRepositoryImpl(clientBuilder)
     }
 
     @Bean
-    open fun getTokenRepository(clientBuilder: ClientBuilder): TokenRepository{
+    open fun getTokenRepository(clientBuilder: ClientBuilder): TokenRepository {
         return TokenRepositoryImpl(clientBuilder)
     }
 
     @Bean
-    open fun getRoleRepository(clientBuilder: ClientBuilder): RoleRepository{
+    open fun getRoleRepository(clientBuilder: ClientBuilder): RoleRepository {
         return RoleRepositoryImpl(clientBuilder)
     }
 }
