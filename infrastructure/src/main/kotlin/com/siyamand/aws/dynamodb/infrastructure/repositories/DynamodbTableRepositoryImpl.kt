@@ -10,10 +10,7 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableMapper
 import reactor.core.publisher.Mono.*
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
-import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition
-import software.amazon.awssdk.services.dynamodb.model.CreateTableRequest
-import software.amazon.awssdk.services.dynamodb.model.DescribeTableRequest
-import software.amazon.awssdk.services.dynamodb.model.GetRecordsRequest
+import software.amazon.awssdk.services.dynamodb.model.*
 import software.amazon.awssdk.services.resourcegroupstaggingapi.model.GetResourcesRequest
 import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 
@@ -21,21 +18,22 @@ import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository, AwsBaseRepositoryImpl() {
 
     override suspend fun getDetail(tableName: String): TableDetailEntity? {
-        val db = asyncDynamoDb()
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
         val response = db.describeTable(DescribeTableRequest.builder().tableName(tableName).build())
+
         val returnValue = response.thenApply(TableMapper::convertDetail)
         return fromFuture(returnValue).awaitFirst()
     }
 
     override suspend fun getList(): List<TableEntity> {
-        val db = asyncDynamoDb()
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
         val response = db.listTables().thenApply { tablesResponse -> tablesResponse.tableNames().map { name -> TableEntity(name, null) } }
 
         return fromFuture(response).awaitFirst()
     }
 
     override suspend fun add(t: TableDetailEntity) {
-        val db = asyncDynamoDb()
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
         val createTableRequest = CreateTableRequest
                 .builder()
                 .tableName(t.tableName)
@@ -48,16 +46,19 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
         mono.awaitFirst()
     }
 
-    private fun asyncDynamoDb(): DynamoDbAsyncClient {
-        if (this.token == null) {
-            throw IllegalArgumentException("token is not provider")
-        }
+    override suspend fun enableStream(tableName: String): TableDetailEntity?{
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
+        val updateTableRequest = UpdateTableRequest
+                .builder()
+                .tableName(tableName)
+                .streamSpecification(StreamSpecification
+                        .builder()
+                        .streamEnabled(true)
+                        .streamViewType(StreamViewType.NEW_AND_OLD_IMAGES)
+                        .build())
+                .build()
+        val returnValue = db.updateTable(updateTableRequest).thenApply { TableMapper.convertDetail(it.tableDescription()) }
 
-        if (this.region.isNullOrEmpty()) {
-            throw java.lang.IllegalArgumentException("region is not provider")
-        }
-
-        val credential = CredentialMapper.convert(this.token!!)
-        return clientBuilder.buildAsyncDynamodb(region, credential)
+        return fromFuture(returnValue).awaitFirst()
     }
 }

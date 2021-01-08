@@ -9,16 +9,16 @@ class StaticMonitorConfigProviderImpl: MonitorConfigProvider {
         return "_MonigoringMetadata"
     }
 
-    override fun getDynamodbTagName(): String {
-        return "_Aggregate"
+    override fun getMonitoringVersionTagName(): String {
+        return "Monitoring_Version"
     }
 
-    override fun getDynamodbTagValue(): String {
-        TODO("Not yet implemented")
+    override fun getMonitoringVersionValue(): String {
+        return version
     }
 
     override fun getFunctionTagName(): String {
-        return "_AggregateFunc"
+        return "Monitoring_Lambda_Name"
     }
 
     override fun getFunctionTagValue(): String {
@@ -26,10 +26,6 @@ class StaticMonitorConfigProviderImpl: MonitorConfigProvider {
     }
 
     override fun getDatabaseTagName(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDatabaseTagValue(): String {
-        TODO("Not yet implemented")
+        return "Database_Name"
     }
 }

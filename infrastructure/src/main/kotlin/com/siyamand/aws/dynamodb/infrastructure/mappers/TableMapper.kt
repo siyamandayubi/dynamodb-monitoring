@@ -7,6 +7,7 @@ import com.siyamand.aws.dynamodb.core.entities.TableKeyScheme
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement
+import software.amazon.awssdk.services.dynamodb.model.TableDescription
 
 @Async
 class TableMapper {
@@ -19,6 +20,11 @@ class TableMapper {
             }
 
             val table = describeTableResponse.table()
+           return convertDetail(table)
+        }
+
+        @Async
+        fun convertDetail(table: TableDescription): TableDetailEntity? {
             val attributes = table.attributeDefinitions().map { TableAttribute(it.attributeName(), it.attributeType().name) }
             val keySchema = table.keySchema().map { TableKeyScheme(it.attributeName(), it.keyType().name) }
             return TableDetailEntity(
@@ -32,6 +38,7 @@ class TableMapper {
         fun convertToAttributeDefinition(attributeName:String, attributeType:String): AttributeDefinition{
             return AttributeDefinition.builder().attributeName(attributeName).attributeType(attributeType).build()
         }
+
         fun convertToKeySchemaDefinition(attributeName:String, keyType:String): KeySchemaElement{
             return KeySchemaElement.builder().attributeName(attributeName).keyType(keyType).build()
         }

@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.dynamodb.model.QueryRequest
 
 class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) : TableItemRepository, AwsBaseRepositoryImpl() {
     override suspend fun add(tableItem: TableItemEntity): TableItemEntity {
-        val db = asyncDynamoDb()
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
         val request = TableItemtMapper.convertRequest(tableItem)
         val response = db.putItem(request)
         val returnValue = response.thenApply(TableItemtMapper::convertResponse)
@@ -23,7 +23,7 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
     }
 
     override fun getList(tableName:String, startKey: Map<String, AttributeValueEntity>?): Flow<TableItemEntity> {
-        val db = asyncDynamoDb()
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
         val requestBuilder = QueryRequest.builder().tableName(tableName)
         if(startKey != null){
             requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))

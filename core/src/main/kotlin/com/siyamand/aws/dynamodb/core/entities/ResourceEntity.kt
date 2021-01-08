@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.core.entities
 
-class ResourceEntity(val region: String, val service: String, val accountId: String, val resource: String) {
+class ResourceEntity(val region: String, val service: String, val accountId: String, val resource: String, val arn: String) {
     val tags: MutableList<TagEntity> = mutableListOf()
 }
 

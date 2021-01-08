@@ -12,8 +12,8 @@ class MetadataServiceImpl(
     override fun getMonitoredTables(): List<ResourceEntity> {
         val returnValue = mutableListOf<ResourceEntity>()
 
-        val tagName = monitorConfigProvider.getDynamodbTagName()
-        val tagValue = monitorConfigProvider.getDynamodbTagValue()
+        val tagName = monitorConfigProvider.getMonitoringVersionTagName()
+        val tagValue = monitorConfigProvider.getMonitoringVersionValue()
 
         // fetch first batch
         var currentBatch = resourceRepository.getResources(tagName, tagValue, "")

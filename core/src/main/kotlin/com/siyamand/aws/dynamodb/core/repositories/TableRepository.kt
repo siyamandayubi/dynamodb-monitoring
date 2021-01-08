@@ -12,4 +12,5 @@ interface TableRepository : AWSBaseRepository {
     suspend fun getDetail(tableName: String): TableDetailEntity?
     suspend fun getList(): List<TableEntity>
     suspend fun add(t: TableDetailEntity)
+    suspend fun enableStream(tableName: String): TableDetailEntity?
 }
