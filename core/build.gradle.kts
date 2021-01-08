@@ -13,6 +13,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    implementation("org.freemarker:freemarker:2.3.30")
+
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("io.projectreactor:reactor-core:3.4.0")
