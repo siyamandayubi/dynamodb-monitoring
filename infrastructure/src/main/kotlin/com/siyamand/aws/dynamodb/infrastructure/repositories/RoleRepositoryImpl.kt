@@ -4,20 +4,25 @@ import com.siyamand.aws.dynamodb.core.entities.*
 import kotlinx.coroutines.reactive.awaitFirst
 import com.siyamand.aws.dynamodb.core.repositories.RoleRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
-import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RoleMapper
 import reactor.core.publisher.Mono
-import software.amazon.awssdk.services.iam.model.AttachRolePolicyRequest
-import software.amazon.awssdk.services.iam.model.CreateInstanceProfileRequest
-import software.amazon.awssdk.services.iam.model.CreatePolicyRequest
-import software.amazon.awssdk.services.iam.model.CreateRoleRequest
+import software.amazon.awssdk.services.iam.model.*
 
 class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleRepository, AwsBaseRepositoryImpl() {
-    override suspend fun getList(): List<RoleEntity> {
+    override suspend fun getRoles(): List<RoleEntity> {
         val client = getClient(clientBuilder::buildAmazonIdentityManagementAsyncClient)
         val response = client.listRoles().thenApply { it.roles().map { RoleMapper.convert(it) } }
         return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun getPolicies(path: String): List<ResourceEntity> {
+        val client = getClient(clientBuilder::buildAmazonIdentityManagementAsyncClient)
+        val list = client.listPolicies(ListPoliciesRequest.builder().pathPrefix(path).build())
+                .thenApply { it.policies() }
+                .thenApply { it.map { policy -> ResourceMapper.convert(policy.arn()) } }
+
+        return Mono.fromFuture(list).awaitFirst()
     }
 
     override suspend fun addRole(createRoleEntity: CreateRoleEntity): ResourceEntity {
@@ -34,7 +39,7 @@ class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleReposit
         return Mono.fromFuture(returnValue).awaitFirst()
     }
 
-    override suspend fun attachRolePolicy(roleName: String, policyArn: String):Boolean {
+    override suspend fun attachRolePolicy(roleName: String, policyArn: String): Boolean {
         val client = getClient(clientBuilder::buildAmazonIdentityManagementAsyncClient)
         val response = client.attachRolePolicy(AttachRolePolicyRequest
                 .builder()

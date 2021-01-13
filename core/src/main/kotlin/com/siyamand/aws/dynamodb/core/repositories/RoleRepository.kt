@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component
 
 @Component
 interface RoleRepository: AWSBaseRepository {
-    suspend fun getList(): List<RoleEntity>
+    suspend fun getRoles(): List<RoleEntity>
     suspend fun addRole(createRoleEntity: CreateRoleEntity): ResourceEntity
     suspend fun addPolicy(createPolicyEntity: CreatePolicyEntity): ResourceEntity
     suspend fun attachRolePolicy(roleName: String, policyArn: String): Boolean
+    suspend fun getPolicies(path: String): List<ResourceEntity>
 
 }

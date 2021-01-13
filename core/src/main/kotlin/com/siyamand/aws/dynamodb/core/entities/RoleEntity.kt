@@ -3,14 +3,18 @@ package com.siyamand.aws.dynamodb.core.entities
 class RoleEntity(var name: String) {
 }
 
-class CreateRoleEntity(
-        val roleName: String? = null,
-        val assumeRolePolicyDocument: String? = null,
-        val description: String? = null,
-        val maxSessionDuration: Int? = null,
-        val permissionsBoundary: String? = null)
+interface CreateRoleEntity {
+    val roleName: String
+    val assumeRolePolicyDocument: String?
+    val description: String?
+    val maxSessionDuration: Int?
+    val permissionsBoundary: String?
+    val tags: MutableList<TagEntity>
+}
 
-class CreatePolicyEntity(
-        val policyName: String? = null,
-        val policyDocument: String? = null,
-        val description: String? = null)
+interface CreatePolicyEntity {
+    val policyName: String
+    val policyDocument: String
+    val description: String
+    val path: String
+}

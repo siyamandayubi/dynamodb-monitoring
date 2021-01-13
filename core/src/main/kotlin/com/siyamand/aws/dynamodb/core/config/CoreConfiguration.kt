@@ -1,5 +1,9 @@
 package com.siyamand.aws.dynamodb.core.config
 
+import com.siyamand.aws.dynamodb.core.builders.PolicyBuilder
+import com.siyamand.aws.dynamodb.core.builders.PolicyBuilderImpl
+import com.siyamand.aws.dynamodb.core.builders.RoleBuilder
+import com.siyamand.aws.dynamodb.core.builders.RoleBuilderImpl
 import com.siyamand.aws.dynamodb.core.repositories.*
 import com.siyamand.aws.dynamodb.core.services.*
 import com.siyamand.aws.dynamodb.core.services.TableServiceImpl
@@ -37,7 +41,23 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getRoleService(roleRepository: RoleRepository, credentialProvider: CredentialProvider): RoleService {
-        return RoleServiceImpl(roleRepository, credentialProvider)
+    open fun getPolicyBuilder(): PolicyBuilder {
+        return PolicyBuilderImpl()
+    }
+
+    @Bean
+    open fun getRoleBuilder(monitorConfigProvider: MonitorConfigProvider): RoleBuilder {
+        return RoleBuilderImpl(monitorConfigProvider)
+    }
+
+    @Bean
+    open fun getRoleService(
+            roleRepository: RoleRepository,
+            resourceRepository: ResourceRepository,
+            credentialProvider: CredentialProvider,
+            monitorConfigProvider: MonitorConfigProvider,
+            policyBuilder: PolicyBuilder,
+            roleBuilder: RoleBuilder): RoleService {
+        return RoleServiceImpl(roleRepository, resourceRepository, credentialProvider, monitorConfigProvider, policyBuilder, roleBuilder)
     }
 }

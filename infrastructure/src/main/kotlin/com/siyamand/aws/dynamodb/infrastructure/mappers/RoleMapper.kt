@@ -5,6 +5,7 @@ import com.siyamand.aws.dynamodb.core.entities.CreateRoleEntity
 import com.siyamand.aws.dynamodb.core.entities.RoleEntity
 import software.amazon.awssdk.services.iam.model.CreatePolicyRequest
 import software.amazon.awssdk.services.iam.model.CreateRoleRequest
+import software.amazon.awssdk.services.iam.model.Tag
 
 class RoleMapper {
     companion object {
@@ -14,9 +15,11 @@ class RoleMapper {
         }
 
         fun convert(entity: CreateRoleEntity): CreateRoleRequest {
+            val tags = entity.tags.map { Tag.builder().key(it.name).value(it.value).build()  }
             return CreateRoleRequest.builder()
                     .roleName(entity.roleName)
                     .description(entity.description)
+                    .tags(tags)
                     .assumeRolePolicyDocument(entity.assumeRolePolicyDocument)
                     .maxSessionDuration(entity.maxSessionDuration)
                     .permissionsBoundary(entity.permissionsBoundary)
@@ -26,6 +29,7 @@ class RoleMapper {
         fun convert(entity: CreatePolicyEntity): CreatePolicyRequest {
             return CreatePolicyRequest.builder()
                     .policyName(entity.policyName)
+                    .path(entity.path)
                     .description(entity.description)
                     .policyDocument(entity.policyDocument)
                     .build()
