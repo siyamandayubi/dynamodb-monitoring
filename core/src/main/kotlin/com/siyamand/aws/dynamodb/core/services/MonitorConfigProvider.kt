@@ -8,4 +8,5 @@ interface MonitorConfigProvider {
     fun getRoleTagName(): String
     fun getFunctionTagValue(): String
     fun getDatabaseTagName(): String
+    fun getProxyTagName(): String
 }

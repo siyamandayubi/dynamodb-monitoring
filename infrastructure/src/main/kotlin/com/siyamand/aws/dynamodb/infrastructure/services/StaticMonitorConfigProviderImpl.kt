@@ -2,11 +2,15 @@ package com.siyamand.aws.dynamodb.infrastructure.services
 
 import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
 
-class StaticMonitorConfigProviderImpl: MonitorConfigProvider {
+class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     // make it configurable
     private val version = "1"
     override fun getMonitoringConfigMetadataTable(): String {
         return "_MonigoringMetadata"
+    }
+
+    override fun getProxyTagName(): String {
+        return "DynamoDbMonitoringProxy"
     }
 
     override fun getMonitoringVersionTagName(): String {
@@ -30,6 +34,6 @@ class StaticMonitorConfigProviderImpl: MonitorConfigProvider {
     }
 
     override fun getDatabaseTagName(): String {
-        return "Database_Name"
+        return "DynamoDbMonitoringDatabase_Name"
     }
 }
