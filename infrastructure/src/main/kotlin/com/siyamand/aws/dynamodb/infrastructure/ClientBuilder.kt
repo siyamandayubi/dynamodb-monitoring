@@ -8,6 +8,7 @@ import software.amazon.awssdk.services.lambda.LambdaAsyncClient
 import software.amazon.awssdk.services.rds.RdsAsyncClient
 import software.amazon.awssdk.services.resourcegroupstaggingapi.ResourceGroupsTaggingApiClient
 import software.amazon.awssdk.services.s3.S3AsyncClient
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.sts.StsAsyncClient
 
 interface ClientBuilder {
@@ -19,4 +20,5 @@ interface ClientBuilder {
     fun builcResourceGroupsTaggingApiClient(region: String, credential: AwsCredentialsProvider): ResourceGroupsTaggingApiClient
     fun buildDynamoDbStreamsAsyncClient(region: String, credential: AwsCredentialsProvider): DynamoDbStreamsAsyncClient
     fun buildAsyncS3Client(region: String, credential: AwsCredentialsProvider): S3AsyncClient
+    fun buildAsyncSecretsManagerClient(region: String, credential: AwsCredentialsProvider): SecretsManagerClient
 }

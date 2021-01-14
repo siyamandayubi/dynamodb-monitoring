@@ -24,6 +24,7 @@ dependencies {
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:iam")
     implementation("software.amazon.awssdk:rds")
+    implementation("software.amazon.awssdk:secretsmanager")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.4.2")

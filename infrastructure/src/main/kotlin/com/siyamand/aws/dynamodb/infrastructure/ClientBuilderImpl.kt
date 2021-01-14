@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.lambda.LambdaAsyncClient
 import software.amazon.awssdk.services.rds.RdsAsyncClient
 import software.amazon.awssdk.services.resourcegroupstaggingapi.ResourceGroupsTaggingApiClient
 import software.amazon.awssdk.services.s3.S3AsyncClient
+import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.sts.StsAsyncClient
 
 class ClientBuilderImpl : ClientBuilder {
@@ -56,4 +57,6 @@ class ClientBuilderImpl : ClientBuilder {
     override fun buildAsyncS3Client(region:String, credential: AwsCredentialsProvider): S3AsyncClient{
         return S3AsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
-}
+    override fun buildAsyncSecretsManagerClient(region:String, credential: AwsCredentialsProvider): SecretsManagerClient {
+        return SecretsManagerClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
+    }}
