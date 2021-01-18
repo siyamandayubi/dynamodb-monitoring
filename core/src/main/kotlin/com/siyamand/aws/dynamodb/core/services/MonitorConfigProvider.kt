@@ -5,7 +5,7 @@ interface MonitorConfigProvider {
     fun getMonitoringVersionTagName(): String
     fun getMonitoringVersionValue(): String
     fun getFunctionTagName(): String
-    fun getRoleTagName(): String
+    fun getMonitoringGeneralTagName(): String
     fun getFunctionTagValue(): String
     fun getDatabaseTagName(): String
     fun getProxyTagName(): String

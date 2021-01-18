@@ -5,3 +5,7 @@ class ResourceEntity(val region: String, val service: String, val accountId: Str
 }
 
 class TagEntity(val name: String, val value: String)
+
+enum class ResourceType(val value: String) {
+    ROLE("role")
+}

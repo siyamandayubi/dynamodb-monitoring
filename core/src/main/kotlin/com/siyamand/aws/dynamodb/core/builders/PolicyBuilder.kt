@@ -4,4 +4,5 @@ import com.siyamand.aws.dynamodb.core.entities.CreatePolicyEntity
 
 interface PolicyBuilder {
     fun createLambdaPolicy(): CreatePolicyEntity
+    fun createRdsProxyPolicy(): CreatePolicyEntity
 }

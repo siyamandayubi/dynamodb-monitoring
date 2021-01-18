@@ -11,27 +11,21 @@ import software.amazon.awssdk.services.resourcegroupstaggingapi.model.GetResourc
 import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 
 class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : ResourceRepository, AwsBaseRepositoryImpl() {
-    override fun getResources(tagName: String, tagValue: String?, types: Array<String>?, nextPageToken: String?): PageResult<ResourceEntity> {
+    override fun getResources(tagName: String, tagValue: String, types: Array<String>?, nextPageToken: String?): PageResult<ResourceEntity> {
         val client = asyncResourceClient()
 
-        val requestBuilder = GetResourcesRequest
-                .builder()
-                .tagFilters(TagFilter.builder().key(tagName).values(tagValue).build())
+        val requestBuilder = GetResourcesRequest.builder()
 
         // Tag filter
-        val tagFilterBuilder = TagFilter.builder().key(tagName);
-        if(!tagValue.isNullOrEmpty()){
-            tagFilterBuilder.values(tagValue)
-        }
-        requestBuilder.tagFilters(tagFilterBuilder.build())
+        requestBuilder.tagFilters(TagFilter.builder().key(tagName).values(tagValue).build())
 
         // Types
-        if (types != null && types.isNotEmpty()){
+        if (types != null && types.isNotEmpty()) {
             requestBuilder.resourceTypeFilters(*types)
         }
 
         // pagination token
-        if (!nextPageToken.isNullOrEmpty()){
+        if (!nextPageToken.isNullOrEmpty()) {
             requestBuilder.paginationToken(nextPageToken)
         }
 

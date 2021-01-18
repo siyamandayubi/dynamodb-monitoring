@@ -25,7 +25,7 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
         return "Monitoring_Lambda_Name"
     }
 
-    override fun getRoleTagName(): String {
+    override fun getMonitoringGeneralTagName(): String {
         return "Monitoring-Lambda-Role"
     }
 

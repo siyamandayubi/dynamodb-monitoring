@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.core.builders
 
 import com.siyamand.aws.dynamodb.core.entities.CreateRoleEntity
+import com.siyamand.aws.dynamodb.core.entities.ResourceType
 import com.siyamand.aws.dynamodb.core.entities.TagEntity
 import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
 import java.nio.file.Files
@@ -15,7 +16,7 @@ class RoleBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) 
         null,
         null,
         null,
-        mutableListOf(TagEntity(monitorConfigProvider.getRoleTagName(), monitorConfigProvider.getMonitoringVersionValue())))
+        mutableListOf(TagEntity(monitorConfigProvider.getMonitoringGeneralTagName(), ResourceType.ROLE.value)))
     }
 
     private class CreateRoleEntityImpl(

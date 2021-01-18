@@ -1,6 +1,12 @@
 package com.siyamand.aws.dynamodb.core.entities
 
-class RoleEntity(var name: String) {
+class RoleEntity(
+        var name: String,
+        val resource: ResourceEntity,
+        val description: String?,
+        val path: String,
+        val assumeRolePolicyDocument: String?
+) {
 }
 
 interface CreateRoleEntity {

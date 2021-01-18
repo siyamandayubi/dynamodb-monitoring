@@ -7,13 +7,29 @@ import java.nio.file.Paths
 class PolicyBuilderImpl() : PolicyBuilder {
 
     override fun createLambdaPolicy(): CreatePolicyEntity {
-        val uri = javaClass.classLoader.getResource("policies/LambdaPolicy.json").toURI()
+        return createPolicy(
+                "Monitoring-Lambda-Policy",
+                "policies/LambdaPolicy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Lambda functions used by Monitoring-Dynamodb",
+                "/dynamodbmonitoring/lambda/policy/")
+    }
+
+    override fun createRdsProxyPolicy(): CreatePolicyEntity {
+        return createPolicy(
+                "Monitoring-RdsProxy-Policy",
+                "policies/ProxyPolicy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Rds Proxy used by Monitoring-Dynamodb",
+                "/dynamodbmonitoring/rdsproxy/policy/")
+    }
+
+    private fun createPolicy(name: String, resourcePath: String, description: String, path: String): CreatePolicyEntityImpl {
+        val uri = javaClass.classLoader.getResource(resourcePath).toURI()
         val policyDocument = Files.readString(Paths.get(uri))
         return CreatePolicyEntityImpl(
-                "Monitoring-Lambda-Policy",
+                name,
                 policyDocument,
-                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Lambda functions used by Monitoring-Dynamodb",
-                "/dynamodbmonitoring/lambda/policy/"
+                description,
+                path
         )
     }
 

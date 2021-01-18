@@ -11,7 +11,12 @@ class RoleMapper {
     companion object {
 
         fun convert(role: software.amazon.awssdk.services.iam.model.Role): RoleEntity {
-            return RoleEntity(role.roleName())
+            return RoleEntity(
+                    role.roleName(),
+                    ResourceMapper.convert(role.arn()),
+                    role.description(),
+                    role.path(),
+                    role.assumeRolePolicyDocument())
         }
 
         fun convert(entity: CreateRoleEntity): CreateRoleRequest {

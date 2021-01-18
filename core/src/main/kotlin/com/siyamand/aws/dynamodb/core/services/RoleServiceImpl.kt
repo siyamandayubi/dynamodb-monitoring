@@ -2,8 +2,11 @@ package com.siyamand.aws.dynamodb.core.services
 
 import com.siyamand.aws.dynamodb.core.builders.PolicyBuilder
 import com.siyamand.aws.dynamodb.core.builders.RoleBuilder
+import com.siyamand.aws.dynamodb.core.entities.CreatePolicyEntity
 import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
+import com.siyamand.aws.dynamodb.core.entities.ResourceType
 import com.siyamand.aws.dynamodb.core.entities.RoleEntity
+import com.siyamand.aws.dynamodb.core.exceptions.NotExistException
 import com.siyamand.aws.dynamodb.core.repositories.ResourceRepository
 import com.siyamand.aws.dynamodb.core.repositories.RoleRepository
 
@@ -30,19 +33,27 @@ class RoleServiceImpl(
 
     override suspend fun createLambdaRole(): ResourceEntity {
         initialize()
-        val resources = resourceRepository.getResources(monitorConfigProvider.getRoleTagName(), null, null, null)
 
-        if (resources.items.isNotEmpty()) {
-            return resources.items.first()
+        val createRoleRequest = roleBuilder.createLambdaRole();
+        val role = try {
+            roleRepository.getRole(createRoleRequest.roleName)
+        } catch (exp: NotExistException) {
+            roleRepository.addRole(createRoleRequest)
         }
 
-        val createPolicyRequest = policyBuilder.createLambdaPolicy()
-        val policies = roleRepository.getPolicies(createPolicyRequest.path)
+        val rolePolicies = roleRepository.getRolePolicies(role.name)
 
-        val policy = if (policies.any()) policies.first() else roleRepository.addPolicy(createPolicyRequest)
-        val createRoleRequest = roleBuilder.createLambdaRole();
-        val role = roleRepository.addRole(createRoleRequest)
-        roleRepository.attachRolePolicy(createRoleRequest.roleName, policy.arn)
-        return role
+        addPolicyToRole(policyBuilder.createLambdaPolicy(), rolePolicies, role.name)
+        addPolicyToRole(policyBuilder.createRdsProxyPolicy(), rolePolicies, role.name)
+
+        return role.resource
+    }
+
+    private suspend fun addPolicyToRole(createPolicyRequest: CreatePolicyEntity, rolePolicies: List<String>, roleName: String) {
+        if (!rolePolicies.any { it == createPolicyRequest.policyName }) {
+            val policies = roleRepository.getPolicies(createPolicyRequest.path)
+            val policy = if (policies.any()) policies.first() else roleRepository.addPolicy(createPolicyRequest)
+            roleRepository.attachRolePolicy(roleName, policy.arn)
+        }
     }
 }
