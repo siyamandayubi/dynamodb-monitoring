@@ -42,9 +42,15 @@ class RdsMapper {
                     .engine(entity.engine)
                     .engineVersion(entity.engineVersion)
                     .masterUsername(entity.masterUsername)
+                    .dbInstanceClass(entity.dbInstanceClass)
+                    .publiclyAccessible(entity.publiclyAccessible)
                     .masterUserPassword(entity.masterPassword)
-                    .availabilityZone(entity.availabilityZone)
+                    .allocatedStorage(entity.allocatedStorage)
                     .tags(entity.tags.map { Tag.builder().key(it.name).value(it.value).build() })
+
+            if (!entity.availabilityZone.isNullOrEmpty()) {
+                builder.availabilityZone(entity.availabilityZone)
+            }
 
             return builder.build()
         }

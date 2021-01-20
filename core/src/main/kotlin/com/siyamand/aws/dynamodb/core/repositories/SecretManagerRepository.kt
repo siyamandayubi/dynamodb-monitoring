@@ -6,5 +6,6 @@ import com.siyamand.aws.dynamodb.core.entities.SecretEntity
 
 interface SecretManagerRepository : AWSBaseRepository {
     fun addSecret(entity: CreateSecretEntity): ResourceEntity
-    fun getSecret(secretId: String): SecretEntity
+    fun getSecret(secretId: String): SecretEntity?
+    fun deleteSecret(secretId: String)
 }

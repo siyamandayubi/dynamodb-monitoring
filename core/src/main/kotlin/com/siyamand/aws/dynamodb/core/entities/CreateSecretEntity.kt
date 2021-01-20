@@ -3,7 +3,7 @@ package com.siyamand.aws.dynamodb.core.entities
 import java.time.Instant
 
 class CreateSecretEntity(
-        val name: String,
+        var name: String,
         val description: String,
         val secretData: String,
         val tags: MutableList<TagEntity> = mutableListOf()

@@ -9,4 +9,5 @@ interface MonitorConfigProvider {
     fun getFunctionTagValue(): String
     fun getDatabaseTagName(): String
     fun getProxyTagName(): String
+    fun getAccessTagName(): String
 }

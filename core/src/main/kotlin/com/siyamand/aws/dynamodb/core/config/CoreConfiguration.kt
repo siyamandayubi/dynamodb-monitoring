@@ -1,9 +1,6 @@
 package com.siyamand.aws.dynamodb.core.config
 
-import com.siyamand.aws.dynamodb.core.builders.PolicyBuilder
-import com.siyamand.aws.dynamodb.core.builders.PolicyBuilderImpl
-import com.siyamand.aws.dynamodb.core.builders.RoleBuilder
-import com.siyamand.aws.dynamodb.core.builders.RoleBuilderImpl
+import com.siyamand.aws.dynamodb.core.builders.*
 import com.siyamand.aws.dynamodb.core.repositories.*
 import com.siyamand.aws.dynamodb.core.services.*
 import com.siyamand.aws.dynamodb.core.services.TableServiceImpl
@@ -21,6 +18,40 @@ open class CoreConfiguration {
             tableRepository: TableRepository,
             resourceRepository: ResourceRepository): MetadataService {
         return MetadataServiceImpl(resourceRepository, monitorConfigProvider, tableRepository)
+    }
+
+    @Bean
+    open fun getRdsService(
+            credentialProvider: CredentialProvider,
+            rdsRepository: RdsRepository,
+            secretBuilder: SecretBuilder,
+            secretManagerRepository: SecretManagerRepository,
+            resourceRepository: ResourceRepository,
+            rdsBuilder: RdsBuilder,
+            databaseCredentialBuilder: DatabaseCredentialBuilder): RdsService {
+        return RdsServiceImpl(
+                credentialProvider,
+                rdsBuilder,
+                secretBuilder,
+                databaseCredentialBuilder,
+                rdsRepository,
+                resourceRepository,
+                secretManagerRepository)
+    }
+
+    @Bean
+    open fun getRdsBuilder(monitorConfigProvider: MonitorConfigProvider): RdsBuilder {
+        return RdsBuilderImpl(monitorConfigProvider)
+    }
+
+    @Bean
+    open fun getSecretBuilder(monitorConfigProvider: MonitorConfigProvider): SecretBuilder {
+        return SecretBuilderImpl(monitorConfigProvider)
+    }
+
+    @Bean
+    open fun getDatabaseCredentialBuilder(): DatabaseCredentialBuilder {
+        return DatabaseCredentialBuilderImpl()
     }
 
     @Bean

@@ -3,7 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.4.0"
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
-    kotlin("jvm") version "1.4.10"
+    kotlin("jvm") version "1.4.21"
+    kotlin("plugin.serialization") version "1.4.21"
     `java-library`
 }
 group = "com.siyamand.aws.dynamodb"
@@ -13,6 +14,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
+
     implementation("org.freemarker:freemarker:2.3.30")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")

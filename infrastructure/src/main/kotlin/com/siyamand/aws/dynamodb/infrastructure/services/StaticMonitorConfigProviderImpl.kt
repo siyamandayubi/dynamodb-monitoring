@@ -36,4 +36,8 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     override fun getDatabaseTagName(): String {
         return "DynamoDbMonitoringDatabase_Name"
     }
+
+    override fun getAccessTagName(): String {
+        return "DynamoDbMonitoringAccess_Name"
+    }
 }
