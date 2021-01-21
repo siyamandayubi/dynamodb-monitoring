@@ -19,8 +19,8 @@ class RoleController(private val roleService: RoleService) {
     }
 
     @PostMapping("/api/roles/createLambdaRole")
-    suspend fun createLambdaRole(): HttpEntity<ResourceEntity>{
-        val role = this.roleService.createLambdaRole()
+    suspend fun createLambdaRole(): HttpEntity<RoleEntity>{
+        val role = this.roleService.getOrCreateLambdaRole()
         return ResponseEntity(role, HttpStatus.OK)
     }
 }

@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.entities
 
+import java.nio.ByteBuffer
 import java.time.Instant
 
 class FunctionEntity(
@@ -35,7 +36,7 @@ class CreateFunctionRequestEntity(
         val runtime: String? = null,
         val role: String? = null,
         val handler: String? = null,
-        val code: String? = null,
+        val code: ByteArray,
         val description: String? = null,
         val timeout: Int? = null,
         val memorySize: Int?,

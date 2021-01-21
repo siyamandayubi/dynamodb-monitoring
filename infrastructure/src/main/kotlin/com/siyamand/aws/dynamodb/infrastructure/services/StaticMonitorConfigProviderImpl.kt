@@ -40,4 +40,8 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     override fun getAccessTagName(): String {
         return "DynamoDbMonitoringAccess_Name"
     }
+
+    override fun getS3BucketDefaultName(): String {
+        return "dynamodbmonitoringbucket"
+    }
 }

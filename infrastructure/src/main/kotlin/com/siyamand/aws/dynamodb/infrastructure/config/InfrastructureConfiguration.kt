@@ -21,6 +21,10 @@ open class InfrastructureConfiguration {
     }
 
     @Bean
+    open fun getS3Repository(clientBuilder: ClientBuilder): S3Repository {
+        return S3RepositoryImpl(clientBuilder)
+    }
+    @Bean
     open fun getRdsRepository(clientBuilder: ClientBuilder): RdsRepository {
         return RdsRepositoryImpl(clientBuilder)
     }

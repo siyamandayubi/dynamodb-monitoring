@@ -31,7 +31,7 @@ class RoleServiceImpl(
         resourceRepository.initialize(credential, credentialProvider.getRegion())
     }
 
-    override suspend fun createLambdaRole(): ResourceEntity {
+    override suspend fun getOrCreateLambdaRole(): RoleEntity {
         initialize()
 
         val createRoleRequest = roleBuilder.createLambdaRole();
@@ -46,7 +46,7 @@ class RoleServiceImpl(
         addPolicyToRole(policyBuilder.createLambdaPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createRdsProxyPolicy(), rolePolicies, role.name)
 
-        return role.resource
+        return role
     }
 
     private suspend fun addPolicyToRole(createPolicyRequest: CreatePolicyEntity, rolePolicies: List<String>, roleName: String) {

@@ -64,13 +64,13 @@ class FunctionMapper {
         }
 
         fun convert(entity: CreateFunctionRequestEntity): CreateFunctionRequest {
-            val buffer: ByteBuffer = StandardCharsets.UTF_8.encode(entity.code)
-            val encodedCode = Base64.getEncoder().encode(buffer.array())
+            val encodedCode = Base64.getEncoder().encode(entity.code)
             val builder = CreateFunctionRequest.builder()
                     .functionName(entity.functionName)
-                    .code(FunctionCode.builder().zipFile(SdkBytes.fromByteArray(encodedCode)).build())
+                    .code(FunctionCode.builder().zipFile(SdkBytes.fromByteArray(entity.code)).build())
                     .description(entity.description)
                     .handler(entity.handler)
+                    .runtime(entity.runtime)
                     .packageType(entity.packageType)
                     .memorySize(entity.memorySize)
                     .role(entity.role)

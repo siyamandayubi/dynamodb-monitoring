@@ -5,5 +5,5 @@ import com.siyamand.aws.dynamodb.core.entities.RoleEntity
 
 interface RoleService {
     suspend fun getRoles(): List<RoleEntity>
-    suspend fun createLambdaRole(): ResourceEntity
+    suspend fun getOrCreateLambdaRole(): RoleEntity
 }

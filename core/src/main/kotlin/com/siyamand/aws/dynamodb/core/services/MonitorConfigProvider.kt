@@ -10,4 +10,5 @@ interface MonitorConfigProvider {
     fun getDatabaseTagName(): String
     fun getProxyTagName(): String
     fun getAccessTagName(): String
+    fun getS3BucketDefaultName(): String
 }

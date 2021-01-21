@@ -21,6 +21,11 @@ open class CoreConfiguration {
     }
 
     @Bean
+    open fun getS3Service(credentialProvider: CredentialProvider, monitorConfigProvider: MonitorConfigProvider, s3Repository: S3Repository): S3Service {
+        return S3ServiceImpl(credentialProvider, s3Repository, monitorConfigProvider)
+    }
+
+    @Bean
     open fun getRdsService(
             credentialProvider: CredentialProvider,
             rdsRepository: RdsRepository,
@@ -67,8 +72,18 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getFunctionService(lambdaRepository: LambdaRepository, credentialProvider: CredentialProvider): FunctionService {
-        return FunctionServiceImpl(lambdaRepository, credentialProvider)
+    open fun getFunctionBuilder(): FunctionBuilder {
+        return FunctionBuilderImpl()
+    }
+
+    @Bean
+    open fun getFunctionService(
+            monitorConfigProvider: MonitorConfigProvider,
+            roleService: RoleService,
+            functionBuilder: FunctionBuilder,
+            lambdaRepository: LambdaRepository,
+            credentialProvider: CredentialProvider): FunctionService {
+        return FunctionServiceImpl(monitorConfigProvider, functionBuilder, roleService, lambdaRepository, credentialProvider)
     }
 
     @Bean
