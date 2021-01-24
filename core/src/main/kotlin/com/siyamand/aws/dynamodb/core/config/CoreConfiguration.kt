@@ -27,6 +27,7 @@ open class CoreConfiguration {
 
     @Bean
     open fun getRdsService(
+            roleService: RoleService,
             credentialProvider: CredentialProvider,
             rdsRepository: RdsRepository,
             secretBuilder: SecretBuilder,
@@ -35,6 +36,7 @@ open class CoreConfiguration {
             rdsBuilder: RdsBuilder,
             databaseCredentialBuilder: DatabaseCredentialBuilder): RdsService {
         return RdsServiceImpl(
+                roleService,
                 credentialProvider,
                 rdsBuilder,
                 secretBuilder,
@@ -43,7 +45,10 @@ open class CoreConfiguration {
                 resourceRepository,
                 secretManagerRepository)
     }
-
+    @Bean
+    open fun getDatabaseService(monitorConfigProvider: MonitorConfigProvider, databaseRepository: DatabaseRepository): DatabaseService {
+        return DatabaseServiceImpl(monitorConfigProvider, databaseRepository)
+    }
     @Bean
     open fun getRdsBuilder(monitorConfigProvider: MonitorConfigProvider): RdsBuilder {
         return RdsBuilderImpl(monitorConfigProvider)

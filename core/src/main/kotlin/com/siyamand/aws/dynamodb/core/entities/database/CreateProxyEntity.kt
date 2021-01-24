@@ -3,13 +3,13 @@ package com.siyamand.aws.dynamodb.core.entities.database
 import com.siyamand.aws.dynamodb.core.entities.TagEntity
 
 class CreateProxyEntity {
-    val dbProxyName: String? = null
+    var dbProxyName: String? = null
 
-    val engineFamily: String? = null
+    var engineFamily: String? = null
 
-    val auth: List<UserAuthConfigEntity> = mutableListOf()
+    var auth: MutableList<UserAuthConfigEntity> = mutableListOf()
 
-    val roleArn: String? = null
+    var roleArn: String? = null
 
     val vpcSubnetIds: List<String>? = null
 
@@ -32,8 +32,23 @@ class UserAuthConfigEntity {
 
     val authScheme: String? = null
 
-    val secretArn: String? = null
+    var secretArn: String? = null
 
     val iamAuth: String? = null
 
 }
+
+class CreateDbProxyTargetEntity(
+        val dbProxyName: String,
+        val targetGroupName: String,
+        val dbInstanceIdentifiers: List<String>
+)
+
+class DbProxyTargetEntity(
+        val targetArn: String,
+        val endpoint: String,
+        val trackedClusterId: String,
+        val rdsResourceId: String,
+        val port: Int,
+        val type: String?
+)

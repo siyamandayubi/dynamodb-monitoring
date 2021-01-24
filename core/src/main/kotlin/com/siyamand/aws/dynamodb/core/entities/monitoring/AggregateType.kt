@@ -4,5 +4,6 @@ enum class AggregateType {
     AVG,
     SUM,
     MIN,
-    MAX
+    MAX,
+    COUNT
 }

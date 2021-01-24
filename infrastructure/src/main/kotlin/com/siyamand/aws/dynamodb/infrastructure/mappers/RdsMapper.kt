@@ -1,12 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.database.CreateDbInstanceEntity
-import com.siyamand.aws.dynamodb.core.entities.database.CreateProxyEntity
-import com.siyamand.aws.dynamodb.core.entities.database.UserAuthConfigEntity
-import software.amazon.awssdk.services.rds.model.CreateDbInstanceRequest
-import software.amazon.awssdk.services.rds.model.CreateDbProxyRequest
-import software.amazon.awssdk.services.rds.model.Tag
-import software.amazon.awssdk.services.rds.model.UserAuthConfig
+import com.siyamand.aws.dynamodb.core.entities.RdsEntity
+import com.siyamand.aws.dynamodb.core.entities.database.*
+import software.amazon.awssdk.services.rds.model.*
 
 class RdsMapper {
     companion object {
@@ -20,6 +16,36 @@ class RdsMapper {
                     .auth(entity.auth.map(RdsMapper::convert))
 
             return builder.build()
+        }
+
+        fun convert(entity: CreateDbProxyTargetEntity): RegisterDbProxyTargetsRequest {
+            return RegisterDbProxyTargetsRequest
+                    .builder()
+                    .dbProxyName(entity.dbProxyName)
+                    .targetGroupName(entity.targetGroupName)
+                    .dbInstanceIdentifiers(entity.dbInstanceIdentifiers)
+                    .build()
+        }
+
+        fun convert(target: DBProxyTarget): DbProxyTargetEntity {
+            return DbProxyTargetEntity(
+                    target.targetArn(),
+                    target.endpoint(),
+                    target.trackedClusterId(),
+                    target.rdsResourceId(),
+                    target.port(),
+                    target.type().name
+            )
+        }
+
+        fun convert(dbInstance: DBInstance): RdsEntity {
+            return RdsEntity(
+                    dbInstance.dbName(),
+                    dbInstance.endpoint().address(),
+                    dbInstance.dbInstanceArn(),
+                    dbInstance.endpoint().port(),
+                    dbInstance.masterUsername()
+            )
         }
 
         fun convert(entity: UserAuthConfigEntity): UserAuthConfig {

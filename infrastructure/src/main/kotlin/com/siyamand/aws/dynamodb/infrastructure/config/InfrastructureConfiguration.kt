@@ -16,6 +16,11 @@ import org.springframework.context.annotation.Configuration
 @ComponentScan
 open class InfrastructureConfiguration {
     @Bean
+    open fun getDatabaseRepository():DatabaseRepository{
+        return  DatabaseRepositoryImpl()
+    }
+
+    @Bean
     open fun getSecretManagerRepository(clientBuilder: ClientBuilder):SecretManagerRepository{
         return  SecretManagerRepositoryImpl(clientBuilder)
     }
