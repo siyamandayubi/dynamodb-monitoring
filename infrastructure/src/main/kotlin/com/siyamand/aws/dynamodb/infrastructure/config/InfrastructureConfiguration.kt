@@ -21,6 +21,11 @@ open class InfrastructureConfiguration {
     }
 
     @Bean
+    open fun getVpcRepository(clientBuilder: ClientBuilder):VpcRepository{
+        return  VpcRepositoryImpl(clientBuilder)
+    }
+
+    @Bean
     open fun getSecretManagerRepository(clientBuilder: ClientBuilder):SecretManagerRepository{
         return  SecretManagerRepositoryImpl(clientBuilder)
     }

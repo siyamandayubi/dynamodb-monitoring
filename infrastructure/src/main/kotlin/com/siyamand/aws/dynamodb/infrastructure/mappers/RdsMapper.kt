@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
 import com.siyamand.aws.dynamodb.core.entities.RdsEntity
+import com.siyamand.aws.dynamodb.core.entities.VpcSecurityGroupMembershipEntity
 import com.siyamand.aws.dynamodb.core.entities.database.*
 import software.amazon.awssdk.services.rds.model.*
 
@@ -13,6 +14,8 @@ class RdsMapper {
                     .roleArn(entity.roleArn)
                     .tags(entity.tags.map { Tag.builder().key(it.name).value(it.value).build() })
                     .engineFamily(entity.engineFamily)
+                    .vpcSecurityGroupIds(entity.vpcSecurityGroupIds)
+                    .vpcSubnetIds(entity.vpcSubnetIds)
                     .auth(entity.auth.map(RdsMapper::convert))
 
             return builder.build()
@@ -44,7 +47,8 @@ class RdsMapper {
                     dbInstance.endpoint().address(),
                     dbInstance.dbInstanceArn(),
                     dbInstance.endpoint().port(),
-                    dbInstance.masterUsername()
+                    dbInstance.masterUsername(),
+                    dbInstance.vpcSecurityGroups().map { VpcSecurityGroupMembershipEntity(it.vpcSecurityGroupId(), it.status()) }.toMutableList()
             )
         }
 

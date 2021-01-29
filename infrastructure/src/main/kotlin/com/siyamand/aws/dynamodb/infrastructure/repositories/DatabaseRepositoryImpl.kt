@@ -22,6 +22,7 @@ class DatabaseRepositoryImpl : DatabaseRepository {
                     }
         } catch (e: Exception) {
             e.printStackTrace()
+            throw e
         }
     }
 }

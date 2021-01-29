@@ -6,6 +6,7 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.streams.DynamoDbStreamsAsyncClient
+import software.amazon.awssdk.services.ec2.Ec2Client
 import software.amazon.awssdk.services.iam.IamAsyncClient
 import software.amazon.awssdk.services.iam.IamAsyncClientBuilder
 import software.amazon.awssdk.services.lambda.LambdaAsyncClient
@@ -50,13 +51,19 @@ class ClientBuilderImpl : ClientBuilder {
         return ResourceGroupsTaggingApiClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
 
-    override fun buildDynamoDbStreamsAsyncClient(region:String, credential: AwsCredentialsProvider): DynamoDbStreamsAsyncClient{
+    override fun buildDynamoDbStreamsAsyncClient(region: String, credential: AwsCredentialsProvider): DynamoDbStreamsAsyncClient {
         return DynamoDbStreamsAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
 
-    override fun buildAsyncS3Client(region:String, credential: AwsCredentialsProvider): S3AsyncClient{
+    override fun buildAsyncS3Client(region: String, credential: AwsCredentialsProvider): S3AsyncClient {
         return S3AsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
-    override fun buildAsyncSecretsManagerClient(region:String, credential: AwsCredentialsProvider): SecretsManagerClient {
+
+    override fun buildAsyncSecretsManagerClient(region: String, credential: AwsCredentialsProvider): SecretsManagerClient {
         return SecretsManagerClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
-    }}
+    }
+
+    override fun buildEc2Client(region: String, credential: AwsCredentialsProvider): Ec2Client {
+        return Ec2Client.builder().region(Region.of(region)).credentialsProvider(credential).build()
+    }
+}

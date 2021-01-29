@@ -11,9 +11,9 @@ class CreateProxyEntity {
 
     var roleArn: String? = null
 
-    val vpcSubnetIds: List<String>? = null
+    var vpcSubnetIds: List<String>? = null
 
-    val vpcSecurityGroupIds: List<String>? = null
+    var vpcSecurityGroupIds: List<String>? = null
 
     val requireTLS: Boolean? = null
 

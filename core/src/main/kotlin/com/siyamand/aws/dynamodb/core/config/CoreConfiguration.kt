@@ -30,8 +30,10 @@ open class CoreConfiguration {
             roleService: RoleService,
             credentialProvider: CredentialProvider,
             rdsRepository: RdsRepository,
+            vpcRepository: VpcRepository,
             secretBuilder: SecretBuilder,
             secretManagerRepository: SecretManagerRepository,
+            databaseRepository: DatabaseRepository,
             resourceRepository: ResourceRepository,
             rdsBuilder: RdsBuilder,
             databaseCredentialBuilder: DatabaseCredentialBuilder): RdsService {
@@ -43,6 +45,8 @@ open class CoreConfiguration {
                 databaseCredentialBuilder,
                 rdsRepository,
                 resourceRepository,
+                vpcRepository,
+                databaseRepository,
                 secretManagerRepository)
     }
     @Bean

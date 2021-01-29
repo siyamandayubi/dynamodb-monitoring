@@ -43,7 +43,9 @@ class RoleServiceImpl(
 
         val rolePolicies = roleRepository.getRolePolicies(role.name)
 
+        addPolicyToRole(policyBuilder.createLambdaEc2Policy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createLambdaPolicy(), rolePolicies, role.name)
+        addPolicyToRole(policyBuilder.createLambdaSecretManagerPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createRdsProxyPolicy(), rolePolicies, role.name)
 
         return role

@@ -18,7 +18,10 @@ class SecretManagerMapper {
         }
 
         fun convert(response: GetSecretValueResponse):SecretEntity{
-            return SecretEntity(response.name(), response.secretString(),ResourceMapper.convert(response.arn()), response.createdDate())
+            return SecretEntity(
+                    response.name(),
+                    response.secretString(),
+                    ResourceMapper.convert(response.arn()), response.createdDate())
         }
     }
 }

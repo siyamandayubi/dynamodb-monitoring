@@ -13,6 +13,21 @@ class PolicyBuilderImpl() : PolicyBuilder {
                 "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Lambda functions used by Monitoring-Dynamodb",
                 "/dynamodbmonitoring/lambda/policy/")
     }
+     override fun createLambdaEc2Policy(): CreatePolicyEntity {
+        return createPolicy(
+                "Monitoring-Lambda-Ec2-Policy",
+                "policies/LambdaEc2Policy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Lambda functions to access VPC",
+                "/dynamodbmonitoring/lambda/policy/ec2/")
+    }
+
+    override fun createLambdaSecretManagerPolicy(): CreatePolicyEntity {
+        return createPolicy(
+                "Monitoring-Lambda-SecretManager-Policy",
+                "policies/SecretManagerPolicy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Lambda functions to use SecretManager",
+                "/dynamodbmonitoring/lambda/policy/aecretmanagerpolicy/")
+    }
 
     override fun createRdsProxyPolicy(): CreatePolicyEntity {
         return createPolicy(

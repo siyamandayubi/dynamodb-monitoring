@@ -15,16 +15,24 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class RdsController(private val rdsService: RdsService) {
+
     @PostMapping("/api/rds/create-rds")
     suspend fun createDbInstance(@RequestBody model: CreateRdsModel): HttpEntity<ResourceEntity> {
         val rds = this.rdsService.createDbInstance(model.name)
         return ResponseEntity(rds, HttpStatus.OK)
     }
+
     @PostMapping("/api/rds/create-proxy")
     suspend fun createProxy(@RequestBody model: CreateRdsProxyModel): HttpEntity<ResourceEntity> {
         val rds = this.rdsService.createProxy(model.name, model.secretId)
         return ResponseEntity(rds, HttpStatus.OK)
     }
+    @PostMapping("/api/rds/create-database")
+    suspend fun createDatabase(@RequestBody model: CreateRdsProxyModel): HttpEntity<String> {
+        this.rdsService.createDatabase(model.name, model.secretId)
+        return ResponseEntity("Finished", HttpStatus.OK)
+    }
+
     @GetMapping("/api/rds/list")
     suspend fun getList(): HttpEntity<RdsListEntity> {
         val list = this.rdsService.getList("")

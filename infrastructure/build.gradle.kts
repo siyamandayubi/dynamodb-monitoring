@@ -25,12 +25,15 @@ dependencies {
     implementation("software.amazon.awssdk:iam")
     implementation("software.amazon.awssdk:rds")
     implementation("software.amazon.awssdk:secretsmanager")
+    implementation("software.amazon.awssdk:ec2")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.4.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("mysql:mysql-connector-java")
+
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.4.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
