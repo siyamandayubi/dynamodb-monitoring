@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.PageResult
+import com.siyamand.aws.dynamodb.core.entities.PageResultEntity
 import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
 import com.siyamand.aws.dynamodb.core.repositories.ResourceRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
@@ -11,7 +11,7 @@ import software.amazon.awssdk.services.resourcegroupstaggingapi.model.GetResourc
 import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 
 class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : ResourceRepository, AwsBaseRepositoryImpl() {
-    override fun getResources(tagName: String, tagValue: String, types: Array<String>?, nextPageToken: String?): PageResult<ResourceEntity> {
+    override fun getResources(tagName: String, tagValue: String, types: Array<String>?, nextPageToken: String?): PageResultEntity<ResourceEntity> {
         val client = asyncResourceClient()
 
         val requestBuilder = GetResourcesRequest.builder()
@@ -33,7 +33,7 @@ class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : Resourc
 
         var items = response.resourceTagMappingList().map { ResourceMapper.convert(it) }
 
-        return PageResult(items, response.paginationToken())
+        return PageResultEntity(items, response.paginationToken())
     }
 
     private fun asyncResourceClient(): ResourceGroupsTaggingApiClient {

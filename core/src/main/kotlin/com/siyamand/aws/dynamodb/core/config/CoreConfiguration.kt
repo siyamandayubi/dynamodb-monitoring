@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration
 open class CoreConfiguration {
 
     @Bean
+    open fun getVpcService(credentialProvider: CredentialProvider, vpcRepository: VpcRepository): VpcService{
+        return  VpcServiceImpl(credentialProvider, vpcRepository)
+    }
+    @Bean
     open fun getMonitoringTableAggregate(
             monitorConfigProvider: MonitorConfigProvider,
             tableRepository: TableRepository,
