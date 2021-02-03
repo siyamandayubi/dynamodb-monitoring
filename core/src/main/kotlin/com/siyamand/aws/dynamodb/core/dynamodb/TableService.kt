@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.table
+package com.siyamand.aws.dynamodb.core.dynamodb
 
 interface TableService {
     suspend fun getTables(): List<TableEntity>

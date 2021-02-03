@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
 import com.siyamand.aws.dynamodb.core.annotations.Async
-import com.siyamand.aws.dynamodb.core.table.TableAttribute
-import com.siyamand.aws.dynamodb.core.table.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.table.TableKeyScheme
+import com.siyamand.aws.dynamodb.core.dynamodb.TableAttribute
+import com.siyamand.aws.dynamodb.core.dynamodb.TableDetailEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.TableKeyScheme
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition
 import software.amazon.awssdk.services.dynamodb.model.DescribeTableResponse
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement

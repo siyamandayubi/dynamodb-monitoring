@@ -2,7 +2,7 @@ package com.siyamand.aws.dynamodb.infrastructure.config
 
 import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.core.database.DatabaseRepository
-import com.siyamand.aws.dynamodb.core.functions.LambdaRepository
+import com.siyamand.aws.dynamodb.core.lambda.LambdaRepository
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.rds.RdsRepository
 import com.siyamand.aws.dynamodb.core.role.RoleRepository
@@ -11,8 +11,8 @@ import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.s3.S3Repository
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.table.TableItemRepository
-import com.siyamand.aws.dynamodb.core.table.TableRepository
+import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
+import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilderImpl
 import com.siyamand.aws.dynamodb.infrastructure.repositories.*

@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.functions
+package com.siyamand.aws.dynamodb.core.lambda
 
 import java.time.Instant
 

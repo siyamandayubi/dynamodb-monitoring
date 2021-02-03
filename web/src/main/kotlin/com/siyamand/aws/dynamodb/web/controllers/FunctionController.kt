@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.functions.FunctionDetailEntity
-import com.siyamand.aws.dynamodb.core.functions.FunctionEntity
+import com.siyamand.aws.dynamodb.core.lambda.FunctionDetailEntity
+import com.siyamand.aws.dynamodb.core.lambda.FunctionEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.functions.FunctionService
+import com.siyamand.aws.dynamodb.core.lambda.FunctionService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

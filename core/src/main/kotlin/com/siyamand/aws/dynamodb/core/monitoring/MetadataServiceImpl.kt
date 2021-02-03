@@ -1,10 +1,9 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.monitoring.entities.*
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
-import com.siyamand.aws.dynamodb.core.table.TableRepository
+import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 
 class MetadataServiceImpl(
         private  val resourceRepository: ResourceRepository,

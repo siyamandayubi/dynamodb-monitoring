@@ -2,9 +2,9 @@ package com.siyamand.aws.dynamodb.web.controllers
 
 import kotlinx.coroutines.Dispatchers.Unconfined
 import kotlinx.coroutines.reactor.mono
-import com.siyamand.aws.dynamodb.core.table.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.table.TableEntity
-import com.siyamand.aws.dynamodb.core.table.TableService
+import com.siyamand.aws.dynamodb.core.dynamodb.TableDetailEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.TableEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.TableService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

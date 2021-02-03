@@ -1,6 +1,5 @@
-package com.siyamand.aws.dynamodb.core.functions
+package com.siyamand.aws.dynamodb.core.lambda
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.*
 import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 

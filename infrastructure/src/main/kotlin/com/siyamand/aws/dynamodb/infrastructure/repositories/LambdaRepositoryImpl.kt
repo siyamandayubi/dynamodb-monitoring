@@ -1,7 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.*
-import com.siyamand.aws.dynamodb.core.functions.*
+import com.siyamand.aws.dynamodb.core.lambda.*
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import kotlinx.coroutines.reactive.awaitFirst
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder

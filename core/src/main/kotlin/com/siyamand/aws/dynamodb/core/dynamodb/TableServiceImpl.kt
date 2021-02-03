@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.table
+package com.siyamand.aws.dynamodb.core.dynamodb
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 
