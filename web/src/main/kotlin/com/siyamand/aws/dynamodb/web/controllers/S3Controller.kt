@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.entities.s3.S3ObjectEntity
-import com.siyamand.aws.dynamodb.core.services.S3Service
+import com.siyamand.aws.dynamodb.core.s3.S3ObjectEntity
+import com.siyamand.aws.dynamodb.core.s3.S3Service
 import com.siyamand.aws.dynamodb.web.models.BucketListModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus

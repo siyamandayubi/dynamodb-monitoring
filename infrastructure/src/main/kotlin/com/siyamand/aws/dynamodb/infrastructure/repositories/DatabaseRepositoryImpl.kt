@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.database.DatabaseConnectionEntity
-import com.siyamand.aws.dynamodb.core.repositories.DatabaseRepository
+import com.siyamand.aws.dynamodb.core.database.DatabaseConnectionEntity
+import com.siyamand.aws.dynamodb.core.database.DatabaseRepository
 import java.sql.DriverManager
 
 

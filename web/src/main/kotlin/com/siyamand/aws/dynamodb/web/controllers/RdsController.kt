@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.entities.RdsListEntity
-import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
-import com.siyamand.aws.dynamodb.core.services.RdsService
+import com.siyamand.aws.dynamodb.core.rds.RdsListEntity
+import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.rds.RdsService
 import com.siyamand.aws.dynamodb.web.models.CreateRdsModel
 import com.siyamand.aws.dynamodb.web.models.CreateRdsProxyModel
 import org.springframework.http.HttpEntity

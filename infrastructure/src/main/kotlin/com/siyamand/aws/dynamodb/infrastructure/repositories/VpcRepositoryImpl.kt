@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.PageResultEntity
-import com.siyamand.aws.dynamodb.core.entities.network.CreateEndpointEntity
-import com.siyamand.aws.dynamodb.core.entities.network.EndpointEntity
-import com.siyamand.aws.dynamodb.core.repositories.VpcRepository
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.network.CreateEndpointEntity
+import com.siyamand.aws.dynamodb.core.network.EndpointEntity
+import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.EndpointMapper
 import software.amazon.awssdk.services.ec2.model.*

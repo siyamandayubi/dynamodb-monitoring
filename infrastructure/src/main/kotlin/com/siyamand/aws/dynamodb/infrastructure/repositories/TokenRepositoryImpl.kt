@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import kotlinx.coroutines.reactive.awaitFirst
-import com.siyamand.aws.dynamodb.core.entities.TokenCredentialEntity
-import com.siyamand.aws.dynamodb.core.repositories.TokenRepository
+import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.sts.model.GetSessionTokenRequest

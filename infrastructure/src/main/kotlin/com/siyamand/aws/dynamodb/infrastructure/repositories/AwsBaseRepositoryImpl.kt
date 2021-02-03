@@ -1,11 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.CredentialEntity
-import com.siyamand.aws.dynamodb.core.repositories.AWSBaseRepository
-import com.siyamand.aws.dynamodb.core.repositories.TableRepository
+import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
+import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
-import software.amazon.awssdk.services.lambda.LambdaAsyncClient
 
 open class AwsBaseRepositoryImpl : AWSBaseRepository {
     protected var token: CredentialEntity? = null

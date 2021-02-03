@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.CreateSecretEntity
-import com.siyamand.aws.dynamodb.core.entities.SecretEntity
+import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretEntity
+import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import software.amazon.awssdk.services.secretsmanager.model.CreateSecretRequest
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse
 
@@ -17,7 +17,7 @@ class SecretManagerMapper {
 
         }
 
-        fun convert(response: GetSecretValueResponse):SecretEntity{
+        fun convert(response: GetSecretValueResponse): SecretEntity {
             return SecretEntity(
                     response.name(),
                     response.secretString(),

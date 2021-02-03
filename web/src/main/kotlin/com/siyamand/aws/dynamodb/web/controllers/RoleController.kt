@@ -1,8 +1,7 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
-import com.siyamand.aws.dynamodb.core.entities.RoleEntity
-import com.siyamand.aws.dynamodb.core.services.RoleService
+import com.siyamand.aws.dynamodb.core.role.RoleEntity
+import com.siyamand.aws.dynamodb.core.role.RoleService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

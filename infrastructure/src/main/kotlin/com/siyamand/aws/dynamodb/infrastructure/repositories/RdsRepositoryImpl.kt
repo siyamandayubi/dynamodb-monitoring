@@ -1,21 +1,18 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.RdsEntity
-import com.siyamand.aws.dynamodb.core.entities.RdsListEntity
-import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
-import com.siyamand.aws.dynamodb.core.entities.database.CreateDbInstanceEntity
-import com.siyamand.aws.dynamodb.core.entities.database.CreateDbProxyTargetEntity
-import com.siyamand.aws.dynamodb.core.entities.database.CreateProxyEntity
-import com.siyamand.aws.dynamodb.core.entities.database.DbProxyTargetEntity
-import com.siyamand.aws.dynamodb.core.repositories.RdsRepository
+import com.siyamand.aws.dynamodb.core.rds.RdsEntity
+import com.siyamand.aws.dynamodb.core.rds.RdsListEntity
+import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.rds.CreateDbInstanceEntity
+import com.siyamand.aws.dynamodb.core.rds.CreateDbProxyTargetEntity
+import com.siyamand.aws.dynamodb.core.rds.CreateProxyEntity
+import com.siyamand.aws.dynamodb.core.rds.DbProxyTargetEntity
+import com.siyamand.aws.dynamodb.core.rds.RdsRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
-import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RdsMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
-import software.amazon.awssdk.services.rds.RdsAsyncClient
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepository, AwsBaseRepositoryImpl() {

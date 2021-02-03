@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.services
 
-import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 
 class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     // make it configurable

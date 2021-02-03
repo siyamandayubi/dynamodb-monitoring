@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.CreatePolicyEntity
-import com.siyamand.aws.dynamodb.core.entities.CreateRoleEntity
-import com.siyamand.aws.dynamodb.core.entities.RoleEntity
+import com.siyamand.aws.dynamodb.core.role.CreatePolicyEntity
+import com.siyamand.aws.dynamodb.core.role.CreateRoleEntity
+import com.siyamand.aws.dynamodb.core.role.RoleEntity
 import software.amazon.awssdk.services.iam.model.CreatePolicyRequest
 import software.amazon.awssdk.services.iam.model.CreateRoleRequest
 import software.amazon.awssdk.services.iam.model.Tag

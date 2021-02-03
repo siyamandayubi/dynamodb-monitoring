@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.PageResultEntity
-import com.siyamand.aws.dynamodb.core.entities.ResourceEntity
-import com.siyamand.aws.dynamodb.core.repositories.ResourceRepository
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper

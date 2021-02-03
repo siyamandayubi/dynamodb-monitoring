@@ -1,8 +1,18 @@
 package com.siyamand.aws.dynamodb.infrastructure.config
 
-import com.siyamand.aws.dynamodb.core.repositories.*
-import com.siyamand.aws.dynamodb.core.services.CredentialProvider
-import com.siyamand.aws.dynamodb.core.services.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
+import com.siyamand.aws.dynamodb.core.database.DatabaseRepository
+import com.siyamand.aws.dynamodb.core.functions.LambdaRepository
+import com.siyamand.aws.dynamodb.core.network.VpcRepository
+import com.siyamand.aws.dynamodb.core.rds.RdsRepository
+import com.siyamand.aws.dynamodb.core.role.RoleRepository
+import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
+import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.table.TableItemRepository
+import com.siyamand.aws.dynamodb.core.table.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilderImpl
 import com.siyamand.aws.dynamodb.infrastructure.repositories.*
@@ -16,17 +26,17 @@ import org.springframework.context.annotation.Configuration
 @ComponentScan
 open class InfrastructureConfiguration {
     @Bean
-    open fun getDatabaseRepository():DatabaseRepository{
+    open fun getDatabaseRepository(): DatabaseRepository {
         return  DatabaseRepositoryImpl()
     }
 
     @Bean
-    open fun getVpcRepository(clientBuilder: ClientBuilder):VpcRepository{
+    open fun getVpcRepository(clientBuilder: ClientBuilder): VpcRepository {
         return  VpcRepositoryImpl(clientBuilder)
     }
 
     @Bean
-    open fun getSecretManagerRepository(clientBuilder: ClientBuilder):SecretManagerRepository{
+    open fun getSecretManagerRepository(clientBuilder: ClientBuilder): SecretManagerRepository {
         return  SecretManagerRepositoryImpl(clientBuilder)
     }
 

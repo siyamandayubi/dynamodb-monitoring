@@ -1,9 +1,32 @@
 package com.siyamand.aws.dynamodb.core.config
 
-import com.siyamand.aws.dynamodb.core.builders.*
-import com.siyamand.aws.dynamodb.core.repositories.*
-import com.siyamand.aws.dynamodb.core.services.*
-import com.siyamand.aws.dynamodb.core.services.TableServiceImpl
+import com.siyamand.aws.dynamodb.core.authentication.AuthenticationService
+import com.siyamand.aws.dynamodb.core.authentication.AuthenticationServiceImpl
+import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.database.*
+import com.siyamand.aws.dynamodb.core.functions.FunctionBuilder
+import com.siyamand.aws.dynamodb.core.functions.FunctionBuilderImpl
+import com.siyamand.aws.dynamodb.core.functions.LambdaRepository
+import com.siyamand.aws.dynamodb.core.functions.FunctionService
+import com.siyamand.aws.dynamodb.core.functions.FunctionServiceImpl
+import com.siyamand.aws.dynamodb.core.network.VpcRepository
+import com.siyamand.aws.dynamodb.core.network.VpcService
+import com.siyamand.aws.dynamodb.core.network.VpcServiceImpl
+import com.siyamand.aws.dynamodb.core.rds.*
+import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.role.*
+import com.siyamand.aws.dynamodb.core.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.s3.S3Service
+import com.siyamand.aws.dynamodb.core.s3.S3ServiceImpl
+import com.siyamand.aws.dynamodb.core.secretManager.SecretBuilder
+import com.siyamand.aws.dynamodb.core.secretManager.SecretBuilderImpl
+import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
+import com.siyamand.aws.dynamodb.core.monitoring.*
+import com.siyamand.aws.dynamodb.core.table.TableRepository
+import com.siyamand.aws.dynamodb.core.table.TableServiceImpl
+import com.siyamand.aws.dynamodb.core.table.TableService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -13,7 +36,7 @@ import org.springframework.context.annotation.Configuration
 open class CoreConfiguration {
 
     @Bean
-    open fun getVpcService(credentialProvider: CredentialProvider, vpcRepository: VpcRepository): VpcService{
+    open fun getVpcService(credentialProvider: CredentialProvider, vpcRepository: VpcRepository): VpcService {
         return  VpcServiceImpl(credentialProvider, vpcRepository)
     }
     @Bean

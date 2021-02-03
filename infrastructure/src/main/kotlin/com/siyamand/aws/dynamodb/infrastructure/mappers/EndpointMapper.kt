@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.network.CreateEndpointEntity
-import com.siyamand.aws.dynamodb.core.entities.network.DnsEntity
-import com.siyamand.aws.dynamodb.core.entities.network.EndpointEntity
-import com.siyamand.aws.dynamodb.core.entities.network.SecurityGroupEntity
+import com.siyamand.aws.dynamodb.core.network.CreateEndpointEntity
+import com.siyamand.aws.dynamodb.core.network.DnsEntity
+import com.siyamand.aws.dynamodb.core.network.EndpointEntity
+import com.siyamand.aws.dynamodb.core.network.SecurityGroupEntity
 import software.amazon.awssdk.services.ec2.model.CreateVpcEndpointRequest
 import software.amazon.awssdk.services.ec2.model.VpcEndpoint
 

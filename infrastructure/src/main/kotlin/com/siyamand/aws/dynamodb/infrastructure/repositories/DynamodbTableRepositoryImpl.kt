@@ -1,18 +1,13 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import kotlinx.coroutines.reactive.awaitFirst
-import com.siyamand.aws.dynamodb.core.entities.CredentialEntity
-import com.siyamand.aws.dynamodb.core.entities.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.entities.TableEntity
-import com.siyamand.aws.dynamodb.core.repositories.TableRepository
+import com.siyamand.aws.dynamodb.core.table.TableDetailEntity
+import com.siyamand.aws.dynamodb.core.table.TableEntity
+import com.siyamand.aws.dynamodb.core.table.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
-import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableMapper
 import reactor.core.publisher.Mono.*
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.*
-import software.amazon.awssdk.services.resourcegroupstaggingapi.model.GetResourcesRequest
-import software.amazon.awssdk.services.resourcegroupstaggingapi.model.TagFilter
 
 
 class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : TableRepository, AwsBaseRepositoryImpl() {

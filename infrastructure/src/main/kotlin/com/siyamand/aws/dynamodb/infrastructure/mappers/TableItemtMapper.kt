@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.item.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.entities.item.AttributeValueType
-import com.siyamand.aws.dynamodb.core.entities.item.TableItemEntity
+import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueType
+import com.siyamand.aws.dynamodb.core.monitoring.entities.item.TableItemEntity
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
 import software.amazon.awssdk.services.dynamodb.model.PutItemResponse

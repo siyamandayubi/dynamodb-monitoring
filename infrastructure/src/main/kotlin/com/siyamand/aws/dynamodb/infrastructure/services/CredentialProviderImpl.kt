@@ -1,15 +1,13 @@
 package com.siyamand.aws.dynamodb.infrastructure.services
 
-import com.siyamand.aws.dynamodb.core.entities.BasicCredentialEntity
-import com.siyamand.aws.dynamodb.core.entities.CredentialEntity
-import com.siyamand.aws.dynamodb.core.entities.TokenCredentialEntity
-import com.siyamand.aws.dynamodb.core.services.CredentialProvider
+import com.siyamand.aws.dynamodb.core.authentication.BasicCredentialEntity
+import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
+import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import kotlinx.coroutines.reactive.awaitFirst
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.security.core.context.ReactiveSecurityContextHolder
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 
 class CredentialProviderImpl : CredentialProvider {
 

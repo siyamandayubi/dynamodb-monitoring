@@ -1,8 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.entities.RdsEntity
-import com.siyamand.aws.dynamodb.core.entities.VpcSecurityGroupMembershipEntity
-import com.siyamand.aws.dynamodb.core.entities.database.*
+import com.siyamand.aws.dynamodb.core.rds.*
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsMapper {

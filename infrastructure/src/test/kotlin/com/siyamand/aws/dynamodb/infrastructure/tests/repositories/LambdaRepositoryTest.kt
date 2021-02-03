@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.tests.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.repositories.LambdaRepositoryImpl
 import io.mockk.every

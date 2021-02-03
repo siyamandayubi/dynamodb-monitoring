@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.entities.item.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.entities.item.TableItemEntity
-import com.siyamand.aws.dynamodb.core.repositories.TableItemRepository
+import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.monitoring.entities.item.TableItemEntity
+import com.siyamand.aws.dynamodb.core.table.TableItemRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableItemtMapper
