@@ -34,3 +34,20 @@ class EndpointEntity(
 class DnsEntity(val dns: String, val zoneId: String)
 
 class SecurityGroupEntity(val groupName: String, val groupId: String)
+
+class CreateEndpointEntity(
+        val vpcEndpointType: String = "",
+        val vpcId: String = "",
+        val serviceName: String = "",
+        val policyDocument: String = "",
+        val clientToken: String = "",
+        val dnsEnabled: Boolean = false
+) {
+    val routeTableIds: List<String> = mutableListOf()
+
+    val subnetIds: List<String> = mutableListOf()
+
+    val securityGroupIds: List<String> = mutableListOf()
+
+    val tagSpecifications: MutableList<TagEntity>? = mutableListOf()
+}

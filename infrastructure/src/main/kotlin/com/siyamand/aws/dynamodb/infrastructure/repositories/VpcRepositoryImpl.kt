@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.entities.PageResultEntity
+import com.siyamand.aws.dynamodb.core.entities.network.CreateEndpointEntity
 import com.siyamand.aws.dynamodb.core.entities.network.EndpointEntity
 import com.siyamand.aws.dynamodb.core.repositories.VpcRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
@@ -35,6 +36,16 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
         }
         val response = client.describeSecurityGroups(requestBuilder.build())
         return response.securityGroups().map { it.vpcId() }
+    }
+
+    override fun createEndpoint(entity: CreateEndpointEntity): EndpointEntity {
+        val client = getClient(clientBuilder::buildEc2Client)
+        val response = client.createVpcEndpoint(EndpointMapper.convert(entity))
+        if (response.clientToken() != entity.clientToken) {
+            throw Exception("ClientToken mismatch")
+        }
+
+        return EndpointMapper.convert(response.vpcEndpoint())
     }
 
     override fun getEndpoints(nextToken: String?, vpcList: List<String>?): PageResultEntity<EndpointEntity> {
