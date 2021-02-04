@@ -6,6 +6,7 @@ import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.database.*
+import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.lambda.FunctionBuilder
 import com.siyamand.aws.dynamodb.core.lambda.FunctionBuilderImpl
 import com.siyamand.aws.dynamodb.core.lambda.LambdaRepository
@@ -27,6 +28,7 @@ import com.siyamand.aws.dynamodb.core.monitoring.*
 import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
 import com.siyamand.aws.dynamodb.core.dynamodb.TableService
+import com.siyamand.aws.dynamodb.core.workflow.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -36,9 +38,34 @@ import org.springframework.context.annotation.Configuration
 open class CoreConfiguration {
 
     @Bean
-    open fun getVpcService(credentialProvider: CredentialProvider, vpcRepository: VpcRepository): VpcService {
-        return  VpcServiceImpl(credentialProvider, vpcRepository)
+    open fun getMonitoringItemBuilder(): MonitoringItemBuilder {
+        return MonitoringItemBuilderImpl()
     }
+
+    @Bean
+    open fun getWorkflowBuilder(): WorkflowBuilder {
+        return WorkflowBuilderImpl()
+    }
+
+    @Bean
+    open fun getWorkflowPersister(
+            tableItemRepository: TableItemRepository,
+            monitoringItemBuilder: MonitoringItemBuilder,
+            workflowBuilder: WorkflowBuilder,
+            monitorConfigProvider: MonitorConfigProvider): WorkflowPersister {
+        return WorkflowPersisterImpl(tableItemRepository, monitoringItemBuilder,workflowBuilder, monitorConfigProvider)
+    }
+
+    @Bean
+    open fun getWorkflowManager(workflowPersistance: WorkflowPersister): WorkflowManager {
+        return WorkflowManagerImpl(workflowPersistance)
+    }
+
+    @Bean
+    open fun getVpcService(credentialProvider: CredentialProvider, vpcRepository: VpcRepository): VpcService {
+        return VpcServiceImpl(credentialProvider, vpcRepository)
+    }
+
     @Bean
     open fun getMonitoringTableAggregate(
             monitorConfigProvider: MonitorConfigProvider,
@@ -76,10 +103,12 @@ open class CoreConfiguration {
                 databaseRepository,
                 secretManagerRepository)
     }
+
     @Bean
     open fun getDatabaseService(monitorConfigProvider: MonitorConfigProvider, databaseRepository: DatabaseRepository): DatabaseService {
         return DatabaseServiceImpl(monitorConfigProvider, databaseRepository)
     }
+
     @Bean
     open fun getRdsBuilder(monitorConfigProvider: MonitorConfigProvider): RdsBuilder {
         return RdsBuilderImpl(monitorConfigProvider)
