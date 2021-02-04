@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.monitoring.entities.item.TableItemEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
@@ -9,7 +9,6 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.TableItemtMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
-import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.fromFuture
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
@@ -38,6 +37,10 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         }
 
         return returnValue.asFlow()
+    }
+
+    override suspend fun update(entity: TableItemEntity){
+        TODO()
     }
 
     override suspend fun getItem(tableName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity> {

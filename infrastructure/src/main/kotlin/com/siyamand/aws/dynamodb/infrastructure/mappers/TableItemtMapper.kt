@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.monitoring.entities.item.AttributeValueType
-import com.siyamand.aws.dynamodb.core.monitoring.entities.item.TableItemEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueType
+import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.PutItemRequest
 import software.amazon.awssdk.services.dynamodb.model.PutItemResponse
@@ -36,7 +36,7 @@ class TableItemtMapper {
             return  builder.build()
         }
 
-        fun convertToAttributeValueEntity(value: AttributeValue): AttributeValueEntity{
+        fun convertToAttributeValueEntity(value: AttributeValue): AttributeValueEntity {
             return when {
                 value.s() != null -> {
                     AttributeValueEntity(value.s())

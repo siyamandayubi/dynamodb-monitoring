@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.monitoring.entities.item
+package com.siyamand.aws.dynamodb.core.dynamodb
 
 class AttributeValueEntity {
     constructor() {
@@ -16,10 +16,10 @@ class AttributeValueEntity {
     constructor(strs: Array<String>) {
         stringArrayValue = strs
     }
-    constructor(complexValues: Array<Map<String,AttributeValueEntity>>){
+    constructor(complexValues: Array<Map<String, AttributeValueEntity>>){
         this.complexArrayValue = complexValues
     }
-    constructor(complexValue: Map<String,AttributeValueEntity>){
+    constructor(complexValue: Map<String, AttributeValueEntity>){
         this.complexValue = complexValue
     }
     var stringValue: String? = null
