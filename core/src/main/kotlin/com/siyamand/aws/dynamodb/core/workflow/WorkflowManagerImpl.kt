@@ -14,25 +14,26 @@ class WorkflowManagerImpl(private val workflowPersistance: WorkflowPersister) : 
             throw Exception("Current step is out of order")
         }
 
-        val currentStep = instance.steps[instance.currentStep]
+        val currentStepInstance = instance.steps[instance.currentStep]
+        val currentStep = instance.template.steps[instance.currentStep]
 
-        val params = createParams(instance, currentStep)
+        val params = createParams(instance, currentStepInstance)
 
-        when (currentStep.status) {
+        when (currentStepInstance.status) {
             WorkflowStepStatus.INITIAL -> {
-                currentStep.status = WorkflowStepStatus.STARTING
+                currentStepInstance.status = WorkflowStepStatus.STARTING
                 workflowPersistance.save(instance)
-                val result = currentStep.workflowStep.execute(instance.context, params)
+                val result = currentStep.execute(instance.context, params)
 
-                val newInstance = createNewInstance(instance, result, currentStep)
+                val newInstance = createNewInstance(instance, result, currentStepInstance)
                 workflowPersistance.save(newInstance)
                 return result
 
             }
             WorkflowStepStatus.WAITING -> {
-                val result = currentStep.workflowStep.isWaiting(instance.context, params)
+                val result = currentStep.isWaiting(instance.context, params)
 
-                val newInstance = createNewInstance(instance, result, currentStep)
+                val newInstance = createNewInstance(instance, result, currentStepInstance)
                 workflowPersistance.save(newInstance)
                 return result
 

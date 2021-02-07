@@ -15,19 +15,19 @@ class WorkflowPersisterImpl(
         if (item!!.any()){
             throw Exception("no item habe been found")
         }
-        val monitoringItem = monitoringItemBuilder.build(item.first())
+        val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
         return workflowBuilder.build(monitoringItem)
     }
 
     override suspend fun save(instance: WorkflowInstance) {
         val item = tableItemRepository.getItem(monitorConfigProvider.getMonitoringConfigMetadataTable(), mapOf("id" to AttributeValueEntity(instance.id)))
         if (item!!.any()){
-            throw Exception("no item habe been found")
+            throw Exception("no item have been found")
         }
 
-        val monitoringItem = monitoringItemBuilder.build(item.first())
+        val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
         monitoringItem.workflow = workflowBuilder.serialize(instance)
-        val newItem = monitoringItemBuilder.convert(monitoringItem)
+        val newItem = monitoringItemBuilder.convert(monitoringItem.sourceTable, monitoringItem)
         tableItemRepository.update(newItem)
     }
 }

@@ -43,8 +43,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowBuilder(): WorkflowBuilder {
-        return WorkflowBuilderImpl()
+    open fun getWorkflowBuilder(templates: Iterable<WorkflowTemplate>): WorkflowBuilder {
+        return WorkflowBuilderImpl(templates)
     }
 
     @Bean

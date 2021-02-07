@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring
 
-class AggregateMonitoringEntity(
-        val databaseName: String,
-        val databaseInstanceArn: String,
-        val fields: List<AggregateFieldEntity>) {
+class AggregateMonitoringEntity {
+        var databaseName: String = ""
+        var databaseInstanceArn: String = ""
+        val fields: MutableList<AggregateFieldEntity> = mutableListOf()
 }
