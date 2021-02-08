@@ -1,14 +1,16 @@
-package com.siyamand.aws.dynamodb.core.workflow
+package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
-import com.siyamand.aws.dynamodb.core.monitoring.MonitoringItemBuilder
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowConverter
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowInstance
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowPersister
 
 class WorkflowPersisterImpl(
         private val tableItemRepository: TableItemRepository,
-        private val monitoringItemBuilder: MonitoringItemBuilder,
-        private val workflowBuilder: WorkflowBuilder,
+        private val monitoringItemBuilder: MonitoringItemConverter,
+        private val workflowConverter: WorkflowConverter,
         private val monitorConfigProvider: MonitorConfigProvider) : WorkflowPersister {
     override suspend fun load(id: String): WorkflowInstance {
         val item = tableItemRepository.getItem(monitorConfigProvider.getMonitoringConfigMetadataTable(), mapOf("id" to AttributeValueEntity(id)))
@@ -16,7 +18,7 @@ class WorkflowPersisterImpl(
             throw Exception("no item habe been found")
         }
         val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
-        return workflowBuilder.build(monitoringItem)
+        return workflowConverter.build(monitoringItem)
     }
 
     override suspend fun save(instance: WorkflowInstance) {
@@ -26,7 +28,7 @@ class WorkflowPersisterImpl(
         }
 
         val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
-        monitoringItem.workflow = workflowBuilder.serialize(instance)
+        monitoringItem.workflow = workflowConverter.serialize(instance)
         val newItem = monitoringItemBuilder.convert(monitoringItem.sourceTable, monitoringItem)
         tableItemRepository.update(newItem)
     }

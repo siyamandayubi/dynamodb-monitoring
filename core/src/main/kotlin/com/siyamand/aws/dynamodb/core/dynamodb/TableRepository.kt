@@ -9,6 +9,6 @@ interface TableRepository : AWSBaseRepository {
     // https://www.baeldung.com/spring-boot-kotlin-coroutines
     suspend fun getDetail(tableName: String): TableDetailEntity?
     suspend fun getList(): List<TableEntity>
-    suspend fun add(t: TableDetailEntity)
+    suspend fun add(t: TableDetailEntity): TableDetailEntity
     suspend fun enableStream(tableName: String): TableDetailEntity?
 }

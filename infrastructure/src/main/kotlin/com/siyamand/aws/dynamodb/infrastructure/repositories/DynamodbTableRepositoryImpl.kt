@@ -6,6 +6,7 @@ import com.siyamand.aws.dynamodb.core.dynamodb.TableEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableMapper
+import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.*
 import software.amazon.awssdk.services.dynamodb.model.*
 
@@ -27,7 +28,7 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
         return fromFuture(response).awaitFirst()
     }
 
-    override suspend fun add(t: TableDetailEntity) {
+    override suspend fun add(t: TableDetailEntity): TableDetailEntity {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val createTableRequest = CreateTableRequest
                 .builder()
@@ -35,13 +36,12 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
                 .attributeDefinitions(t.attributes.map { TableMapper.convertToAttributeDefinition(it.attributeName, it.attributeType) })
                 .keySchema(t.keySchema.map { TableMapper.convertToKeySchemaDefinition(it.attributeName, it.keyType) })
                 .build()
-        val response = db.createTable(createTableRequest)
+        val response = db.createTable(createTableRequest).thenApply { TableMapper.convertDetail(it.tableDescription()) }
 
-        val mono = fromFuture(response)
-        mono.awaitFirst()
+        return fromFuture(response).awaitFirst()
     }
 
-    override suspend fun enableStream(tableName: String): TableDetailEntity?{
+    override suspend fun enableStream(tableName: String): TableDetailEntity? {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val updateTableRequest = UpdateTableRequest
                 .builder()

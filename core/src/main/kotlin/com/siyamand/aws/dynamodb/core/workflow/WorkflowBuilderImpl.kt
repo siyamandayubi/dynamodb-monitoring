@@ -1,26 +1,21 @@
 package com.siyamand.aws.dynamodb.core.workflow
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
-import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
+import java.util.*
 
 class WorkflowBuilderImpl(private val templates: Iterable<WorkflowTemplate>) : WorkflowBuilder {
-    override fun create(type: String, initialParams: Map<String, Any>): WorkflowInstance {
-        TODO("Not yet implemented")
-    }
+    override fun create(type: String, initialParams: Map<String, String>): WorkflowInstance {
+        val template = templates.firstOrNull { it.name == type }
+                ?: throw  Exception("No templates has been found '${type}'")
 
-    override fun build(entity: MonitoringBaseEntity<AggregateMonitoringEntity>): WorkflowInstance {
-        val template = templates.firstOrNull { it.name == entity.type }
-                ?: throw  Exception("No templates has been found '${entity.type}'")
+        val context = WorkflowContext(initialParams.toMutableMap())
 
-        val workflowInstance = Json.decodeFromString<WorkflowInstance>(entity.workflow)
-        workflowInstance.template = template
-        return workflowInstance
-    }
-
-    override fun serialize(workflowInstance: WorkflowInstance): String {
-        return Json.encodeToString(workflowInstance)
+        return WorkflowInstance(
+                UUID.randomUUID().toString(),
+                context,
+                template,
+                template.steps.map { WorkflowStepInstance(it.name,WorkflowStepStatus.INITIAL, mapOf()) },
+                0,
+                null
+        )
     }
 }

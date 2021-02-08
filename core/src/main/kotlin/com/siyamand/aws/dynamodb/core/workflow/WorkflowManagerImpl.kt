@@ -2,7 +2,13 @@ package com.siyamand.aws.dynamodb.core.workflow
 
 import java.lang.Exception
 
-class WorkflowManagerImpl(private val workflowPersistance: WorkflowPersister) : WorkflowManager {
+class WorkflowManagerImpl() : WorkflowManager {
+    private  var workflowPersister : WorkflowPersister? = null
+
+    override fun setWorkflowPersister(workflowPersister: WorkflowPersister){
+        this.workflowPersister = workflowPersister
+    }
+
     override suspend fun execute(instance: WorkflowInstance): WorkflowResult {
 
         if (instance.template.steps.any()) {
@@ -22,19 +28,19 @@ class WorkflowManagerImpl(private val workflowPersistance: WorkflowPersister) : 
         when (currentStepInstance.status) {
             WorkflowStepStatus.INITIAL -> {
                 currentStepInstance.status = WorkflowStepStatus.STARTING
-                workflowPersistance.save(instance)
+                workflowPersister?.save(instance)
                 val result = currentStep.execute(instance.context, params)
 
-                val newInstance = createNewInstance(instance, result, currentStepInstance)
-                workflowPersistance.save(newInstance)
+                val newInstance = updateInstance(instance, result, currentStepInstance)
+                workflowPersister?.save(newInstance)
                 return result
 
             }
             WorkflowStepStatus.WAITING -> {
                 val result = currentStep.isWaiting(instance.context, params)
 
-                val newInstance = createNewInstance(instance, result, currentStepInstance)
-                workflowPersistance.save(newInstance)
+                val newInstance = updateInstance(instance, result, currentStepInstance)
+                workflowPersister?.save(newInstance)
                 return result
 
             }
@@ -43,7 +49,7 @@ class WorkflowManagerImpl(private val workflowPersistance: WorkflowPersister) : 
         return WorkflowResult(WorkflowResultType.FINISH, mapOf<String, String>(), "")
     }
 
-    private fun createNewInstance(instance: WorkflowInstance, result: WorkflowResult, currentStep: WorkflowStepInstance): WorkflowInstance {
+    private fun updateInstance(instance: WorkflowInstance, result: WorkflowResult, currentStep: WorkflowStepInstance): WorkflowInstance {
         var newStepIndex = instance.currentStep
         if (result.resultType == WorkflowResultType.SUCCESS) {
             currentStep.status = WorkflowStepStatus.FINISHED

@@ -2,13 +2,11 @@ package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.asEnumOrDefault
 import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueType
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemReaderDecorator
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.*
-import java.time.Instant
 
-class MonitoringItemBuilderImpl : MonitoringItemBuilder {
+class MonitoringItemConverterImpl : MonitoringItemConverter {
     override fun convertToAggregateEntity(tableItemEntity: TableItemEntity): MonitoringBaseEntity<AggregateMonitoringEntity> {
 
         val aggregateMonitoringEntity = AggregateMonitoringEntity()

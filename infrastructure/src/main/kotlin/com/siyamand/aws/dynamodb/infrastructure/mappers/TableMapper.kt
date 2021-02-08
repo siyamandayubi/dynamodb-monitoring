@@ -24,7 +24,7 @@ class TableMapper {
         }
 
         @Async
-        fun convertDetail(table: TableDescription): TableDetailEntity? {
+        fun convertDetail(table: TableDescription): TableDetailEntity {
             val attributes = table.attributeDefinitions().map { TableAttribute(it.attributeName(), it.attributeType().name) }
             val keySchema = table.keySchema().map { TableKeyScheme(it.attributeName(), it.keyType().name) }
             return TableDetailEntity(

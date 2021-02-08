@@ -29,6 +29,7 @@ import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
 import com.siyamand.aws.dynamodb.core.dynamodb.TableService
 import com.siyamand.aws.dynamodb.core.workflow.*
+import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDatabaseTemplate
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -37,9 +38,25 @@ import org.springframework.context.annotation.Configuration
 @ComponentScan
 open class CoreConfiguration {
 
+
     @Bean
-    open fun getMonitoringItemBuilder(): MonitoringItemBuilder {
-        return MonitoringItemBuilderImpl()
+    open fun getMonitoringTableBuilder(): MonitoringTableBuilder {
+        return MonitoringTableBuilderImpl()
+    }
+
+    @Bean
+    open fun getWorkflowTemplates(allSteps: Iterator<WorkflowStep>): Iterable<WorkflowTemplate> {
+        return listOf(AggregateSimpleMysqlDatabaseTemplate(allSteps))
+    }
+
+    @Bean
+    open fun getMonitoringItemBuilder(): MonitoringItemConverter {
+        return MonitoringItemConverterImpl()
+    }
+
+    @Bean
+    open fun getWorkflowConverter(templates: Iterable<WorkflowTemplate>): WorkflowConverter {
+        return WorkflowConverterImpl(templates)
     }
 
     @Bean
@@ -50,15 +67,15 @@ open class CoreConfiguration {
     @Bean
     open fun getWorkflowPersister(
             tableItemRepository: TableItemRepository,
-            monitoringItemBuilder: MonitoringItemBuilder,
-            workflowBuilder: WorkflowBuilder,
+            monitoringItemBuilder: MonitoringItemConverter,
+            workflowConverter: WorkflowConverter,
             monitorConfigProvider: MonitorConfigProvider): WorkflowPersister {
-        return WorkflowPersisterImpl(tableItemRepository, monitoringItemBuilder,workflowBuilder, monitorConfigProvider)
+        return WorkflowPersisterImpl(tableItemRepository, monitoringItemBuilder, workflowConverter, monitorConfigProvider)
     }
 
     @Bean
-    open fun getWorkflowManager(workflowPersistance: WorkflowPersister): WorkflowManager {
-        return WorkflowManagerImpl(workflowPersistance)
+    open fun getWorkflowManager(): WorkflowManager {
+        return WorkflowManagerImpl()
     }
 
     @Bean
@@ -67,11 +84,28 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getMonitoringTableAggregate(
+    open fun getMonitoringService(
             monitorConfigProvider: MonitorConfigProvider,
             tableRepository: TableRepository,
+            monitoringTableBuilder: MonitoringTableBuilder,
+            credentialProvider: CredentialProvider,
+            workflowManager: WorkflowManager,
+            workflowPersister: WorkflowPersister,
+            workflowBuilder: WorkflowBuilder,
+            tableItemRepository: TableItemRepository,
+            monitoringItemConverter: MonitoringItemConverter,
             resourceRepository: ResourceRepository): MetadataService {
-        return MetadataServiceImpl(resourceRepository, monitorConfigProvider, tableRepository)
+        return MetadataServiceImpl(
+                resourceRepository,
+                monitorConfigProvider,
+                monitoringTableBuilder,
+                credentialProvider,
+                workflowBuilder,
+                workflowManager,
+                workflowPersister,
+                tableItemRepository,
+                monitoringItemConverter,
+                tableRepository)
     }
 
     @Bean

@@ -5,7 +5,7 @@ class TableDetailEntity(
         val tableName: String,
         val attributes: MutableList<TableAttribute>,
         val keySchema: MutableList<TableKeyScheme>,
-        val tableStatus: String
+        val status :String
 ) {
 }
 
