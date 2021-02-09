@@ -43,9 +43,10 @@ class RdsMapper {
             return RdsEntity(
                     dbInstance.dbName(),
                     dbInstance.endpoint().address(),
-                    dbInstance.dbInstanceArn(),
                     dbInstance.endpoint().port(),
                     dbInstance.masterUsername(),
+                    dbInstance.dbInstanceStatus(),
+                    ResourceMapper.convert(dbInstance.dbInstanceArn()),
                     dbInstance.vpcSecurityGroups().map { VpcSecurityGroupMembershipEntity(it.vpcSecurityGroupId(), it.status()) }.toMutableList()
             )
         }

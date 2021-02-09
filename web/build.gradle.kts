@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("com.siyamand.aws.dynamodb:core:1.0.0")
     implementation("com.siyamand.aws.dynamodb:infrastructure:1.0.0")
 

@@ -51,11 +51,11 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun createDatabase(entity: CreateDbInstanceEntity): ResourceEntity {
+    override suspend fun createRds(entity: CreateDbInstanceEntity): RdsEntity  {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = RdsMapper.convert(entity)
 
-        val response = client.createDBInstance(request).thenApply { ResourceMapper.convert(it.dbInstance().dbInstanceArn()) }
+        val response = client.createDBInstance(request).thenApply { RdsMapper.convert(it.dbInstance()) }
         return Mono.fromFuture(response).awaitFirst()
     }
 

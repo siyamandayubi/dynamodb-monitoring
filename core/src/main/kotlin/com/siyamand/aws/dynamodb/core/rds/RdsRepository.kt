@@ -6,7 +6,7 @@ import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
 interface RdsRepository : AWSBaseRepository {
     suspend fun getRds(name: String):  List<RdsEntity>
     suspend fun createProxy(entity: CreateProxyEntity): ResourceEntity
-    suspend fun createDatabase(entity: CreateDbInstanceEntity): ResourceEntity
+    suspend fun createRds(entity: CreateDbInstanceEntity): RdsEntity
     suspend fun registerDbProxyTarget(entity: CreateDbProxyTargetEntity): List<DbProxyTargetEntity>
     suspend fun list(marker: String): RdsListEntity
 }

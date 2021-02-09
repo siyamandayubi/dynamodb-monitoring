@@ -1,12 +1,12 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
+import com.siyamand.aws.dynamodb.core.common.PageResultEntityBase
 import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableItemtMapper
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono.fromFuture
@@ -23,20 +23,26 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         return fromFuture(returnValue).awaitFirst()
     }
 
-    override fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): Flow<TableItemEntity> {
+    override suspend fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): PageResultEntityBase<TableItemEntity,Map<String, AttributeValueEntity>> {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
-        val requestBuilder = QueryRequest.builder().tableName(tableName)
+        val requestBuilder1 = QueryRequest.builder().tableName(tableName)
         if (startKey != null) {
-            requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
-        }
-        val response = db.queryPaginator(requestBuilder.build())
-        val returnValue = response.items().map { it ->
-            val tableItemEntity = TableItemEntity(tableName)
-            tableItemEntity.attributes.putAll(it.mapValues { entry -> TableItemtMapper.convertToAttributeValueEntity(entry.value) })
-            tableItemEntity
+            requestBuilder1.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
         }
 
-        return returnValue.asFlow()
+        val requestBuilder = QueryRequest.builder()
+        if (startKey != null && startKey.any()){
+            requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
+        }
+        val response = db.query(QueryRequest.builder().build()).thenApply { res ->
+            val items = res.items().map {
+                val tableItemEntity = TableItemEntity(tableName)
+                tableItemEntity.attributes.putAll(it.mapValues { entry -> TableItemtMapper.convertToAttributeValueEntity(entry.value) })
+                tableItemEntity
+                }
+            PageResultEntityBase(items, res.lastEvaluatedKey().mapValues { TableItemtMapper.convertToAttributeValueEntity(it.value) }) }
+
+        return fromFuture(response).awaitFirst()
     }
 
     override suspend fun update(entity: TableItemEntity){

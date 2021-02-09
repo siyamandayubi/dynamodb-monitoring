@@ -36,6 +36,10 @@ class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : Resourc
         return PageResultEntity(items, response.paginationToken())
     }
 
+    override fun convert(arn: String): ResourceEntity {
+        return ResourceMapper.convert(arn)
+    }
+
     private fun asyncResourceClient(): ResourceGroupsTaggingApiClient {
         if (this.token == null) {
             throw IllegalArgumentException("token is not provider")

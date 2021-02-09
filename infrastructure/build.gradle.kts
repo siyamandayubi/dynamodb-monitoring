@@ -32,6 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("mysql:mysql-connector-java")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")

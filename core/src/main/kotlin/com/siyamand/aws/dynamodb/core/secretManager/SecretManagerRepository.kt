@@ -7,4 +7,5 @@ interface SecretManagerRepository : AWSBaseRepository {
     fun addSecret(entity: CreateSecretEntity): ResourceEntity
     fun getSecret(secretId: String): SecretEntity?
     fun deleteSecret(secretId: String)
+    fun getSecretByArn(arn: String): SecretEntity?
 }

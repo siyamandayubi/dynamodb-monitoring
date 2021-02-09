@@ -9,12 +9,12 @@ class ResourceMapper {
     companion object {
         fun convert(resourceTagMapping: ResourceTagMapping): ResourceEntity {
             val returnValue = convert(resourceTagMapping.resourceARN())
-            returnValue.tags.addAll(resourceTagMapping.tags().map { TagEntity(it.key(),it.value()) })
+            returnValue.tags.addAll(resourceTagMapping.tags().map { TagEntity(it.key(), it.value()) })
 
             return returnValue
         }
 
-        fun convert(arnString:String):ResourceEntity{
+        fun convert(arnString: String): ResourceEntity {
             val arn = Arn.fromString(arnString)
             return ResourceEntity(arn.region().get(), arn.service(), arn.accountId().get(), arn.resourceAsString(), arnString)
         }

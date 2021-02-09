@@ -43,7 +43,7 @@ class RdsServiceImpl(
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
         val createRequest = rdsBuilder.build(name, databaseCredential, credentialResource)
 
-        return rdsRepository.createDatabase(createRequest)
+        return rdsRepository.createRds(createRequest).resource
     }
 
     override suspend fun getList(marker: String): RdsListEntity {

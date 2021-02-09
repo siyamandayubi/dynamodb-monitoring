@@ -28,6 +28,9 @@ import com.siyamand.aws.dynamodb.core.monitoring.*
 import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
 import com.siyamand.aws.dynamodb.core.dynamodb.TableService
+import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
+import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandlerImpl
+import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretManagerWorkflowStep
 import com.siyamand.aws.dynamodb.core.workflow.*
 import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDatabaseTemplate
 import org.springframework.context.annotation.Bean
@@ -38,6 +41,39 @@ import org.springframework.context.annotation.Configuration
 @ComponentScan
 open class CoreConfiguration {
 
+    @Bean
+    open fun getWorkflowJobHandler(monitorConfigProvider: MonitorConfigProvider,
+                                   monitoringItemConverter: MonitoringItemConverter,
+                                   workflowConverter: WorkflowConverter,
+                                   workflowManager: WorkflowManager,
+                                   workflowPersister: WorkflowPersister,
+                                   tableItemRepository: TableItemRepository): WorkflowJobHandler {
+        return WorkflowJobHandlerImpl(monitorConfigProvider, monitoringItemConverter, workflowConverter, workflowManager, workflowPersister, tableItemRepository)
+    }
+
+    @Bean
+    open fun getCreateDatabaseWorkflowStep(credentialProvider: CredentialProvider,
+                                           databaseRepository: DatabaseRepository,
+                                           secretManagerRepository: SecretManagerRepository): WorkflowStep {
+        return CreateDatabaseWorkflowStep(credentialProvider, databaseRepository, secretManagerRepository)
+    }
+
+    @Bean
+    open fun getCreateRdsInstanceWorkflowStep(rdsRepository: RdsRepository,
+                                              secretManagerRepository: SecretManagerRepository,
+                                              credentialProvider: CredentialProvider,
+                                              resourceRepository: ResourceRepository,
+                                              rdsBuilder: RdsBuilder): WorkflowStep {
+        return CreateRdsInstanceWorkflowStep(rdsRepository, secretManagerRepository, credentialProvider, resourceRepository, rdsBuilder)
+    }
+
+    @Bean
+    open fun getCreateSecretManagerWorkflowStep(credentialProvider: CredentialProvider,
+                                                secretBuilder: SecretBuilder,
+                                                databaseCredentialBuilder: DatabaseCredentialBuilder,
+                                                secretManagerRepository: SecretManagerRepository): WorkflowStep {
+        return CreateSecretManagerWorkflowStep(credentialProvider, secretBuilder, databaseCredentialBuilder, secretManagerRepository)
+    }
 
     @Bean
     open fun getMonitoringTableBuilder(): MonitoringTableBuilder {
@@ -45,8 +81,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowTemplates(allSteps: Iterator<WorkflowStep>): Iterable<WorkflowTemplate> {
-        return listOf(AggregateSimpleMysqlDatabaseTemplate(allSteps))
+    open fun getWorkflowTemplates(allSteps: List<WorkflowStep>): WorkflowTemplate {
+        return AggregateSimpleMysqlDatabaseTemplate(allSteps)
     }
 
     @Bean
@@ -55,12 +91,12 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowConverter(templates: Iterable<WorkflowTemplate>): WorkflowConverter {
+    open fun getWorkflowConverter(templates: List<WorkflowTemplate>): WorkflowConverter {
         return WorkflowConverterImpl(templates)
     }
 
     @Bean
-    open fun getWorkflowBuilder(templates: Iterable<WorkflowTemplate>): WorkflowBuilder {
+    open fun getWorkflowBuilder(templates: List<WorkflowTemplate>): WorkflowBuilder {
         return WorkflowBuilderImpl(templates)
     }
 
