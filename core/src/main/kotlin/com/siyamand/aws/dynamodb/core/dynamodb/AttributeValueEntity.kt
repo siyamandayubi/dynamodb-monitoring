@@ -26,10 +26,6 @@ class AttributeValueEntity {
         stringArrayValue = strs
     }
 
-    constructor(complexValues: Array<Map<String, AttributeValueEntity>>) {
-        this.complexArrayValue = complexValues
-    }
-
     constructor(complexValue: Map<String, AttributeValueEntity>) {
         this.complexValue = complexValue
     }
@@ -58,9 +54,6 @@ class AttributeValueEntity {
     var complexValue: Map<String, AttributeValueEntity>? = null
         private set
 
-    var complexArrayValue: Array<Map<String, AttributeValueEntity>>? = null
-        private set
-
     val type: AttributeValueType
         get() {
             if (instantValue != null) {
@@ -79,8 +72,6 @@ class AttributeValueEntity {
                 return AttributeValueType.INT_ARRAY
             } else if (complexValue != null) {
                 return AttributeValueType.COMPLEX
-            } else if (complexArrayValue != null) {
-                return AttributeValueType.COMPLEX_ARRAY
             }
 
             return AttributeValueType.NULL

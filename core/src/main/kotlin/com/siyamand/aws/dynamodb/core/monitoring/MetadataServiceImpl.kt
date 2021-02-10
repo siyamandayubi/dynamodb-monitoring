@@ -2,6 +2,7 @@ package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.dynamodb.TableDetailEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
@@ -42,7 +43,8 @@ class MetadataServiceImpl(
         return returnValue
     }
 
-    override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity : AggregateMonitoringEntity): WorkflowResult{
+    override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity): WorkflowResult {
+        credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
         val table = getOrCreateMonitoringTable()
         var workflowInstance = workflowBuilder.create(workflowName, mapOf())
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(

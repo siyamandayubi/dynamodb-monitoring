@@ -13,11 +13,10 @@ class ScheduledTasks(private val workflowJobHandler: WorkflowJobHandler) {
 
     var logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    @Scheduled(fixedRate = 5000)
+    //@Scheduled(fixedRate = 5000)
     fun executeWorkflow() {
         runBlocking {
             logger.info("running task")
-            workflowJobHandler.execute()
         }
     }
 }

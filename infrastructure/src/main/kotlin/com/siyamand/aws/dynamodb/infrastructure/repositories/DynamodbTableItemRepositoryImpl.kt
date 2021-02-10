@@ -13,17 +13,18 @@ import reactor.core.publisher.Mono.fromFuture
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest
+import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest
 
 class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) : TableItemRepository, AwsBaseRepositoryImpl() {
     override suspend fun add(tableItem: TableItemEntity): TableItemEntity {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val request = TableItemtMapper.convertRequest(tableItem)
         val response = db.putItem(request)
-        val returnValue = response.thenApply(TableItemtMapper::convertResponse)
+        val returnValue = response.thenApply { TableItemtMapper.convertResponse(tableItem.tableName, it) }
         return fromFuture(returnValue).awaitFirst()
     }
 
-    override suspend fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): PageResultEntityBase<TableItemEntity,Map<String, AttributeValueEntity>> {
+    override suspend fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): PageResultEntityBase<TableItemEntity, Map<String, AttributeValueEntity>> {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val requestBuilder1 = QueryRequest.builder().tableName(tableName)
         if (startKey != null) {
@@ -31,7 +32,7 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         }
 
         val requestBuilder = QueryRequest.builder()
-        if (startKey != null && startKey.any()){
+        if (startKey != null && startKey.any()) {
             requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
         }
         val response = db.query(QueryRequest.builder().build()).thenApply { res ->
@@ -39,14 +40,23 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
                 val tableItemEntity = TableItemEntity(tableName)
                 tableItemEntity.attributes.putAll(it.mapValues { entry -> TableItemtMapper.convertToAttributeValueEntity(entry.value) })
                 tableItemEntity
-                }
-            PageResultEntityBase(items, res.lastEvaluatedKey().mapValues { TableItemtMapper.convertToAttributeValueEntity(it.value) }) }
+            }
+            PageResultEntityBase(items, res.lastEvaluatedKey().mapValues { TableItemtMapper.convertToAttributeValueEntity(it.value) })
+        }
 
         return fromFuture(response).awaitFirst()
     }
 
-    override suspend fun update(entity: TableItemEntity){
-        TODO()
+    override suspend fun update(entity: TableItemEntity): TableItemEntity {
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
+        val request = TableItemtMapper.convertUpdateRequest(entity)
+        val response = db.updateItem(request).thenApply {
+            val tableItemEntity = TableItemEntity(entity.tableName)
+            tableItemEntity.attributes.putAll(it.attributes().mapValues { entry -> TableItemtMapper.convertToAttributeValueEntity(entry.value) })
+            tableItemEntity
+        }
+
+        return fromFuture(response).awaitFirst()
     }
 
     override suspend fun getItem(tableName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity> {
@@ -64,7 +74,7 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         return fromFuture(response).awaitFirst()
     }
 
-    private fun convert(tableName: String, key: Map<String, AttributeValueEntity>) :QueryRequest {
+    private fun convert(tableName: String, key: Map<String, AttributeValueEntity>): QueryRequest {
         val requestBuilder = QueryRequest.builder().tableName(tableName)
         val values = mutableMapOf<String, AttributeValue>()
         val expression = key.map {
@@ -77,16 +87,5 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         requestBuilder.expressionAttributeValues(values)
 
         return requestBuilder.build()
-    }
-
-    private fun asyncDynamoDb(): DynamoDbAsyncClient {
-        requireNotNull(this.token) { "token is not provider" }
-
-        if (this.region.isNullOrEmpty()) {
-            throw java.lang.IllegalArgumentException("region is not provider")
-        }
-
-        val credential = CredentialMapper.convert(this.token!!)
-        return clientBuilder.buildAsyncDynamodb(region, credential)
     }
 }

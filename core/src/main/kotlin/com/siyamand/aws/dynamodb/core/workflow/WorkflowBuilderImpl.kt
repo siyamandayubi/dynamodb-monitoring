@@ -12,10 +12,11 @@ class WorkflowBuilderImpl(private val templates: Iterable<WorkflowTemplate>) : W
         return WorkflowInstance(
                 UUID.randomUUID().toString(),
                 context,
-                template,
+
                 template.steps.map { WorkflowStepInstance(it.name,WorkflowStepStatus.INITIAL, mapOf()) },
                 0,
-                null
+                null,
+                template
         )
     }
 }

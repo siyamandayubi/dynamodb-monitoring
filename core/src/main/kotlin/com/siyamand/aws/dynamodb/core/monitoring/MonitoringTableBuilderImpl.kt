@@ -11,12 +11,12 @@ class MonitoringTableBuilderImpl : MonitoringTableBuilder {
                 "",
                 tableName,
                 mutableListOf(
-                        TableAttribute("id", "S"),
-                        TableAttribute("sourceTable", "S"),
-                        TableAttribute("type", "S"),
-                        TableAttribute("status", "S"),
-                        TableAttribute("version", "N"),
-                        TableAttribute("workflow", "S"),
+                        TableAttribute("id", "S")
+                        //TableAttribute("sourceTable", "S"),
+                        //TableAttribute("type", "S"),
+                        //TableAttribute("status", "S"),
+                        //TableAttribute("version", "N"),
+                        //TableAttribute("workflow", "S"),
                 ),
                 mutableListOf(TableKeyScheme("id", "HASH")),
                 "")

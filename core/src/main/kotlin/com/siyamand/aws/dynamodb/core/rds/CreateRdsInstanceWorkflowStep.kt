@@ -15,15 +15,14 @@ class CreateRdsInstanceWorkflowStep(
         private val resourceRepository: ResourceRepository,
         private val rdsBuilder: RdsBuilder
 ) : WorkflowStep() {
-    override val name: String
-        get() = "CreateRdsInstance"
+    override val name: String = "CreateRdsInstance"
 
     override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Secret key ${Keys.SECRET_ARN_KEY} found")
         }
 
-        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository,resourceRepository)
+        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
         val secretEntity = secretManagerRepository.getSecretByArn(context.sharedData[Keys.SECRET_ARN_KEY]!!)
         val databaseCredential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secretEntity!!.secretData)
 
@@ -39,11 +38,11 @@ class CreateRdsInstanceWorkflowStep(
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS_ARN_KEY ${Keys.RDS_ARN_KEY} found")
         }
 
-        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository,resourceRepository)
+        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
 
         val resource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
         val rdsEntities = rdsRepository.getRds(resource.service)
-        if (!rdsEntities?.any()){
+        if (!rdsEntities?.any()) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS ${Keys.RDS_ARN_KEY} found")
         }
 

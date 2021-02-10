@@ -17,8 +17,12 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val response = db.describeTable(DescribeTableRequest.builder().tableName(tableName).build())
 
-        val returnValue = response.thenApply(TableMapper::convertDetail)
-        return fromFuture(returnValue).awaitFirst()
+        return try {
+            val returnValue = response.thenApply(TableMapper::convertDetail)
+            fromFuture(returnValue).awaitFirst()
+        } catch (resourceNotFoundException: ResourceNotFoundException){
+            null
+        }
     }
 
     override suspend fun getList(): List<TableEntity> {
@@ -35,6 +39,7 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
                 .tableName(t.tableName)
                 .attributeDefinitions(t.attributes.map { TableMapper.convertToAttributeDefinition(it.attributeName, it.attributeType) })
                 .keySchema(t.keySchema.map { TableMapper.convertToKeySchemaDefinition(it.attributeName, it.keyType) })
+                .billingMode(BillingMode.PAY_PER_REQUEST)
                 .build()
         val response = db.createTable(createTableRequest).thenApply { TableMapper.convertDetail(it.tableDescription()) }
 

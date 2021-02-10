@@ -4,6 +4,7 @@ import java.time.Instant
 
 class TableItemEntity(val tableName: String) {
     public val attributes: MutableMap<String, AttributeValueEntity> = mutableMapOf()
+    public val key : MutableMap<String, AttributeValueEntity> = mutableMapOf()
 }
 
 class TableItemReaderDecorator(private val tableItemEntity: Map<String, AttributeValueEntity>) {
@@ -57,17 +58,5 @@ class TableItemReaderDecorator(private val tableItemEntity: Map<String, Attribut
         }
 
         return TableItemReaderDecorator(attr?.complexValue ?: mapOf())
-    }
-
-    fun complexArray(name: String): List<TableItemReaderDecorator> {
-        if (!tableItemEntity.containsKey(name)) {
-            return listOf()
-        }
-
-        val item = tableItemEntity[name] ?: return listOf()
-
-        val value = item.complexArrayValue ?: return listOf()
-
-        return value.map { TableItemReaderDecorator(it) }
     }
 }

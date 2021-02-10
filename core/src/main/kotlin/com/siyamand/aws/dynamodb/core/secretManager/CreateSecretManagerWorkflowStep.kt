@@ -9,9 +9,7 @@ class CreateSecretManagerWorkflowStep(
         private val secretBuilder: SecretBuilder,
         private val databaseCredentialBuilder: DatabaseCredentialBuilder,
         private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
-    override val name: String
-        get() = "CreateSecret"
-
+    override val name: String = "CreateSecret"
 
     override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         initialize()

@@ -10,8 +10,7 @@ class CreateDatabaseWorkflowStep(
         private val credentialProvider: CredentialProvider,
         private val databaseRepository: DatabaseRepository,
         private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
-    override val name: String
-        get() = "CreateDatabase"
+    override val name: String = "CreateDatabase"
 
     override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         TODO("Not yet implemented")

@@ -3,15 +3,15 @@ package com.siyamand.aws.dynamodb.core.workflow
 import java.lang.Exception
 
 class WorkflowManagerImpl() : WorkflowManager {
-    private  var workflowPersister : WorkflowPersister? = null
+    private var workflowPersister: WorkflowPersister? = null
 
-    override fun setWorkflowPersister(workflowPersister: WorkflowPersister){
+    override fun setWorkflowPersister(workflowPersister: WorkflowPersister) {
         this.workflowPersister = workflowPersister
     }
 
     override suspend fun execute(instance: WorkflowInstance): WorkflowResult {
 
-        if (instance.template.steps.any()) {
+        if (!instance.template.steps.any()) {
             throw  Exception("no step has been defined")
         }
 
@@ -23,7 +23,7 @@ class WorkflowManagerImpl() : WorkflowManager {
         val currentStepInstance = instance.steps[instance.currentStep]
         val currentStep = instance.template.steps[instance.currentStep]
 
-        val params = createParams(instance, currentStepInstance)
+        val params = mergeParams(instance, currentStepInstance)
 
         when (currentStepInstance.status) {
             WorkflowStepStatus.INITIAL -> {
@@ -59,13 +59,13 @@ class WorkflowManagerImpl() : WorkflowManager {
         } else if (result.resultType == WorkflowResultType.WAITING) {
             currentStep.status = WorkflowStepStatus.WAITING
         }
-        val newInstance = WorkflowInstance(instance.id, instance.context, instance.template, instance.steps, newStepIndex, result)
+        val newInstance = WorkflowInstance(instance.id, instance.context, instance.steps, newStepIndex, result, instance.template)
         return newInstance
     }
 
-    private fun createParams(instance: WorkflowInstance, currentStep: WorkflowStepInstance): MutableMap<String, String> {
+    private fun mergeParams(instance: WorkflowInstance, currentStep: WorkflowStepInstance): MutableMap<String, String> {
         val params = mutableMapOf<String, String>()
-        if (instance.lastResult!!.params!!.any()) {
+        if (instance.lastResult?.params?.any() == true) {
             params.putAll(instance.lastResult!!.params)
         }
         if (currentStep.params.any()) {

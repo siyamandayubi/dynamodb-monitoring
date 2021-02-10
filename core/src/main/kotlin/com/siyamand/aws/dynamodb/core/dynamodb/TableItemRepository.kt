@@ -8,5 +8,5 @@ interface TableItemRepository : AWSBaseRepository {
     suspend fun add(tableItem: TableItemEntity): TableItemEntity
     suspend fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): PageResultEntityBase<TableItemEntity, Map<String, AttributeValueEntity>>
     suspend fun getItem(tableName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity>
-    suspend fun update(entity: TableItemEntity)
+    suspend fun update(entity: TableItemEntity): TableItemEntity
 }
