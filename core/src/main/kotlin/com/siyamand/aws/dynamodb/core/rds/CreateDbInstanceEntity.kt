@@ -14,4 +14,5 @@ interface CreateDbInstanceEntity {
     val publiclyAccessible: Boolean
     val allocatedStorage: Int
     val tags: MutableList<TagEntity>
+    val vpcSecurityGroupIds: MutableList<String>
 }

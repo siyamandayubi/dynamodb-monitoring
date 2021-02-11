@@ -44,6 +44,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
             override val dbInstanceClass: String,
             override val publiclyAccessible: Boolean,
             override val allocatedStorage: Int,
-            override val tags: MutableList<TagEntity> = mutableListOf()) : CreateDbInstanceEntity {
+            override val tags: MutableList<TagEntity> = mutableListOf(),
+            override val vpcSecurityGroupIds: MutableList<String> = mutableListOf()) : CreateDbInstanceEntity {
     }
 }

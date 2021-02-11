@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.lambda
 
+import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import java.time.Instant
 
 class FunctionEntity(
@@ -23,6 +24,14 @@ class FunctionCodeEntity(
         val imageUri: String? = null
 )
 
+class CreateLayerEntity(
+        val layerName: String,
+        val runTime: String,
+        val code: ByteArray,
+        val description: String,
+        val licenseInfo: String
+)
+
 class FunctionCodeLocationEntity(
         val repositoryType: String? = null,
         val location: String? = null,
@@ -44,25 +53,35 @@ class CreateFunctionRequestEntity(
         val tags: Map<String, String>? = null,
         val codeSigningConfigArn: String? = null)
 
-class CreateEventSourceRequestEntity(val eventSourceArn: String? = null){
+class FunctionLayerEntity(
+        val layerEntity: ResourceEntity,
+        val layerVersionEntity: ResourceEntity,
+        val description: String,
+        val createdDate: String,
+        val version: Long,
+        val compatibleRuntimes: MutableList<String> = mutableListOf(),
+        val licenseInfo: String = ""
+)
 
-     val functionName: String? = null
+class CreateEventSourceRequestEntity(val eventSourceArn: String? = null) {
 
-     val enabled: Boolean? = null
+    val functionName: String? = null
 
-     val batchSize: Int? = null
+    val enabled: Boolean? = null
 
-     val maximumBatchingWindowInSeconds: Int? = null
+    val batchSize: Int? = null
 
-     val parallelizationFactor: Int? = null
+    val maximumBatchingWindowInSeconds: Int? = null
 
-     val startingPosition: String? = null
+    val parallelizationFactor: Int? = null
 
-     val startingPositionTimestamp: Instant? = null
+    val startingPosition: String? = null
 
-     val maximumRecordAgeInSeconds: Int? = null
+    val startingPositionTimestamp: Instant? = null
 
-     val bisectBatchOnFunctionError: Boolean? = null
+    val maximumRecordAgeInSeconds: Int? = null
 
-     val maximumRetryAttempts: Int? = null
+    val bisectBatchOnFunctionError: Boolean? = null
+
+    val maximumRetryAttempts: Int? = null
 }

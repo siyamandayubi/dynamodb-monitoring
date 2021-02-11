@@ -77,6 +77,10 @@ class RdsMapper {
                     .allocatedStorage(entity.allocatedStorage)
                     .tags(entity.tags.map { Tag.builder().key(it.name).value(it.value).build() })
 
+            if (entity.vpcSecurityGroupIds.any()){
+                builder.vpcSecurityGroupIds(entity.vpcSecurityGroupIds)
+            }
+
             if (!entity.availabilityZone.isNullOrEmpty()) {
                 builder.availabilityZone(entity.availabilityZone)
             }

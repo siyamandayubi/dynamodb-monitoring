@@ -8,6 +8,7 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.FunctionMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.lambda.model.GetFunctionRequest
+import software.amazon.awssdk.services.lambda.model.PublishLayerVersionRequest
 
 
 class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRepository, AwsBaseRepositoryImpl() {
@@ -34,6 +35,13 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         val request = FunctionMapper.convert(requestEntity)
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
         val response = awsLambda.createEventSourceMapping(request).thenApply { ResourceMapper.convert(it.eventSourceArn()) }
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun add(entity: CreateLayerEntity): FunctionLayerEntity {
+        val client = getClient(clientBuilder::buildAsyncAwsLambda)
+        val request = FunctionMapper.convert(entity)
+        val response = client.publishLayerVersion(request).thenApply { FunctionMapper.convert(it) }
         return Mono.fromFuture(response).awaitFirst()
     }
 }

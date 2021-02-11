@@ -31,6 +31,18 @@ class FunctionMapper {
                     functionCode.imageUri())
         }
 
+        fun convert(response: PublishLayerVersionResponse): FunctionLayerEntity {
+            return FunctionLayerEntity(
+                    ResourceMapper.convert(response.layerArn()),
+                    ResourceMapper.convert(response.layerVersionArn()),
+                    response.description(),
+                    response.createdDate(),
+                    response.version(),
+                    response.compatibleRuntimesAsStrings(),
+                    response.licenseInfo()
+            )
+        }
+
         fun convert(functionCode: FunctionCodeLocation): FunctionCodeLocationEntity {
             return FunctionCodeLocationEntity(
                     functionCode.repositoryType(),
@@ -41,6 +53,17 @@ class FunctionMapper {
 
         fun convert(functionResponse: GetFunctionResponse): FunctionDetailEntity {
             return FunctionDetailEntity(convert(functionResponse.configuration()), convert(functionResponse.code()))
+        }
+
+        fun convert(entity: CreateLayerEntity): PublishLayerVersionRequest {
+            return PublishLayerVersionRequest
+                    .builder()
+                    .layerName(entity.layerName)
+                    .licenseInfo(entity.licenseInfo)
+                    .description(entity.description)
+                    .compatibleRuntimes(Runtime.valueOf(entity.runTime))
+                    .content(LayerVersionContentInput.builder().zipFile(SdkBytes.fromByteArray(entity.code)).build())
+                    .build()
         }
 
         fun convert(entity: CreateEventSourceRequestEntity): CreateEventSourceMappingRequest {
@@ -74,7 +97,7 @@ class FunctionMapper {
                     .publish(entity.publish)
                     .tags(entity.tags)
 
-            return  builder.build()
+            return builder.build()
         }
     }
 }
