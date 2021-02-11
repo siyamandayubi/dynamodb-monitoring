@@ -51,3 +51,12 @@ class CreateEndpointEntity(
 
     val tagSpecifications: MutableList<TagEntity>? = mutableListOf()
 }
+
+class InternetGatewayEntity(
+        val ownerId: String,
+        internetGatewayId: String,
+        tags: List<TagEntity> = listOf(),
+        attachments: List<InternetGatewayAttachmentEntity> = listOf()
+)
+
+class InternetGatewayAttachmentEntity(val vpcId: String, val status: String)

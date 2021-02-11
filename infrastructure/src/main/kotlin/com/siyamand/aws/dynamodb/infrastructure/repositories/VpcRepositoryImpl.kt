@@ -1,11 +1,11 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
-import com.siyamand.aws.dynamodb.core.network.CreateEndpointEntity
-import com.siyamand.aws.dynamodb.core.network.EndpointEntity
-import com.siyamand.aws.dynamodb.core.network.VpcRepository
+import com.siyamand.aws.dynamodb.core.network.*
+import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.EndpointMapper
+import com.siyamand.aws.dynamodb.infrastructure.mappers.NetworkMapper
 import software.amazon.awssdk.services.ec2.model.*
 
 class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepository, AwsBaseRepositoryImpl() {
@@ -46,6 +46,22 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
         }
 
         return EndpointMapper.convert(response.vpcEndpoint())
+    }
+
+    override fun createInternetGateway(tags: Map<String, String>): InternetGatewayEntity {
+        val client = getClient(clientBuilder::buildEc2Client)
+        val response = client
+                .createInternetGateway(
+                        CreateInternetGatewayRequest
+                                .builder()
+                                .tagSpecifications(
+                                        TagSpecification
+                                                .builder()
+                                                .tags(tags.map { Tag.builder().key(it.key).value(it.value).build() })
+                                                .build())
+                                .build())
+
+        return NetworkMapper.convert(response)
     }
 
     override fun getEndpoints(nextToken: String?, vpcList: List<String>?): PageResultEntity<EndpointEntity> {

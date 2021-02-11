@@ -9,4 +9,5 @@ interface VpcRepository : AWSBaseRepository {
     fun getSecurityGroupVpcs(groupIds: List<String>?): List<String>
     fun getEndpoints(nextToken: String?, vpcList: List<String>?) : PageResultEntity<EndpointEntity>
     fun createEndpoint(entity: CreateEndpointEntity): EndpointEntity
+    fun createInternetGateway(tags: Map<String, String>): InternetGatewayEntity
 }
