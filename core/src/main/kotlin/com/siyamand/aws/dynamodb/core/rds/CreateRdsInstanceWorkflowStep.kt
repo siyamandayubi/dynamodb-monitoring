@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 class CreateRdsInstanceWorkflowStep(
         private val rdsRepository: RdsRepository,
         private val secretManagerRepository: SecretManagerRepository,
-        private val credentialProvider: CredentialProvider,
+        private var credentialProvider: CredentialProvider,
         private val resourceRepository: ResourceRepository,
         private val rdsBuilder: RdsBuilder
 ) : WorkflowStep() {
@@ -51,4 +51,9 @@ class CreateRdsInstanceWorkflowStep(
         val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
         return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
     }
+
+    override suspend fun initialize() {
+        this.credentialProvider = credentialProvider.threadSafe()
+    }
+
 }

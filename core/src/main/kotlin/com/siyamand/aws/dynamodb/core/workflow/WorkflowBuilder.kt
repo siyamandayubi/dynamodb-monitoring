@@ -4,5 +4,5 @@ import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMo
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 
 interface WorkflowBuilder {
-    fun create(type: String, initialParams: Map<String, String>): WorkflowInstance
+    suspend fun create(type: String, initialParams: Map<String, String>): WorkflowInstance
 }

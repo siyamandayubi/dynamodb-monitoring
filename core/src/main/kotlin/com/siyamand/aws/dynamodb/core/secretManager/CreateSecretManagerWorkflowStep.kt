@@ -5,7 +5,7 @@ import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialBuilder
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class CreateSecretManagerWorkflowStep(
-        private val credentialProvider: CredentialProvider,
+        private var credentialProvider: CredentialProvider,
         private val secretBuilder: SecretBuilder,
         private val databaseCredentialBuilder: DatabaseCredentialBuilder,
         private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
@@ -34,7 +34,8 @@ class CreateSecretManagerWorkflowStep(
         return WorkflowResult(WorkflowResultType.SUCCESS, params, "")
     }
 
-    private suspend fun initialize() {
+    override suspend fun initialize() {
+        this.credentialProvider = credentialProvider.threadSafe()
         val credential = credentialProvider.getCredential()
                 ?: throw SecurityException("No Credential has been provided");
 

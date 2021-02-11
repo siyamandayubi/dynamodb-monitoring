@@ -12,6 +12,11 @@ import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMo
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 import com.siyamand.aws.dynamodb.core.workflow.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
+import org.springframework.scheduling.TaskScheduler
 
 class MetadataServiceImpl(
         private val resourceRepository: ResourceRepository,
@@ -23,7 +28,8 @@ class MetadataServiceImpl(
         private val workflowPersister: WorkflowPersister,
         private val tableItemRepository: TableItemRepository,
         private val monitoringItemConverter: MonitoringItemConverter,
-        private val tableRepository: TableRepository) : MetadataService {
+        private val tableRepository: TableRepository,
+        private val scheduler: TaskScheduler) : MetadataService {
 
     override fun getMonitoredTables(): List<ResourceEntity> {
         val returnValue = mutableListOf<ResourceEntity>()
@@ -43,7 +49,7 @@ class MetadataServiceImpl(
         return returnValue
     }
 
-    override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity): WorkflowResult {
+    override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
         val table = getOrCreateMonitoringTable()
         var workflowInstance = workflowBuilder.create(workflowName, mapOf())
@@ -58,8 +64,13 @@ class MetadataServiceImpl(
         )
 
         tableItemRepository.add(monitoringItemConverter.convert(table.tableName, monitoringEntity))
-        workflowManager.setWorkflowPersister(workflowPersister)
-        return workflowManager.execute(workflowInstance)
+        val task = Runnable {
+            runBlocking {
+                workflowManager.execute(workflowInstance, workflowPersister)
+            }
+        }
+
+        scheduler.schedule(task, scheduler.clock.instant().plusMillis(500))
     }
 
     suspend fun getOrCreateMonitoringTable(): TableDetailEntity {

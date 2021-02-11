@@ -36,6 +36,7 @@ import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDat
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.TaskScheduler
 
 @Configuration
 @ComponentScan
@@ -130,7 +131,8 @@ open class CoreConfiguration {
             workflowBuilder: WorkflowBuilder,
             tableItemRepository: TableItemRepository,
             monitoringItemConverter: MonitoringItemConverter,
-            resourceRepository: ResourceRepository): MetadataService {
+            resourceRepository: ResourceRepository,
+            scheduler: TaskScheduler): MetadataService {
         return MetadataServiceImpl(
                 resourceRepository,
                 monitorConfigProvider,
@@ -141,7 +143,8 @@ open class CoreConfiguration {
                 workflowPersister,
                 tableItemRepository,
                 monitoringItemConverter,
-                tableRepository)
+                tableRepository,
+                scheduler)
     }
 
     @Bean

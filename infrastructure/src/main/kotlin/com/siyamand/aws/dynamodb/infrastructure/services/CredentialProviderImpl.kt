@@ -21,7 +21,7 @@ class CredentialProviderImpl : CredentialProvider {
         val context = ReactiveSecurityContextHolder.getContext().awaitFirst()
         var principal = context.authentication.principal as TokenCredentialEntity?
         if (principal != null) {
-          //  return principal
+            //  return principal
         }
 
         val awsAccessKey: String? = env?.getProperty("aws_access_key_id");
@@ -40,5 +40,28 @@ class CredentialProviderImpl : CredentialProvider {
 
     override fun getGlobalRegion(): String {
         return "aws-global"
+    }
+
+    override suspend fun threadSafe(): CredentialProvider {
+        return ThreadSafeCredentialProviderImpl(getRegion(), getGlobalRegion(), getCredential())
+    }
+
+    class ThreadSafeCredentialProviderImpl(private val region: String, private val globalRegion: String, private val credentialEntity: CredentialEntity?) : CredentialProvider {
+        override suspend fun getCredential(): CredentialEntity? {
+            return credentialEntity
+        }
+
+        override fun getRegion(): String {
+            return region
+        }
+
+        override fun getGlobalRegion(): String {
+            return globalRegion
+        }
+
+        override suspend fun threadSafe(): CredentialProvider {
+            return this
+        }
+
     }
 }

@@ -6,5 +6,5 @@ import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 
 interface MetadataService {
     fun getMonitoredTables(): List<ResourceEntity>
-    suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity : AggregateMonitoringEntity): WorkflowResult
+    suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity : AggregateMonitoringEntity)
 }

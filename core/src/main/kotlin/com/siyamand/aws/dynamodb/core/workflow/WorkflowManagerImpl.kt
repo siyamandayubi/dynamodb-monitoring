@@ -3,50 +3,54 @@ package com.siyamand.aws.dynamodb.core.workflow
 import java.lang.Exception
 
 class WorkflowManagerImpl() : WorkflowManager {
-    private var workflowPersister: WorkflowPersister? = null
 
-    override fun setWorkflowPersister(workflowPersister: WorkflowPersister) {
-        this.workflowPersister = workflowPersister
-    }
+    override suspend fun execute(input: WorkflowInstance, workflowPersister: WorkflowPersister?): WorkflowResult {
 
-    override suspend fun execute(instance: WorkflowInstance): WorkflowResult {
-
-        if (!instance.template.steps.any()) {
+        if (!input.template.steps.any()) {
             throw  Exception("no step has been defined")
         }
 
-        if (instance.currentStep >= instance.template.steps.size ||
-                instance.currentStep < 0) {
+        if (input.currentStep >= input.template.steps.size ||
+                input.currentStep < 0) {
             throw Exception("Current step is out of order")
         }
 
-        val currentStepInstance = instance.steps[instance.currentStep]
-        val currentStep = instance.template.steps[instance.currentStep]
+        var lastResult = WorkflowResultType.SUCCESS
+        var currentInstance = input
+        while (currentInstance.currentStep < currentInstance.template.steps.size && lastResult == WorkflowResultType.SUCCESS) {
+            val pair = executeStep(currentInstance, workflowPersister)
+            val currentStepInstance = pair.first
+            var stepResult = pair.second
 
-        val params = mergeParams(instance, currentStepInstance)
-
-        when (currentStepInstance.status) {
-            WorkflowStepStatus.INITIAL -> {
-                currentStepInstance.status = WorkflowStepStatus.STARTING
-                workflowPersister?.save(instance)
-                val result = currentStep.execute(instance.context, params)
-
-                val newInstance = updateInstance(instance, result, currentStepInstance)
-                workflowPersister?.save(newInstance)
-                return result
-
-            }
-            WorkflowStepStatus.WAITING -> {
-                val result = currentStep.isWaiting(instance.context, params)
-
-                val newInstance = updateInstance(instance, result, currentStepInstance)
-                workflowPersister?.save(newInstance)
-                return result
-
-            }
+            currentInstance = updateInstance(currentInstance, stepResult, currentStepInstance)
+            workflowPersister?.save(currentInstance)
+            lastResult = stepResult.resultType
         }
 
-        return WorkflowResult(WorkflowResultType.FINISH, mapOf<String, String>(), "")
+        return WorkflowResult(lastResult, mapOf<String, String>(), "")
+    }
+
+    private suspend fun executeStep(currentInstance: WorkflowInstance, workflowPersister: WorkflowPersister?): Pair<WorkflowStepInstance, WorkflowResult> {
+        val currentStepInstance = currentInstance.steps[currentInstance.currentStep]
+        val currentStep = currentInstance.template.steps[currentInstance.currentStep]
+
+        val params = mergeParams(currentInstance, currentStepInstance)
+
+        var stepResult = when (currentStepInstance.status) {
+            WorkflowStepStatus.INITIAL, WorkflowStepStatus.STARTING -> {
+                currentStepInstance.status = WorkflowStepStatus.STARTING
+                workflowPersister?.save(currentInstance)
+                currentStep.execute(currentInstance.context, params)
+            }
+            WorkflowStepStatus.WAITING -> {
+                currentStep.isWaiting(currentInstance.context, params)
+            }
+
+            WorkflowStepStatus.FINISHED -> {
+                WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
+            }
+        }
+        return Pair(currentStepInstance, stepResult)
     }
 
     private fun updateInstance(instance: WorkflowInstance, result: WorkflowResult, currentStep: WorkflowStepInstance): WorkflowInstance {
@@ -59,8 +63,7 @@ class WorkflowManagerImpl() : WorkflowManager {
         } else if (result.resultType == WorkflowResultType.WAITING) {
             currentStep.status = WorkflowStepStatus.WAITING
         }
-        val newInstance = WorkflowInstance(instance.id, instance.context, instance.steps, newStepIndex, result, instance.template)
-        return newInstance
+        return WorkflowInstance(instance.id, instance.context, instance.steps, newStepIndex, result, instance.template)
     }
 
     private fun mergeParams(instance: WorkflowInstance, currentStep: WorkflowStepInstance): MutableMap<String, String> {

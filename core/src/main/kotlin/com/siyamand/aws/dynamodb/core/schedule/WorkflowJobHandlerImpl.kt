@@ -26,8 +26,7 @@ class WorkflowJobHandlerImpl(private val monitorConfigProvider: MonitorConfigPro
                     .filter { it.status == MonitorStatus.INITIAL || it.status == MonitorStatus.PENDING }
             for (monitoringItem in monitoringItems) {
                 val workflowInstance = workflowConverter.build(monitoringItem)
-                workflowManager.setWorkflowPersister(workflowPersister)
-                workflowManager.execute(workflowInstance)
+                workflowManager.execute(workflowInstance, workflowPersister)
             }
 
             // continue loading

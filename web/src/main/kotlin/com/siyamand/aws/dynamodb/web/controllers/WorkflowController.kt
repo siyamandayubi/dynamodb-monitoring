@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, private val metadataService: MetadataService) {
     @PostMapping("/api/workflow/start")
-    suspend fun startWorkflow(@RequestBody startWorkflowModel: StartWorkflowModel): HttpEntity<WorkflowResult> {
-        val result = metadataService.startWorkflow(startWorkflowModel.sourceTableName, startWorkflowModel.workflowName, AggregateMonitoringEntity())
-        return ResponseEntity(result, HttpStatus.OK)
+    suspend fun startWorkflow(@RequestBody startWorkflowModel: StartWorkflowModel): HttpEntity<String> {
+        metadataService.startWorkflow(startWorkflowModel.sourceTableName, startWorkflowModel.workflowName, AggregateMonitoringEntity())
+        return ResponseEntity("result", HttpStatus.OK)
     }
 
     @PostMapping("/api/Workflow/continue")

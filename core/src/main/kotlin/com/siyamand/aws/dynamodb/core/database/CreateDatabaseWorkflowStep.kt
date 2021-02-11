@@ -7,7 +7,7 @@ import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowStep
 
 class CreateDatabaseWorkflowStep(
-        private val credentialProvider: CredentialProvider,
+        private var credentialProvider: CredentialProvider,
         private val databaseRepository: DatabaseRepository,
         private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
     override val name: String = "CreateDatabase"
@@ -18,5 +18,9 @@ class CreateDatabaseWorkflowStep(
 
     override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun initialize() {
+        this.credentialProvider = credentialProvider.threadSafe()
     }
 }

@@ -8,9 +8,9 @@ import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowStep
 
 class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
-                                 private val credentialProvider: CredentialProvider,
+                                 private var credentialProvider: CredentialProvider,
                                  private val rdsRepository: RdsRepository,
-                                 private val resourceRepository: ResourceRepository): WorkflowStep() {
+                                 private val resourceRepository: ResourceRepository) : WorkflowStep() {
     override val name: String
         get() = "CreateRdsProxy"
 
@@ -20,5 +20,9 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
 
     override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun initialize() {
+        this.credentialProvider = credentialProvider.threadSafe()
     }
 }
