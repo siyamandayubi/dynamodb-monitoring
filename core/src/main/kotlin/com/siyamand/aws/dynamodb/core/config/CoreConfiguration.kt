@@ -27,6 +27,8 @@ import com.siyamand.aws.dynamodb.core.lambda.*
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandlerImpl
 import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretManagerWorkflowStep
+import com.siyamand.aws.dynamodb.core.template.TemplateEngine
+import com.siyamand.aws.dynamodb.core.template.TemplateEngineImpl
 import com.siyamand.aws.dynamodb.core.workflow.*
 import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDatabaseTemplate
 import org.springframework.context.annotation.Bean
@@ -37,6 +39,11 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+
+    @Bean
+    open fun getTamplateEngine(): TemplateEngine {
+        return TemplateEngineImpl()
+    }
 
     @Bean
     open fun getAddLambdaLayerWorkflowStep(monitorConfigProvider: MonitorConfigProvider,
