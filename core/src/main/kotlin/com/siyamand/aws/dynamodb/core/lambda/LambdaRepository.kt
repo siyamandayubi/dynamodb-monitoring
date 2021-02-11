@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.core.lambda
 
 import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 
 interface LambdaRepository : AWSBaseRepository {
@@ -9,4 +10,5 @@ interface LambdaRepository : AWSBaseRepository {
     suspend fun add(request: CreateFunctionRequestEntity): ResourceEntity
     suspend fun add(request: CreateEventSourceRequestEntity): ResourceEntity
     suspend fun add(entity: CreateLayerEntity): FunctionLayerEntity
+    suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity>
 }

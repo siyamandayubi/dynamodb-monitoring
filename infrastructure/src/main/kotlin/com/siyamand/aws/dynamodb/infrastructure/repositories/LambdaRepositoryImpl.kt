@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.lambda.*
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import kotlinx.coroutines.reactive.awaitFirst
@@ -8,6 +9,7 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.FunctionMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.lambda.model.GetFunctionRequest
+import software.amazon.awssdk.services.lambda.model.ListLayerVersionsRequest
 import software.amazon.awssdk.services.lambda.model.PublishLayerVersionRequest
 
 
@@ -15,6 +17,15 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
     override suspend fun getList(): List<FunctionEntity> {
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
         val response = awsLambda.listFunctions().thenApply { it.functions().map(FunctionMapper::convert) }
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity> {
+        val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
+        val response = awsLambda
+                .listLayerVersions(ListLayerVersionsRequest.builder().layerName(name).build())
+                .thenApply { PageResultEntity(it.layerVersions().map(FunctionMapper::convert), it.nextMarker()) }
+
         return Mono.fromFuture(response).awaitFirst()
     }
 

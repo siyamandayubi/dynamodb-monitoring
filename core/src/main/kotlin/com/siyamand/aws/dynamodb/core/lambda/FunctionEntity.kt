@@ -54,7 +54,6 @@ class CreateFunctionRequestEntity(
         val codeSigningConfigArn: String? = null)
 
 class FunctionLayerEntity(
-        val layerEntity: ResourceEntity,
         val layerVersionEntity: ResourceEntity,
         val description: String,
         val createdDate: String,

@@ -7,11 +7,6 @@ import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.database.*
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
-import com.siyamand.aws.dynamodb.core.lambda.FunctionBuilder
-import com.siyamand.aws.dynamodb.core.lambda.FunctionBuilderImpl
-import com.siyamand.aws.dynamodb.core.lambda.LambdaRepository
-import com.siyamand.aws.dynamodb.core.lambda.FunctionService
-import com.siyamand.aws.dynamodb.core.lambda.FunctionServiceImpl
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.network.VpcService
 import com.siyamand.aws.dynamodb.core.network.VpcServiceImpl
@@ -28,6 +23,7 @@ import com.siyamand.aws.dynamodb.core.monitoring.*
 import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
 import com.siyamand.aws.dynamodb.core.dynamodb.TableService
+import com.siyamand.aws.dynamodb.core.lambda.*
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandlerImpl
 import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretManagerWorkflowStep
@@ -41,6 +37,14 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+
+    @Bean
+    open fun getAddLambdaLayerWorkflowStep(monitorConfigProvider: MonitorConfigProvider,
+                                           credentialProvider: CredentialProvider,
+                                           functionBuilder: FunctionBuilder,
+                                           lambdaRepository: LambdaRepository): AddLambdaLayerWorkflowStep {
+        return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitorConfigProvider)
+    }
 
     @Bean
     open fun getWorkflowJobHandler(monitorConfigProvider: MonitorConfigProvider,

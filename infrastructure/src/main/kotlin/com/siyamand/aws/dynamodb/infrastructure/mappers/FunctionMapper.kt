@@ -33,7 +33,17 @@ class FunctionMapper {
 
         fun convert(response: PublishLayerVersionResponse): FunctionLayerEntity {
             return FunctionLayerEntity(
-                    ResourceMapper.convert(response.layerArn()),
+                    ResourceMapper.convert(response.layerVersionArn()),
+                    response.description(),
+                    response.createdDate(),
+                    response.version(),
+                    response.compatibleRuntimesAsStrings(),
+                    response.licenseInfo()
+            )
+        }
+
+        fun convert(response: LayerVersionsListItem): FunctionLayerEntity {
+            return FunctionLayerEntity(
                     ResourceMapper.convert(response.layerVersionArn()),
                     response.description(),
                     response.createdDate(),
