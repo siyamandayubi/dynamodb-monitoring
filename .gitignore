@@ -46,3 +46,4 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/java,gradle
 /core/src/main/resources/lambda/layers/node_modules/
+/application.log*
