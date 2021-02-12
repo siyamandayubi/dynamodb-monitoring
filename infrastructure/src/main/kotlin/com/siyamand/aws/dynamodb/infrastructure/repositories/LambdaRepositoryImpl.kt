@@ -24,7 +24,7 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
         val response = awsLambda
                 .listLayerVersions(ListLayerVersionsRequest.builder().layerName(name).build())
-                .thenApply { PageResultEntity(it.layerVersions().map(FunctionMapper::convert), it.nextMarker()) }
+                .thenApply { PageResultEntity(it.layerVersions().map(FunctionMapper::convert), it.nextMarker() ?: "") }
 
         return Mono.fromFuture(response).awaitFirst()
     }

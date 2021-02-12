@@ -24,6 +24,10 @@ class WorkflowManagerImpl() : WorkflowManager {
 
             currentInstance = updateInstance(currentInstance, stepResult, currentStepInstance)
             workflowPersister?.save(currentInstance)
+
+            if (stepResult.resultType == WorkflowResultType.WAITING){
+                Thread.sleep(5000)
+            }
             lastResult = stepResult.resultType
         }
 

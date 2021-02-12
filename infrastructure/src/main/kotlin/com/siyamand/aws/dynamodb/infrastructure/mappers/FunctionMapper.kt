@@ -34,7 +34,7 @@ class FunctionMapper {
         fun convert(response: PublishLayerVersionResponse): FunctionLayerEntity {
             return FunctionLayerEntity(
                     ResourceMapper.convert(response.layerVersionArn()),
-                    response.description(),
+                    response.description() ?: "",
                     response.createdDate(),
                     response.version(),
                     response.compatibleRuntimesAsStrings(),
@@ -45,7 +45,7 @@ class FunctionMapper {
         fun convert(response: LayerVersionsListItem): FunctionLayerEntity {
             return FunctionLayerEntity(
                     ResourceMapper.convert(response.layerVersionArn()),
-                    response.description(),
+                    response.description() ?: "",
                     response.createdDate(),
                     response.version(),
                     response.compatibleRuntimesAsStrings(),
@@ -71,7 +71,7 @@ class FunctionMapper {
                     .layerName(entity.layerName)
                     .licenseInfo(entity.licenseInfo)
                     .description(entity.description)
-                    .compatibleRuntimes(Runtime.valueOf(entity.runTime))
+                    .compatibleRuntimes(Runtime.fromValue(entity.runTime))
                     .content(LayerVersionContentInput.builder().zipFile(SdkBytes.fromByteArray(entity.code)).build())
                     .build()
         }

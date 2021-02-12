@@ -15,7 +15,12 @@ class WorkflowBuilderImpl(private val templates: Iterable<WorkflowTemplate>) : W
 
                 template.steps.map {
                     it.initialize()
-                    WorkflowStepInstance(it.name,WorkflowStepStatus.INITIAL, mapOf()) },
+                    val params = mutableMapOf<String, String>()
+                    if (template.defaultParams.containsKey(it.name)){
+                        params.putAll(template.defaultParams[it.name] ?: mapOf())
+                    }
+                    WorkflowStepInstance(it.name, WorkflowStepStatus.INITIAL, params)
+                },
                 0,
                 null,
                 template
