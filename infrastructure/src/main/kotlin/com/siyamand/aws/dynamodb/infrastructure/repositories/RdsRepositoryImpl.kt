@@ -1,13 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.rds.RdsEntity
-import com.siyamand.aws.dynamodb.core.rds.RdsListEntity
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.rds.*
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.rds.CreateDbInstanceEntity
-import com.siyamand.aws.dynamodb.core.rds.CreateDbProxyTargetEntity
-import com.siyamand.aws.dynamodb.core.rds.CreateProxyEntity
-import com.siyamand.aws.dynamodb.core.rds.DbProxyTargetEntity
-import com.siyamand.aws.dynamodb.core.rds.RdsRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RdsMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
@@ -36,11 +31,22 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun createProxy(entity: CreateProxyEntity): ResourceEntity {
+    override suspend fun createProxy(entity: CreateProxyEntity): RdsProxyEntity {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = RdsMapper.convert(entity)
-        val response = client.createDBProxy(request).thenApply { ResourceMapper.convert(it.dbProxy().dbProxyArn()) }
+        val response = client.createDBProxy(request).thenApply { RdsMapper.convert(it.dbProxy()) }
         val x = DBProxyTarget.builder().build()
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun getProxies(name: String): PageResultEntity<RdsProxyEntity> {
+        val client = getClient(clientBuilder::buildAsyncRdsClient)
+        val response = client
+                .describeDBProxies(DescribeDbProxiesRequest.builder().dbProxyName(name).build())
+                .thenApply {
+                    PageResultEntity<RdsProxyEntity>(it.dbProxies().map(RdsMapper::convert), it.marker() ?: "")
+                }
+
         return Mono.fromFuture(response).awaitFirst()
     }
 
@@ -51,7 +57,7 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun createRds(entity: CreateDbInstanceEntity): RdsEntity  {
+    override suspend fun createRds(entity: CreateDbInstanceEntity): RdsEntity {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = RdsMapper.convert(entity)
 

@@ -9,7 +9,9 @@ import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.role.RoleEntity
 import com.siyamand.aws.dynamodb.core.role.RoleService
+import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import kotlinx.serialization.json.Json
 
@@ -76,16 +78,8 @@ class RdsServiceImpl(
         val rds = rdsList.first()
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
-        val request = CreateProxyEntity()
-        request.roleArn = role.resource.arn
-        request.engineFamily = "MYSQL"
-        request.dbProxyName = rdsIdentifier
-        request.vpcSubnetIds = subnets
-        request.vpcSecurityGroupIds = rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }
-        var auth = UserAuthConfigEntity()
-        auth.secretArn = existingSecret!!.resourceEntity.arn
-        request.auth.add(auth)
-        return rdsRepository.createProxy(request)
+        val request = rdsBuilder.createProxyEntity(role, rdsIdentifier, subnets, rds, existingSecret!!.resourceEntity.arn)
+        return rdsRepository.createProxy(request).dbProxyResource
     }
 
     private suspend fun initialize() {

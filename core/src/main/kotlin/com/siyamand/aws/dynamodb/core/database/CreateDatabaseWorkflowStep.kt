@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.core.database
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.rds.RdsRepository
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
@@ -31,6 +32,8 @@ class CreateDatabaseWorkflowStep(
         if (!context.sharedData.containsKey(Keys.DATABASE_NAME)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "The '${Keys.DATABASE_NAME}' field is mandatory")
         }
+
+        credentialProvider.initializeRepositories(resourceRepository, rdsRepository, secretManagerRepository)
 
         val rdsResource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
         val rdsList = rdsRepository.getRds(rdsResource.service)

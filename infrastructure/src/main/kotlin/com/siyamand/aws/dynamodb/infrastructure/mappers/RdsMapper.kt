@@ -19,6 +19,35 @@ class RdsMapper {
             return builder.build()
         }
 
+        fun convert(proxy: DBProxy): RdsProxyEntity {
+            val entity = RdsProxyEntity(
+                    proxy.dbProxyName() ?: "",
+                    ResourceMapper.convert(proxy.dbProxyArn()),
+                    proxy.statusAsString() ?: "",
+                    proxy.engineFamily() ?: "",
+                    proxy.roleArn() ?: "",
+                    proxy.endpoint() ?: "",
+                    proxy.requireTLS(),
+                    proxy.idleClientTimeout(),
+                    proxy.createdDate(),
+                    proxy.updatedDate()
+            )
+
+            entity.auth.addAll(proxy.auth().map {
+                val auth = UserAuthConfigEntity()
+                auth.description = it.description() ?: ""
+                auth.authScheme = it.authSchemeAsString() ?: ""
+                auth.secretArn = it.secretArn() ?: ""
+                auth.iamAuth = it.iamAuthAsString() ?: ""
+                auth
+            })
+
+            entity.vpcSecurityGroupIds.addAll(proxy.vpcSecurityGroupIds())
+            entity.vpcSubnetIds.addAll(proxy.vpcSubnetIds())
+
+            return entity
+        }
+
         fun convert(entity: CreateDbProxyTargetEntity): RegisterDbProxyTargetsRequest {
             return RegisterDbProxyTargetsRequest
                     .builder()
@@ -77,7 +106,7 @@ class RdsMapper {
                     .allocatedStorage(entity.allocatedStorage)
                     .tags(entity.tags.map { Tag.builder().key(it.name).value(it.value).build() })
 
-            if (entity.vpcSecurityGroupIds.any()){
+            if (entity.vpcSecurityGroupIds.any()) {
                 builder.vpcSecurityGroupIds(entity.vpcSecurityGroupIds)
             }
 
