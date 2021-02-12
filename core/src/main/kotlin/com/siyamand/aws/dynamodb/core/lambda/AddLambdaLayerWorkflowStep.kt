@@ -30,8 +30,9 @@ class AddLambdaLayerWorkflowStep(
             return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.LAMBDA_LAYER_ARN_KEY to layer.layerVersionEntity.arn), "")
         }
 
-        val description = if (params.containsKey("description")) params["description"]!! else ""
-        var layer = lambdaRepository.add(functionBuilder.buildLayer(params[Keys.LAMBDA_LAYER_NAME]!!, description, params[Keys.LAMBDA_LAYER_PATH]!!))
+        val description = if (params.containsKey("description")) params["description"] else ""
+        var layer = lambdaRepository.add(functionBuilder.buildLayer(params[Keys.LAMBDA_LAYER_NAME] ?: "", description
+                ?: "", params[Keys.LAMBDA_LAYER_PATH] ?: ""))
         context.sharedData[Keys.LAMBDA_LAYER_ARN_KEY] = layer.layerVersionEntity.arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.LAMBDA_LAYER_ARN_KEY to layer.layerVersionEntity.arn), "")
     }
