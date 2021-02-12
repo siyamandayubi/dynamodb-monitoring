@@ -66,8 +66,10 @@ open class CoreConfiguration {
     @Bean
     open fun getCreateDatabaseWorkflowStep(credentialProvider: CredentialProvider,
                                            databaseRepository: DatabaseRepository,
+                                           resourceRepository: ResourceRepository,
+                                           rdsRepository: RdsRepository,
                                            secretManagerRepository: SecretManagerRepository): WorkflowStep {
-        return CreateDatabaseWorkflowStep(credentialProvider, databaseRepository, secretManagerRepository)
+        return CreateDatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository)
     }
 
     @Bean

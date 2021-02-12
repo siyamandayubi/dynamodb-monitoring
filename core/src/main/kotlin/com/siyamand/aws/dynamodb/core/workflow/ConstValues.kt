@@ -7,4 +7,5 @@ object Keys {
     const val LAMBDA_LAYER_PATH = "lambda-layer-path"
     const val LAMBDA_LAYER_NAME = "lambda-layer-name"
     const val FORCE_CREATE = "force-create"
+    const val DATABASE_NAME = "database-name"
 }
