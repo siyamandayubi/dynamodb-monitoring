@@ -46,6 +46,23 @@ open class CoreConfiguration {
     }
 
     @Bean
+    open fun getCreateRdsProxyTargetGroupWorkflowStep(credentialProvider: CredentialProvider,
+                                                      rdsRepository: RdsRepository,
+                                                      resourceRepository: ResourceRepository): CreateRdsProxyTargetGroupWorkflowStep {
+        return CreateRdsProxyTargetGroupWorkflowStep(credentialProvider, rdsRepository, resourceRepository)
+    }
+
+    @Bean
+    open fun getCreateRdsProxyWorkflowStep(roleService: RoleService,
+                                           credentialProvider: CredentialProvider,
+                                           rdsRepository: RdsRepository,
+                                           vpcRepository: VpcRepository,
+                                           rdsBuilder: RdsBuilder,
+                                           resourceRepository: ResourceRepository): CreateRdsProxyWorkflowStep {
+        return CreateRdsProxyWorkflowStep(roleService, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
+    }
+
+    @Bean
     open fun getAddLambdaLayerWorkflowStep(monitorConfigProvider: MonitorConfigProvider,
                                            credentialProvider: CredentialProvider,
                                            functionBuilder: FunctionBuilder,

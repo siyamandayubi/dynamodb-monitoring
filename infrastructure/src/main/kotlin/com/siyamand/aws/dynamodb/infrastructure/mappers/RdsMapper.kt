@@ -59,7 +59,7 @@ class RdsMapper {
 
         fun convert(target: DBProxyTarget): DbProxyTargetEntity {
             return DbProxyTargetEntity(
-                    target.targetArn(),
+                    ResourceMapper.convert(target.targetArn()),
                     target.endpoint(),
                     target.trackedClusterId(),
                     target.rdsResourceId(),

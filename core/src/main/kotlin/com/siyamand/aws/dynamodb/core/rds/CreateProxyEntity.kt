@@ -67,7 +67,7 @@ class CreateDbProxyTargetEntity(
 )
 
 class DbProxyTargetEntity(
-        val targetArn: String,
+        val targetResource: ResourceEntity,
         val endpoint: String,
         val trackedClusterId: String,
         val rdsResourceId: String,

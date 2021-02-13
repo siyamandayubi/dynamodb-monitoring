@@ -45,7 +45,6 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, rdsResource.service, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!)
         val proxy = rdsRepository.createProxy(request)
-
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
         if (proxy.status == "creating") {
             return WorkflowResult(WorkflowResultType.WAITING, mapOf(Keys.PROXY_ARN_KEY to proxy.dbProxyResource.arn), "")
