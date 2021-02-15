@@ -7,20 +7,18 @@ class WorkflowBuilderImpl(private val templates: Iterable<WorkflowTemplate>) : W
         val template = templates.firstOrNull { it.name == type }
                 ?: throw  Exception("No templates has been found '${type}'")
 
+        val requiredParameters = template.getRequiredParameters()
+        val notProvidedParams =requiredParameters.filter { !initialParams.containsKey(it.name) }
+        if(notProvidedParams.any()){
+            throw Exception("The following parameters are not provided. ${notProvidedParams.joinToString()}")
+        }
+
         val context = WorkflowContext(initialParams.toMutableMap())
 
         return WorkflowInstance(
                 UUID.randomUUID().toString(),
                 context,
-
-                template.steps.map {
-                    it.initialize()
-                    val params = mutableMapOf<String, String>()
-                    if (template.defaultParams.containsKey(it.name)){
-                        params.putAll(template.defaultParams[it.name] ?: mapOf())
-                    }
-                    WorkflowStepInstance(it.name, WorkflowStepStatus.INITIAL, params)
-                },
+                template.getSteps(),
                 0,
                 null,
                 template

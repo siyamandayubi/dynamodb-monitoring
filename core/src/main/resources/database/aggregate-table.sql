@@ -1,0 +1,10 @@
+CREATE TABLE `${tableName}` (
+  `FieldName` NVARCHAR(100) NOT NULL,
+  `FieldValue` NVARCHAR(100) NULL,
+  `StartDate` DATETIME NULL,
+  `EndDate` DATETIME NULL,
+  `Count` INT NULL,
+  `Max` NVARCHAR(100) NULL,
+  `MIN` NVARCHAR(100) NULL,
+  `Hash` VARCHAR(64) NOT NULL,
+  PRIMARY KEY (`Hash`));

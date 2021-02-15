@@ -48,7 +48,7 @@ open class CoreConfiguration {
     @Bean
     open fun getCreateRdsProxyTargetGroupWorkflowStep(credentialProvider: CredentialProvider,
                                                       rdsRepository: RdsRepository,
-                                                      resourceRepository: ResourceRepository): CreateRdsProxyTargetGroupWorkflowStep {
+                                                      resourceRepository: ResourceRepository): WorkflowStep {
         return CreateRdsProxyTargetGroupWorkflowStep(credentialProvider, rdsRepository, resourceRepository)
     }
 
@@ -58,7 +58,7 @@ open class CoreConfiguration {
                                            rdsRepository: RdsRepository,
                                            vpcRepository: VpcRepository,
                                            rdsBuilder: RdsBuilder,
-                                           resourceRepository: ResourceRepository): CreateRdsProxyWorkflowStep {
+                                           resourceRepository: ResourceRepository): WorkflowStep {
         return CreateRdsProxyWorkflowStep(roleService, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
     }
 
@@ -66,7 +66,7 @@ open class CoreConfiguration {
     open fun getAddLambdaLayerWorkflowStep(monitorConfigProvider: MonitorConfigProvider,
                                            credentialProvider: CredentialProvider,
                                            functionBuilder: FunctionBuilder,
-                                           lambdaRepository: LambdaRepository): AddLambdaLayerWorkflowStep {
+                                           lambdaRepository: LambdaRepository): WorkflowStep {
         return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitorConfigProvider)
     }
 
@@ -87,6 +87,25 @@ open class CoreConfiguration {
                                            rdsRepository: RdsRepository,
                                            secretManagerRepository: SecretManagerRepository): WorkflowStep {
         return CreateDatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository)
+    }
+
+    @Bean
+    open fun getExecuteStatementDatabaseWorkflowStep(credentialProvider: CredentialProvider,
+                                                     databaseRepository: DatabaseRepository,
+                                                     resourceRepository: ResourceRepository,
+                                                     rdsRepository: RdsRepository,
+                                                     secretManagerRepository: SecretManagerRepository): WorkflowStep {
+        return ExecuteStatementDatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository)
+    }
+
+    @Bean
+    open fun getCreateDatabaseTableWorkflowStep(credentialProvider: CredentialProvider,
+                                                databaseRepository: DatabaseRepository,
+                                                resourceRepository: ResourceRepository,
+                                                rdsRepository: RdsRepository,
+                                                secretManagerRepository: SecretManagerRepository,
+                                                templateEngine: TemplateEngine): WorkflowStep {
+        return CreateDatabaseTableWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository, templateEngine)
     }
 
     @Bean

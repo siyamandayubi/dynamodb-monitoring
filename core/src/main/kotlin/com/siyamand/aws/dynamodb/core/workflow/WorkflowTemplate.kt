@@ -3,16 +3,26 @@ package com.siyamand.aws.dynamodb.core.workflow
 interface WorkflowTemplate {
     val name: String
     val version: Int
-    val steps: List<WorkflowStep>
+    suspend fun getSteps(): List<WorkflowStepInstance>
+    fun getRequiredParameters(): List<RequiredWorkflowParameter>
+}
 
-    // Default params per step name
-    val defaultParams: Map<String, Map<String, String>>
+data class RequiredWorkflowParameter(val name: String, val type: WorkflowParameterType)
+
+enum class WorkflowParameterType {
+    STRING,
+    JSON,
+    INT
 }
 
 class EmptyWorkflow : WorkflowTemplate {
     override val name: String = "Empty"
     override val version: Int = 1
-    override val steps: List<WorkflowStep> = listOf()
-    override val defaultParams: Map<String, Map<String, String>> = mapOf()
+    override suspend fun getSteps(): List<WorkflowStepInstance> {
+        return listOf()
+    }
 
+    override fun getRequiredParameters(): List<RequiredWorkflowParameter> {
+        return listOf()
+    }
 }
