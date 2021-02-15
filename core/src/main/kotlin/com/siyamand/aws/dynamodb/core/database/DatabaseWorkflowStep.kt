@@ -35,10 +35,10 @@ abstract class DatabaseWorkflowStep(protected var credentialProvider: Credential
 
         credentialProvider.initializeRepositories(resourceRepository, rdsRepository, secretManagerRepository)
 
-        val rdsResource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
-        val rdsList = rdsRepository.getRds(rdsResource.service)
+        val arn = context.sharedData[Keys.RDS_ARN_KEY]!!
+        val rdsList = rdsRepository.getRds(arn)
         if (!rdsList.any()) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${rdsResource.service}'")
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${arn}'")
         }
         val rds = rdsList.first()
 

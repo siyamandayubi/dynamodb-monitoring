@@ -52,7 +52,10 @@ class MetadataServiceImpl(
     override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
         val table = getOrCreateMonitoringTable()
-        var workflowInstance = workflowBuilder.create(workflowName, mapOf())
+        var workflowInstance = workflowBuilder.create(workflowName, mapOf(
+                Keys.DATABASE_NAME to entity.databaseName,
+                "tableName" to (entity.fields.firstOrNull()?.tableName ?: "")))
+
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(
                 workflowInstance.id,
                 sourceTableName,

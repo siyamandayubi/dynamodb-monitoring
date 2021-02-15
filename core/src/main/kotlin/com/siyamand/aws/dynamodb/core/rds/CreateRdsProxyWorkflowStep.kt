@@ -33,17 +33,17 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
 
         credentialProvider.initializeRepositories(resourceRepository, rdsRepository, vpcRepository)
 
-        val rdsResource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
-        val rdsList = rdsRepository.getRds(rdsResource.service)
+        val arn = context.sharedData[Keys.RDS_ARN_KEY]!!
+        val rdsList = rdsRepository.getRds(arn)
         if (!rdsList.any()) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${rdsResource.service}'")
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${arn}'")
         }
         val rds = rdsList.first()
         val role = roleService.getOrCreateLambdaRole()
 
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
-        val request = rdsBuilder.createProxyEntity(role, rdsResource.service, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!)
+        val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!)
         val proxy = rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
         if (proxy.status == "creating") {

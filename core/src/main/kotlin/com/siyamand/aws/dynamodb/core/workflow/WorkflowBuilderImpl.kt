@@ -18,7 +18,7 @@ class WorkflowBuilderImpl(private val templates: Iterable<WorkflowTemplate>) : W
         return WorkflowInstance(
                 UUID.randomUUID().toString(),
                 context,
-                template.getSteps(),
+                template.getSteps(context),
                 0,
                 null,
                 template

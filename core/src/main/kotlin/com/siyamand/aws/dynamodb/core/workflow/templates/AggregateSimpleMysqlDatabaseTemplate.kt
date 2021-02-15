@@ -4,7 +4,7 @@ import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<WorkflowStep>) : WorkflowTemplate {
     override val version: Int = 1
-    override suspend fun getSteps(): List<WorkflowStepInstance> {
+    override suspend fun getSteps(workflowContext: WorkflowContext): List<WorkflowStepInstance> {
         val steps = listOf(
                 WorkflowStepInstance(
                         "AddLambdaLayer", allSteps.first { it.name == "AddLambdaLayer" }, WorkflowStepStatus.INITIAL,
@@ -26,7 +26,7 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                 WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateDatabaseTable", allSteps.first { it.name == "CreateDatabaseTable" }, WorkflowStepStatus.INITIAL, mapOf(
-                        "tableName" to "AggregateTable",
+                        "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
                         "sql_file" to "database/aggregate-table.sql"
                 ))
         )
@@ -39,7 +39,8 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
     }
 
     override fun getRequiredParameters(): List<RequiredWorkflowParameter> {
-        return listOf(RequiredWorkflowParameter(Keys.DATABASE_NAME, WorkflowParameterType.STRING))
+        return listOf(RequiredWorkflowParameter(Keys.DATABASE_NAME, WorkflowParameterType.STRING),
+                RequiredWorkflowParameter("tableName", WorkflowParameterType.STRING))
     }
 
 

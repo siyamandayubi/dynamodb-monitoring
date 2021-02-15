@@ -2,18 +2,19 @@ package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.rds.*
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RdsMapper
-import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepository, AwsBaseRepositoryImpl() {
-    override suspend fun getRds(name: String): List<RdsEntity> {
+    override suspend fun getRds(arn: String): List<RdsEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
-        val response = client.describeDBInstances(DescribeDbInstancesRequest.builder().dbInstanceIdentifier(name).build())
+        val response = client.describeDBInstances(DescribeDbInstancesRequest
+                .builder()
+                .filters(Filter.builder().name("db-instance-id").values(arn).build())
+                .build())
                 .thenApply { it.dbInstances().map(RdsMapper::convert) }
 
         return Mono.fromFuture(response).awaitFirst()

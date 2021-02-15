@@ -40,8 +40,8 @@ class CreateRdsInstanceWorkflowStep(
 
         credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
 
-        val resource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
-        val rdsEntities = rdsRepository.getRds(resource.service)
+        val arn = context.sharedData[Keys.RDS_ARN_KEY]!!
+        val rdsEntities = rdsRepository.getRds(arn)
         if (!rdsEntities?.any()) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS ${Keys.RDS_ARN_KEY} found")
         }

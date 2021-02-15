@@ -21,10 +21,9 @@ class SecretManagerRepositoryImpl(private val clientBuilder: ClientBuilder) : Se
     }
 
     override fun getSecretByArn(arn: String): SecretEntity? {
-        val resource = ResourceMapper.convert(arn)
         val client = getClient(clientBuilder::buildAsyncSecretsManagerClient)
         try {
-            val response = client.getSecretValue(GetSecretValueRequest.builder().secretId(resource.service).build())
+            val response = client.getSecretValue(GetSecretValueRequest.builder().secretId(arn).build())
             return SecretManagerMapper.convert(response)
         } catch (ex: ResourceNotFoundException) {
             return null

@@ -7,5 +7,5 @@ import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 
 interface RdsBuilder {
     fun build(name: String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity): CreateDbInstanceEntity
-    fun createProxyEntity(role: RoleEntity, rdsIdentifier: String, subnets: List<String>, rds: RdsEntity, secretArn: String): CreateProxyEntity
+    fun createProxyEntity(role: RoleEntity, subnets: List<String>, rds: RdsEntity, secretArn: String): CreateProxyEntity
 }

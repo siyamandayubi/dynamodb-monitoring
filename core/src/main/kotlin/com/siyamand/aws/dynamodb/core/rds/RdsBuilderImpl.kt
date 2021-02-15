@@ -33,11 +33,11 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
                         TagEntity(monitorConfigProvider.getMonitoringGeneralTagName(), ResourceType.RDS.value),
                         TagEntity(monitorConfigProvider.getAccessTagName(), credentialResourceEntity.arn)))
     }
-    override fun createProxyEntity(role: RoleEntity, rdsIdentifier: String, subnets: List<String>, rds: RdsEntity, secretArn: String): CreateProxyEntity {
+    override fun createProxyEntity(role: RoleEntity, subnets: List<String>, rds: RdsEntity, secretArn: String): CreateProxyEntity {
         val request = CreateProxyEntity()
         request.roleArn = role.resource.arn
         request.engineFamily = "MYSQL"
-        request.dbProxyName = rdsIdentifier
+        request.dbProxyName = rds.instanceName
         request.vpcSubnetIds = subnets
         request.vpcSecurityGroupIds = rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }
         var auth = UserAuthConfigEntity()

@@ -78,7 +78,7 @@ class RdsServiceImpl(
         val rds = rdsList.first()
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
-        val request = rdsBuilder.createProxyEntity(role, rdsIdentifier, subnets, rds, existingSecret!!.resourceEntity.arn)
+        val request = rdsBuilder.createProxyEntity(role, subnets, rds, existingSecret!!.resourceEntity.arn)
         return rdsRepository.createProxy(request).dbProxyResource
     }
 
