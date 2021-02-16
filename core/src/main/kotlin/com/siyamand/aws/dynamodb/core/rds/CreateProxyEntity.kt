@@ -74,3 +74,9 @@ class DbProxyTargetEntity(
         val port: Int,
         val type: String?
 )
+
+class DbProxyTargetGroupEntity(
+        val groupName: String,
+        val isDefault: Boolean,
+        val resource: ResourceEntity
+)

@@ -2,6 +2,7 @@ package com.siyamand.aws.dynamodb.core.workflow
 
 object Keys {
     const val PROXY_ARN_KEY = "rds-proxy"
+    const val PROXY_NAME = "rds-proxy-name"
     const val SECRET_ARN_KEY = "secret-arn"
     const val RDS_ARN_KEY = "rds-arn"
     const val LAMBDA_LAYER_ARN_KEY = "lambda-layer-arn"

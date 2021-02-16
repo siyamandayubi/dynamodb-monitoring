@@ -49,11 +49,13 @@ class MetadataServiceImpl(
     }
 
     override suspend fun resumeWorkflow(id: String) {
+        credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
+
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
         if (tableName.isNullOrEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
-        var workflow: TableItemEntity? = tableItemRepository.getList(tableName, mapOf("id" to AttributeValueEntity(id))).items.firstOrNull()
+        var workflow: TableItemEntity? = tableItemRepository.getItem(tableName, mapOf("id" to AttributeValueEntity(id))).firstOrNull()
                 ?: throw Exception("No workflow has been found. id= $id")
 
         var monitoringItem = monitoringItemConverter.convertToAggregateEntity(workflow!!)

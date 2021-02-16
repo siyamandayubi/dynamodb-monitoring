@@ -11,4 +11,5 @@ interface RdsRepository : AWSBaseRepository {
     suspend fun registerDbProxyTarget(entity: CreateDbProxyTargetEntity): List<DbProxyTargetEntity>
     suspend fun list(marker: String): RdsListEntity
     suspend fun getProxies(name: String): PageResultEntity<RdsProxyEntity>
+    suspend fun getDbProxyTargetGroups(dbProxyName: String): PageResultEntity<DbProxyTargetGroupEntity>
 }

@@ -53,13 +53,14 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getCreateRdsProxyWorkflowStep(roleService: RoleService,
+    open fun getCreateRdsProxyWorkflowStep(roleRepository: RoleRepository,
+                                           roleBuilder: RoleBuilder,
                                            credentialProvider: CredentialProvider,
                                            rdsRepository: RdsRepository,
                                            vpcRepository: VpcRepository,
                                            rdsBuilder: RdsBuilder,
                                            resourceRepository: ResourceRepository): WorkflowStep {
-        return CreateRdsProxyWorkflowStep(roleService, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
+        return CreateRdsProxyWorkflowStep(roleRepository, roleBuilder, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
     }
 
     @Bean

@@ -26,7 +26,9 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                 )),
                 WorkflowStepInstance("CreateDatabase", allSteps.first { it.name == "CreateDatabase" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
-                WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf()),
+                WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf(
+                        Keys.PROXY_TARGET_GROUP_NAME to (workflowContext.sharedData["dbInstanceName"]?:"")
+                )),
                 WorkflowStepInstance("CreateDatabaseTable", allSteps.first { it.name == "CreateDatabaseTable" }, WorkflowStepStatus.INITIAL, mapOf(
                         "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
                         "sql_file" to "database/aggregate-table.sql"

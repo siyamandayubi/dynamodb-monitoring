@@ -14,8 +14,8 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
         get() = "CreateRdsProxyTargetGroup"
 
     override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        if (!context.sharedData.containsKey(Keys.PROXY_ARN_KEY)) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy key ${Keys.PROXY_ARN_KEY} found")
+        if (!context.sharedData.containsKey(Keys.PROXY_NAME)) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy key ${Keys.PROXY_NAME} found")
         }
 
         if (!context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
@@ -29,10 +29,22 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
 
         credentialProvider.initializeRepositories(resourceRepository, rdsRepository)
 
-        val proxyResource = resourceRepository.convert(context.sharedData[Keys.PROXY_ARN_KEY]!!)
-        val rdsResource = resourceRepository.convert(context.sharedData[Keys.RDS_ARN_KEY]!!)
-        val result = rdsRepository.registerDbProxyTarget(CreateDbProxyTargetEntity(proxyResource.service, params[Keys.PROXY_TARGET_GROUP_NAME]
-                ?: "", listOf(rdsResource.service))).first()
+        val proxyName = context.sharedData[Keys.PROXY_NAME]!!
+        val rdsArn = context.sharedData[Keys.RDS_ARN_KEY]!!
+
+        val rdsList = rdsRepository.getRds(rdsArn)
+        if (!rdsList.any()) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${rdsArn}'")
+        }
+        val rds = rdsList.first()
+
+        val targetGroup = rdsRepository.getDbProxyTargetGroups(proxyName).items.first { it.isDefault }
+        val result = rdsRepository.registerDbProxyTarget(
+                CreateDbProxyTargetEntity(
+                        proxyName,
+                        targetGroup.groupName ?: "",
+                        listOf(rds.instanceName))).first()
+
         context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = result.targetResource.arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to result.targetResource.arn), "")
     }

@@ -5,6 +5,13 @@ import software.amazon.awssdk.services.rds.model.*
 
 class RdsMapper {
     companion object {
+        fun convert(dbProxyTargetGroup: DBProxyTargetGroup): DbProxyTargetGroupEntity {
+            return DbProxyTargetGroupEntity(
+                    dbProxyTargetGroup.targetGroupName(),
+                    dbProxyTargetGroup.isDefault ?: true,
+                    ResourceMapper.convert(dbProxyTargetGroup.targetGroupArn()))
+        }
+
         fun convert(entity: CreateProxyEntity): CreateDbProxyRequest {
             val builder = CreateDbProxyRequest
                     .builder()

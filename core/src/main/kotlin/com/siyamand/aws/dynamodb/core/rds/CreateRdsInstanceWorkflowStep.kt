@@ -29,17 +29,17 @@ class CreateRdsInstanceWorkflowStep(
 
         val instanceName = params["dbInstanceName"] ?: ""
 
+        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
+
         // check existing of the instance
         val rdsEntities = rdsRepository.getRds(instanceName)
-        if(rdsEntities.any()){
+        if (rdsEntities.any()) {
             val rdsEntity = rdsEntities.first()
             context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
 
             val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
             return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
         }
-
-        credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
 
         if (context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
             return isWaiting(workflowInstance, context, params)

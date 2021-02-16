@@ -17,7 +17,9 @@ class WorkflowManagerImpl() : WorkflowManager {
 
         var lastResult = WorkflowResultType.SUCCESS
         var currentInstance = input
-        while (currentInstance.currentStep < currentInstance.steps.size && lastResult == WorkflowResultType.SUCCESS) {
+        while (currentInstance.currentStep < currentInstance.steps.size && (
+                        lastResult == WorkflowResultType.SUCCESS || lastResult == WorkflowResultType.WAITING)
+        ){
             val pair = executeStep(currentInstance, workflowPersister)
             val currentStepInstance = pair.first
             var stepResult = pair.second
