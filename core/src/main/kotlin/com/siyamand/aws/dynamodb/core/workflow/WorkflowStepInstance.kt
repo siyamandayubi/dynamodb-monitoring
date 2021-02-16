@@ -15,11 +15,11 @@ class WorkflowStepInstance(
     private class EmptyWorkflowStep : WorkflowStep() {
         override val name: String = "Empty"
 
-        override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+        override suspend fun execute(workflowInstance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
             return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
         }
 
-        override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+        override suspend fun isWaiting(workflowInstance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
             return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
         }
 

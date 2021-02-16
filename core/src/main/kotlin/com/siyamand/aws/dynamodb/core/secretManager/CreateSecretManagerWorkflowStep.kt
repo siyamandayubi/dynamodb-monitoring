@@ -11,10 +11,10 @@ class CreateSecretManagerWorkflowStep(
         private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
     override val name: String = "CreateSecret"
 
-    override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         initialize()
         val databaseCredential = databaseCredentialBuilder.build()
-        val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential)
+        val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential, instance.id)
 
         var existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
 
@@ -30,7 +30,7 @@ class CreateSecretManagerWorkflowStep(
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.SECRET_ARN_KEY to credentialResource.arn), "")
     }
 
-    override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         return WorkflowResult(WorkflowResultType.SUCCESS, params, "")
     }
 

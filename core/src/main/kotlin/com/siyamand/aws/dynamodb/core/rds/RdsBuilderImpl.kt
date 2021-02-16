@@ -6,7 +6,6 @@ import com.siyamand.aws.dynamodb.core.resource.ResourceType
 import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.role.RoleEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 
 
 class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) : RdsBuilder {
@@ -17,7 +16,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         const val INSTANCE_CLASS = "db.t2.micro"
     }
 
-    override fun build(name: String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity): CreateDbInstanceEntity {
+    override fun build(name: String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity, metadataId: String): CreateDbInstanceEntity {
         return CreateDbInstanceEntityImpl(
                 name,
                 name,
@@ -30,10 +29,11 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
                 true,
                 20,
                 mutableListOf(
-                        TagEntity(monitorConfigProvider.getMonitoringGeneralTagName(), ResourceType.RDS.value),
+                        TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), metadataId),
                         TagEntity(monitorConfigProvider.getAccessTagName(), credentialResourceEntity.arn)))
     }
-    override fun createProxyEntity(role: RoleEntity, subnets: List<String>, rds: RdsEntity, secretArn: String): CreateProxyEntity {
+
+    override fun createProxyEntity(role: RoleEntity, subnets: List<String>, rds: RdsEntity, secretArn: String, metadataId: String): CreateProxyEntity {
         val request = CreateProxyEntity()
         request.roleArn = role.resource.arn
         request.engineFamily = "MYSQL"
@@ -43,6 +43,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         var auth = UserAuthConfigEntity()
         auth.secretArn = secretArn
         request.auth.add(auth)
+        request.tags.add(TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), metadataId))
         return request
     }
 

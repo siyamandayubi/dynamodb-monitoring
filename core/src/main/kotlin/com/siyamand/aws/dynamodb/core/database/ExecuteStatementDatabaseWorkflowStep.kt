@@ -16,7 +16,7 @@ open class ExecuteStatementDatabaseWorkflowStep(
         secretManagerRepository: SecretManagerRepository) : DatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository) {
     override val name: String = "ExecuteStatementDatabase"
 
-    override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
 
         // check sql template Address
         if (!params.containsKey("sql_file")) {
@@ -38,8 +38,8 @@ open class ExecuteStatementDatabaseWorkflowStep(
         return sql
     }
 
-    override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+        return execute(instance, context, params)
     }
 
     override suspend fun initialize() {

@@ -14,6 +14,7 @@ import com.siyamand.aws.dynamodb.core.role.RoleService
 import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import kotlinx.serialization.json.Json
+import java.util.*
 
 class RdsServiceImpl(
         private val roleService: RoleService,
@@ -30,8 +31,9 @@ class RdsServiceImpl(
     override suspend fun createDbInstance(name: String): ResourceEntity {
         initialize()
 
+        val metadataId = UUID.randomUUID().toString()
         val databaseCredential = databaseCredentialBuilder.build()
-        val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential)
+        val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential, metadataId)
 
         var existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
 
@@ -43,7 +45,7 @@ class RdsServiceImpl(
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
-        val createRequest = rdsBuilder.build(name, databaseCredential, credentialResource)
+        val createRequest = rdsBuilder.build(name, databaseCredential, credentialResource, metadataId)
 
         return rdsRepository.createRds(createRequest).resource
     }
@@ -62,7 +64,6 @@ class RdsServiceImpl(
             throw Exception("No Rds has been found")
         }
         val rds = rdsList.first()
-
         val databaseConnectionEntity = DatabaseConnectionEntity(credential,rds.endPoint, "test", rds.port)
         databaseRepository.createDatabase(databaseConnectionEntity)
     }
@@ -78,7 +79,7 @@ class RdsServiceImpl(
         val rds = rdsList.first()
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
-        val request = rdsBuilder.createProxyEntity(role, subnets, rds, existingSecret!!.resourceEntity.arn)
+        val request = rdsBuilder.createProxyEntity(role, subnets, rds, existingSecret!!.resourceEntity.arn, UUID.randomUUID().toString())
         return rdsRepository.createProxy(request).dbProxyResource
     }
 

@@ -5,5 +5,6 @@ enum class MonitorStatus(val value: Int) {
     PENDING(1),
     SUSPEND(2),
     ACTIVE(3),
-    DISABLED(4)
+    DISABLED(4),
+    ERROR(5)
 }

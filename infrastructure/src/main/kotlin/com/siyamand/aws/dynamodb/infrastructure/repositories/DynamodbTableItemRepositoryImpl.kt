@@ -5,15 +5,12 @@ import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
-import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableItemtMapper
-import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono.fromFuture
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest
-import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest
+import software.amazon.awssdk.services.dynamodb.model.ScanRequest
 
 class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) : TableItemRepository, AwsBaseRepositoryImpl() {
     override suspend fun add(tableItem: TableItemEntity): TableItemEntity {
@@ -26,16 +23,12 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
 
     override suspend fun getList(tableName: String, startKey: Map<String, AttributeValueEntity>?): PageResultEntityBase<TableItemEntity, Map<String, AttributeValueEntity>> {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
-        val requestBuilder1 = QueryRequest.builder().tableName(tableName)
-        if (startKey != null) {
-            requestBuilder1.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
-        }
 
-        val requestBuilder = QueryRequest.builder()
-        if (startKey != null && startKey.any()) {
+        val requestBuilder = ScanRequest.builder().tableName(tableName)
+        if (startKey != null) {
             requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
         }
-        val response = db.query(QueryRequest.builder().build()).thenApply { res ->
+        val response = db.scan(requestBuilder.build()).thenApply { res ->
             val items = res.items().map {
                 val tableItemEntity = TableItemEntity(tableName)
                 tableItemEntity.attributes.putAll(it.mapValues { entry -> TableItemtMapper.convertToAttributeValueEntity(entry.value) })

@@ -12,7 +12,7 @@ class AddLambdaLayerWorkflowStep(
         private val monitorConfigProvider: MonitorConfigProvider) : WorkflowStep() {
     override val name: String = "AddLambdaLayer"
 
-    override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
 
         if (!params.containsKey(Keys.LAMBDA_LAYER_PATH) ||
                 !params.containsKey(Keys.LAMBDA_LAYER_NAME)) {
@@ -37,8 +37,8 @@ class AddLambdaLayerWorkflowStep(
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.LAMBDA_LAYER_ARN_KEY to layer.layerVersionEntity.arn), "")
     }
 
-    override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+        return execute(instance, context, params)
     }
 
     override suspend fun initialize() {

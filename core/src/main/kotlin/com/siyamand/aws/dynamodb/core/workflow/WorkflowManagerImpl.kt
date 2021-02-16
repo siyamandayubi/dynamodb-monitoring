@@ -45,10 +45,10 @@ class WorkflowManagerImpl() : WorkflowManager {
                 WorkflowStepStatus.INITIAL, WorkflowStepStatus.STARTING -> {
                     currentStepInstance.status = WorkflowStepStatus.STARTING
                     workflowPersister?.save(currentInstance)
-                    currentStep.step.execute(currentInstance.context, params)
+                    currentStep.step.execute(currentInstance, currentInstance.context, params)
                 }
                 WorkflowStepStatus.WAITING -> {
-                    currentStep.step.isWaiting(currentInstance.context, params)
+                    currentStep.step.isWaiting(currentInstance, currentInstance.context, params)
                 }
 
                 WorkflowStepStatus.FINISHED -> {

@@ -16,7 +16,7 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
     override val name: String
         get() = "CreateRdsProxy"
 
-    override suspend fun execute(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Secret key ${Keys.SECRET_ARN_KEY} found")
         }
@@ -43,7 +43,7 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
 
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
-        val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!)
+        val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!, instance.id)
         val proxy = rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
         if (proxy.status == "creating") {
@@ -53,7 +53,7 @@ class CreateRdsProxyWorkflowStep(private val roleService: RoleService,
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_ARN_KEY to proxy.dbProxyResource.arn), "")
     }
 
-    override suspend fun isWaiting(context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
         if (!context.sharedData.containsKey(Keys.PROXY_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy ARN ${Keys.PROXY_ARN_KEY} found")
         }

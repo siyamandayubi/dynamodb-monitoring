@@ -171,6 +171,7 @@ open class CoreConfiguration {
 
     @Bean
     open fun getMonitoringService(
+            workflowConverter: WorkflowConverter,
             monitorConfigProvider: MonitorConfigProvider,
             tableRepository: TableRepository,
             monitoringTableBuilder: MonitoringTableBuilder,
@@ -183,6 +184,7 @@ open class CoreConfiguration {
             resourceRepository: ResourceRepository,
             scheduler: TaskScheduler): MetadataService {
         return MetadataServiceImpl(
+                workflowConverter,
                 resourceRepository,
                 monitorConfigProvider,
                 monitoringTableBuilder,

@@ -3,11 +3,9 @@ package com.siyamand.aws.dynamodb.core.monitoring
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
-import com.siyamand.aws.dynamodb.core.dynamodb.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
+import com.siyamand.aws.dynamodb.core.dynamodb.*
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
-import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
@@ -19,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.TaskScheduler
 
 class MetadataServiceImpl(
+        private val workflowConverter: WorkflowConverter,
         private val resourceRepository: ResourceRepository,
         private val monitorConfigProvider: MonitorConfigProvider,
         private val monitoringTableBuilder: MonitoringTableBuilder,
@@ -31,22 +30,45 @@ class MetadataServiceImpl(
         private val tableRepository: TableRepository,
         private val scheduler: TaskScheduler) : MetadataService {
 
-    override fun getMonitoredTables(): List<ResourceEntity> {
-        val returnValue = mutableListOf<ResourceEntity>()
+    override suspend fun getMonitoredTables(): List<MonitoringBaseEntity<AggregateMonitoringEntity>> {
+        val returnValue = mutableListOf<MonitoringBaseEntity<AggregateMonitoringEntity>>()
 
-        val tagName = monitorConfigProvider.getMonitoringVersionTagName()
-        val tagValue = monitorConfigProvider.getMonitoringVersionValue()
+        credentialProvider.initializeRepositories(tableItemRepository)
 
+        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
+        var currentBatch = tableItemRepository.getList(tableName, null)
         // fetch first batch
-        var currentBatch = resourceRepository.getResources(tagName, tagValue, null, "")
-        returnValue.addAll(currentBatch.items)
+        returnValue.addAll(currentBatch.items.map { monitoringItemConverter.convertToAggregateEntity(it) })
 
         // fetch next pages
-        while (currentBatch.nextPageToken != null) {
-            currentBatch = resourceRepository.getResources(tagName, tagValue, null, currentBatch.nextPageToken)
-            returnValue.addAll(currentBatch.items)
+        while (currentBatch.nextPageToken != null && currentBatch.nextPageToken?.any() == true) {
+            currentBatch = tableItemRepository.getList(tableName, null)
+            returnValue.addAll(currentBatch.items.map { monitoringItemConverter.convertToAggregateEntity(it) })
         }
         return returnValue
+    }
+
+    override suspend fun resumeWorkflow(id: String) {
+        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
+        if (tableName.isNullOrEmpty()) {
+            throw Exception("No config name for Monitoring Dynamodb table")
+        }
+        var workflow: TableItemEntity? = tableItemRepository.getList(tableName, mapOf("id" to AttributeValueEntity(id))).items.firstOrNull()
+                ?: throw Exception("No workflow has been found. id= $id")
+
+        var monitoringItem = monitoringItemConverter.convertToAggregateEntity(workflow!!)
+        if (monitoringItem.status != MonitorStatus.PENDING && monitoringItem.status != MonitorStatus.INITIAL) {
+            throw Exception("Workflow with id=$id has final status.")
+        }
+        val workflowInstance = workflowConverter.build(monitoringItem)
+
+        val task = Runnable {
+            runBlocking {
+                workflowManager.execute(workflowInstance, workflowPersister)
+            }
+        }
+
+        scheduler.schedule(task, scheduler.clock.instant().plusMillis(500))
     }
 
     override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {

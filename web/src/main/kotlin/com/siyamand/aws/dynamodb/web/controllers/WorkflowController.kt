@@ -4,6 +4,7 @@ import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
+import com.siyamand.aws.dynamodb.web.models.ResumeWorkflowModel
 import com.siyamand.aws.dynamodb.web.models.StartWorkflowModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
@@ -21,8 +22,8 @@ class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, pri
     }
 
     @PostMapping("/api/Workflow/continue")
-    suspend fun continueWorkflows(): HttpEntity<String> {
-        val result = workflowJobHandler.execute()
+    suspend fun continueWorkflows(@RequestBody resumeWorkflowModel: ResumeWorkflowModel): HttpEntity<String> {
+        val result = metadataService.resumeWorkflow(resumeWorkflowModel.id)
         return ResponseEntity("Finished", HttpStatus.OK)
     }
 }

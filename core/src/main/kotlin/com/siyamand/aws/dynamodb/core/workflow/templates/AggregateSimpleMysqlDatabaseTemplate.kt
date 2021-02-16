@@ -21,7 +21,9 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                                 "description" to "The layer contains crypto module which can be used in generating hash values"),
                 ),
                 WorkflowStepInstance("CreateSecret", allSteps.first { it.name == "CreateSecret" }, WorkflowStepStatus.INITIAL, mapOf()),
-                WorkflowStepInstance("CreateRdsInstance", allSteps.first { it.name == "CreateRdsInstance" }, WorkflowStepStatus.INITIAL, mapOf()),
+                WorkflowStepInstance("CreateRdsInstance", allSteps.first { it.name == "CreateRdsInstance" }, WorkflowStepStatus.INITIAL, mapOf(
+                        "dbInstanceName" to (workflowContext.sharedData["dbInstanceName"]?:"")
+                )),
                 WorkflowStepInstance("CreateDatabase", allSteps.first { it.name == "CreateDatabase" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf()),
@@ -40,7 +42,8 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
 
     override fun getRequiredParameters(): List<RequiredWorkflowParameter> {
         return listOf(RequiredWorkflowParameter(Keys.DATABASE_NAME, WorkflowParameterType.STRING),
-                RequiredWorkflowParameter("tableName", WorkflowParameterType.STRING))
+                RequiredWorkflowParameter("tableName", WorkflowParameterType.STRING),
+                RequiredWorkflowParameter("dbInstanceName", WorkflowParameterType.STRING))
     }
 
 

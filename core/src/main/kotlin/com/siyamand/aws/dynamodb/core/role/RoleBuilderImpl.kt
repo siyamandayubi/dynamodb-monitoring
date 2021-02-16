@@ -15,7 +15,7 @@ class RoleBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) 
         null,
         null,
         null,
-        mutableListOf(TagEntity(monitorConfigProvider.getMonitoringGeneralTagName(), ResourceType.ROLE.value)))
+        mutableListOf(TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), ResourceType.ROLE.value)))
     }
 
     private class CreateRoleEntityImpl(

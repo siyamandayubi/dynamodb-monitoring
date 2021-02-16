@@ -3,9 +3,8 @@ package com.siyamand.aws.dynamodb.core.monitoring
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
 import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
-import com.siyamand.aws.dynamodb.core.workflow.WorkflowConverter
-import com.siyamand.aws.dynamodb.core.workflow.WorkflowInstance
-import com.siyamand.aws.dynamodb.core.workflow.WorkflowPersister
+import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
+import com.siyamand.aws.dynamodb.core.workflow.*
 
 class WorkflowPersisterImpl(
         private val tableItemRepository: TableItemRepository,
@@ -29,6 +28,25 @@ class WorkflowPersisterImpl(
 
         val item = items.first()
         val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item)
+
+        if (instance.lastResult?.resultType  == WorkflowResultType.WAITING){
+            monitoringItem.status = MonitorStatus.PENDING
+        }
+        else if (instance.lastResult?.resultType == WorkflowResultType.ERROR){
+            monitoringItem.status = MonitorStatus.ERROR
+        }
+        else if (instance.lastResult?.resultType == WorkflowResultType.SUCCESS){
+            if (instance.currentStep == instance.steps.size -1){
+                monitoringItem.status = MonitorStatus.ACTIVE
+            }
+            else{
+                monitoringItem.status = MonitorStatus.PENDING
+            }
+        }
+        else if (instance.lastResult?.resultType == WorkflowResultType.FINISH){
+            monitoringItem.status = MonitorStatus.ACTIVE
+        }
+
         monitoringItem.workflow = workflowConverter.serialize(instance)
         val newItem = monitoringItemBuilder.convert(item.tableName, monitoringItem)
         tableItemRepository.update(newItem)

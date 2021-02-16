@@ -23,7 +23,7 @@ class CreateProxyEntity {
 
     val debugLogging: Boolean? = null
 
-    val tags: List<TagEntity> = mutableListOf()
+    val tags: MutableList<TagEntity> = mutableListOf()
 }
 
 class RdsProxyEntity(

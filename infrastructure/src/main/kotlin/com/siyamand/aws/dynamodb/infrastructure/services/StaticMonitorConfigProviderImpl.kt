@@ -9,10 +9,6 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
         return "_MonigoringMetadata"
     }
 
-    override fun getProxyTagName(): String {
-        return "DynamoDbMonitoringProxy"
-    }
-
     override fun getMonitoringVersionTagName(): String {
         return "Monitoring_Version"
     }
@@ -21,20 +17,8 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
         return version
     }
 
-    override fun getFunctionTagName(): String {
-        return "Monitoring_Lambda_Name"
-    }
-
-    override fun getMonitoringGeneralTagName(): String {
-        return "Monitoring-Lambda-Role"
-    }
-
-    override fun getFunctionTagValue(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getDatabaseTagName(): String {
-        return "DynamoDbMonitoringDatabase_Name"
+    override fun getMonitoringMetadataIdTagName(): String {
+        return "Monitoring-Metadata-Id"
     }
 
     override fun getAccessTagName(): String {
