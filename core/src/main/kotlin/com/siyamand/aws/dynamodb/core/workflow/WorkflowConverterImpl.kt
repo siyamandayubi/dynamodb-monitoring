@@ -17,6 +17,7 @@ class WorkflowConverterImpl(private val templates: Iterable<WorkflowTemplate>) :
         workflowInstance.steps.forEach { stepInstance ->
             stepInstance.step = initialSteps.first { it.name == stepInstance.name }.step
         }
+
         return workflowInstance
     }
 

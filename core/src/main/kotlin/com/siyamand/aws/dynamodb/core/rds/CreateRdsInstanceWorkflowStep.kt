@@ -18,7 +18,8 @@ class CreateRdsInstanceWorkflowStep(
 ) : WorkflowStep() {
     override val name: String = "CreateRdsInstance"
 
-    override suspend fun execute(workflowInstance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(workflowInstance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = workflowInstance.context
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Secret key ${Keys.SECRET_ARN_KEY} found")
         }
@@ -55,7 +56,8 @@ class CreateRdsInstanceWorkflowStep(
         return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
     }
 
-    override suspend fun isWaiting(workflowInstance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun isWaiting(workflowInstance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = workflowInstance.context
         if (!context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS_ARN_KEY ${Keys.RDS_ARN_KEY} found")
         }

@@ -9,7 +9,7 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                 WorkflowStepInstance(
                         "AddLambdaLayer", allSteps.first { it.name == "AddLambdaLayer" }, WorkflowStepStatus.INITIAL,
                         mapOf(
-                                Keys.LAMBDA_LAYER_PATH to "lambda/layers/mysql/mysql-layer.zip",
+                                Keys.LAMBDA_LAYER_PATH to "lambda/layers/mysql/mysql.zip",
                                 Keys.LAMBDA_LAYER_NAME to "mysql-layer",
                                 "description" to "The layer contains mysql module and helper functions to execute queries and loading secrets from secret manager"),
                 ),
@@ -22,16 +22,21 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                 ),
                 WorkflowStepInstance("CreateSecret", allSteps.first { it.name == "CreateSecret" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsInstance", allSteps.first { it.name == "CreateRdsInstance" }, WorkflowStepStatus.INITIAL, mapOf(
-                        "dbInstanceName" to (workflowContext.sharedData["dbInstanceName"]?:"")
+                        "dbInstanceName" to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("CreateDatabase", allSteps.first { it.name == "CreateDatabase" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf(
-                        Keys.PROXY_TARGET_GROUP_NAME to (workflowContext.sharedData["dbInstanceName"]?:"")
+                        Keys.PROXY_TARGET_GROUP_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("CreateDatabaseTable", allSteps.first { it.name == "CreateDatabaseTable" }, WorkflowStepStatus.INITIAL, mapOf(
                         "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
                         "sql_file" to "database/aggregate-table.sql"
+                )),
+                WorkflowStepInstance("AggregateMonitoringEntityCodeGenerator", allSteps.first { it.name == "AggregateMonitoringEntityCodeGenerator" }, WorkflowStepStatus.INITIAL, mapOf(
+                        "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
+                        "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
+                        Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 ))
         )
 

@@ -16,17 +16,17 @@ class CreateDatabaseWorkflowStep(
         secretManagerRepository: SecretManagerRepository) : DatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository) {
     override val name: String = "CreateDatabase"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
 
-        return execute(context, params) { databaseConnectionEntity ->
+        return execute(instance.context, params) { databaseConnectionEntity ->
             databaseRepository.createDatabase(databaseConnectionEntity)
 
             WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
         }
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(instance, context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        return execute(instance, owner, params)
     }
 
     override suspend fun initialize() {

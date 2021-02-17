@@ -13,7 +13,8 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
     override val name: String
         get() = "CreateRdsProxyTargetGroup"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = instance.context
         if (!context.sharedData.containsKey(Keys.PROXY_NAME)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy key ${Keys.PROXY_NAME} found")
         }
@@ -49,8 +50,8 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to result.targetResource.arn), "")
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(instance, context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        return execute(instance, owner, params)
     }
 
     override suspend fun initialize() {

@@ -16,7 +16,7 @@ open class ExecuteStatementDatabaseWorkflowStep(
         secretManagerRepository: SecretManagerRepository) : DatabaseWorkflowStep(credentialProvider, databaseRepository, resourceRepository, rdsRepository, secretManagerRepository) {
     override val name: String = "ExecuteStatementDatabase"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
 
         // check sql template Address
         if (!params.containsKey("sql_file")) {
@@ -25,9 +25,9 @@ open class ExecuteStatementDatabaseWorkflowStep(
         val uri = javaClass.classLoader.getResource(params["sql_file"]).toURI()
         var sql = Files.readString(Paths.get(uri))
 
-        sql = customizeSql(context, params, sql)
+        sql = customizeSql(instance.context, params, sql)
 
-        return execute(context, params) { databaseConnectionEntity ->
+        return execute(instance.context, params) { databaseConnectionEntity ->
             databaseRepository.executeSql(databaseConnectionEntity, sql)
 
             WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
@@ -38,8 +38,8 @@ open class ExecuteStatementDatabaseWorkflowStep(
         return sql
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(instance, context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        return execute(instance, owner, params)
     }
 
     override suspend fun initialize() {

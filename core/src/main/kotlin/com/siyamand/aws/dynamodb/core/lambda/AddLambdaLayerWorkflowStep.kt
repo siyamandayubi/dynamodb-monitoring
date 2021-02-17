@@ -12,8 +12,9 @@ class AddLambdaLayerWorkflowStep(
         private val monitorConfigProvider: MonitorConfigProvider) : WorkflowStep() {
     override val name: String = "AddLambdaLayer"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
 
+        val context = instance.context
         if (!params.containsKey(Keys.LAMBDA_LAYER_PATH) ||
                 !params.containsKey(Keys.LAMBDA_LAYER_NAME)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "The required keys ${Keys.LAMBDA_LAYER_NAME}, ${Keys.LAMBDA_LAYER_PATH} not found in params")
@@ -37,8 +38,8 @@ class AddLambdaLayerWorkflowStep(
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.LAMBDA_LAYER_ARN_KEY to layer.layerVersionEntity.arn), "")
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
-        return execute(instance, context, params)
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        return execute(instance, owner, params)
     }
 
     override suspend fun initialize() {

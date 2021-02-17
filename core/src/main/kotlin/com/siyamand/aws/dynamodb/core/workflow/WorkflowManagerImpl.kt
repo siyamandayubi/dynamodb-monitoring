@@ -4,7 +4,7 @@ import java.lang.Exception
 
 class WorkflowManagerImpl() : WorkflowManager {
 
-    override suspend fun execute(input: WorkflowInstance, workflowPersister: WorkflowPersister?): WorkflowResult {
+    override suspend fun execute(input: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): WorkflowResult {
 
         if (!input.steps.any()) {
             throw  Exception("no step has been defined")
@@ -19,8 +19,8 @@ class WorkflowManagerImpl() : WorkflowManager {
         var currentInstance = input
         while (currentInstance.currentStep < currentInstance.steps.size && (
                         lastResult == WorkflowResultType.SUCCESS || lastResult == WorkflowResultType.WAITING)
-        ){
-            val pair = executeStep(currentInstance, workflowPersister)
+        ) {
+            val pair = executeStep(currentInstance, owner, workflowPersister)
             val currentStepInstance = pair.first
             var stepResult = pair.second
 
@@ -36,7 +36,7 @@ class WorkflowManagerImpl() : WorkflowManager {
         return WorkflowResult(lastResult, mapOf<String, String>(), "")
     }
 
-    private suspend fun executeStep(currentInstance: WorkflowInstance, workflowPersister: WorkflowPersister?): Pair<WorkflowStepInstance, WorkflowResult> {
+    private suspend fun executeStep(currentInstance: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): Pair<WorkflowStepInstance, WorkflowResult> {
         val currentStepInstance = currentInstance.steps[currentInstance.currentStep]
         val currentStep = currentInstance.steps[currentInstance.currentStep]
         try {
@@ -47,10 +47,10 @@ class WorkflowManagerImpl() : WorkflowManager {
                 WorkflowStepStatus.INITIAL, WorkflowStepStatus.STARTING -> {
                     currentStepInstance.status = WorkflowStepStatus.STARTING
                     workflowPersister?.save(currentInstance)
-                    currentStep.step.execute(currentInstance, currentInstance.context, params)
+                    currentStep.step.execute(currentInstance, owner, params)
                 }
                 WorkflowStepStatus.WAITING -> {
-                    currentStep.step.isWaiting(currentInstance, currentInstance.context, params)
+                    currentStep.step.isWaiting(currentInstance, owner, params)
                 }
 
                 WorkflowStepStatus.FINISHED -> {

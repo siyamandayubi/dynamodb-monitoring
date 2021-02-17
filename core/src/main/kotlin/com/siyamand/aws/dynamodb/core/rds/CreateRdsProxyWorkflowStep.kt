@@ -20,7 +20,9 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
     override val name: String
         get() = "CreateRdsProxy"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = instance.context
+
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Secret key ${Keys.SECRET_ARN_KEY} found")
         }
@@ -60,7 +62,8 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_ARN_KEY to proxy.dbProxyResource.arn), "")
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = instance.context
         if (!context.sharedData.containsKey(Keys.PROXY_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy ARN ${Keys.PROXY_ARN_KEY} found")
         }

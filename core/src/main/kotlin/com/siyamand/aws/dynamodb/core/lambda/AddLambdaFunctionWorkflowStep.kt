@@ -13,11 +13,11 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
                                     private val monitorConfigProvider: MonitorConfigProvider) : WorkflowStep() {
     override val name: String = "AddLambdaFunction"
 
-    override suspend fun execute(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
         TODO("Not yet implemented")
     }
 
-    override suspend fun isWaiting(instance: WorkflowInstance, context: WorkflowContext, params: Map<String, String>): WorkflowResult {
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
         TODO("Not yet implemented")
     }
 
