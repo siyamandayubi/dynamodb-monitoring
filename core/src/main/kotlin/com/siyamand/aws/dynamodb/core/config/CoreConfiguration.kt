@@ -41,6 +41,11 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
+    open fun getAggregateMonitoringEntityCodeGeneratorStep(templateEngine: TemplateEngine): WorkflowStep {
+        return AggregateMonitoringEntityCodeGeneratorStep(templateEngine)
+    }
+
+    @Bean
     open fun getTamplateEngine(): TemplateEngine {
         return TemplateEngineImpl()
     }

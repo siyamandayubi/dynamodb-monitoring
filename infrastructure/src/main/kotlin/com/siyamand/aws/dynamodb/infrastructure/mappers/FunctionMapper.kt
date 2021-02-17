@@ -107,6 +107,10 @@ class FunctionMapper {
                     .publish(entity.publish)
                     .tags(entity.tags)
 
+            if (entity.layers.any()){
+                builder.layers(entity.layers)
+            }
+
             return builder.build()
         }
     }
