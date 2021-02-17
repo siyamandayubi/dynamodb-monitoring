@@ -21,12 +21,14 @@ class CreateDatabaseTableWorkflowStep(credentialProvider: CredentialProvider,
 ) {
     override val name: String = "CreateDatabaseTable"
 
-    override fun customizeSql(context: WorkflowContext, params: Map<String, String>, sql: String): String {
-        if (!params.containsKey("tableName")) {
-            throw Exception("tableName param is mandatory")
+    override fun customizeSql(context: WorkflowContext, params: Map<String, String>, sql: String): Array<String> {
+        if (!params.containsKey("tableNames")) {
+            throw Exception("tableNames param is mandatory")
         }
 
-        val returnedSql = templateEngine.execute(sql, params)
-        return returnedSql
+        val statements = (params["tableNames"])!!
+                .split(",")
+                .map { templateEngine.execute(sql, mapOf("tableName" to it.trim())) }
+        return statements.toTypedArray()
     }
 }

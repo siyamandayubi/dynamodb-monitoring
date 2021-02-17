@@ -30,14 +30,17 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                         Keys.PROXY_TARGET_GROUP_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("CreateDatabaseTable", allSteps.first { it.name == "CreateDatabaseTable" }, WorkflowStepStatus.INITIAL, mapOf(
-                        "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
+                        "tableNames" to (workflowContext.sharedData["tableNames"] ?: ""),
                         "sql_file" to "database/aggregate-table.sql"
                 )),
                 WorkflowStepInstance("AggregateMonitoringEntityCodeGenerator", allSteps.first { it.name == "AggregateMonitoringEntityCodeGenerator" }, WorkflowStepStatus.INITIAL, mapOf(
                         "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
-                        "tableName" to (workflowContext.sharedData["tableName"] ?: ""),
                         Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
-                ))
+                )),
+                WorkflowStepInstance("AddLambdaFunction", allSteps.first { it.name == "AddLambdaFunction" }, WorkflowStepStatus.INITIAL, mapOf(
+                        "layers" to "mysql-layer,crypto-layer",
+                        "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
+                )),
         )
 
         steps.forEach {

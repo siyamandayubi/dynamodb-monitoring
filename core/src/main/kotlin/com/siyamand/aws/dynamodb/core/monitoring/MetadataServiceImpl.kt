@@ -78,7 +78,7 @@ class MetadataServiceImpl(
         val table = getOrCreateMonitoringTable()
         var workflowInstance = workflowBuilder.create(workflowName, mapOf(
                 Keys.DATABASE_NAME to entity.databaseName,
-                "tableName" to (entity.fields.firstOrNull()?.tableName ?: "")))
+                "tableNames" to (entity.groups.map { it.tableName }.joinToString(separator = ","))))
 
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(
                 workflowInstance.id,

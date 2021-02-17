@@ -25,17 +25,23 @@ open class ExecuteStatementDatabaseWorkflowStep(
         val uri = javaClass.classLoader.getResource(params["sql_file"]).toURI()
         var sql = Files.readString(Paths.get(uri))
 
-        sql = customizeSql(instance.context, params, sql)
+        val sqls = customizeSql(instance.context, params, sql)
 
-        return execute(instance.context, params) { databaseConnectionEntity ->
-            databaseRepository.executeSql(databaseConnectionEntity, sql)
+        return execute(instance.context, params) {
+
+            databaseConnectionEntity ->
+            run {
+                sqls.forEach { sql ->
+                    databaseRepository.executeSql(databaseConnectionEntity, sql)
+                }
+            }
 
             WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
         }
     }
 
-    protected open fun customizeSql(context: WorkflowContext, params: Map<String, String>, sql: String): String {
-        return sql
+    protected open fun customizeSql(context: WorkflowContext, params: Map<String, String>, sql: String): Array<String> {
+        return arrayOf(sql)
     }
 
     override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {

@@ -1,4 +1,5 @@
 CREATE TABLE `${tableName}` (
+  `GroupValue` NVARCHAR(100) NOT NULL,
   `FieldName` NVARCHAR(100) NOT NULL,
   `FieldValue` NVARCHAR(100) NULL,
   `StartDate` DATETIME NULL,
