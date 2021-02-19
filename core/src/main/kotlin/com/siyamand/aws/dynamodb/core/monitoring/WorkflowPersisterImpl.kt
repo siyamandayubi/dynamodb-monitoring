@@ -36,7 +36,7 @@ class WorkflowPersisterImpl(
             monitoringItem.status = MonitorStatus.ERROR
         }
         else if (instance.lastResult?.resultType == WorkflowResultType.SUCCESS){
-            if (instance.currentStep == instance.steps.size -1){
+            if (instance.currentStep >= instance.steps.size -1){
                 monitoringItem.status = MonitorStatus.ACTIVE
             }
             else{

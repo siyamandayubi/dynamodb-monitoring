@@ -18,3 +18,13 @@ class  SecretEntity(
         val resourceEntity: ResourceEntity,
         val createdDate: Instant
 )
+
+class  SecretDetailEntity(
+        val name: String,
+        val resourceEntity: ResourceEntity,
+        val createdDate: Instant?,
+        val lastAccessDate:Instant?,
+        val deletionDate: Instant?,
+        val description: String,
+        val tags: List<TagEntity>
+)

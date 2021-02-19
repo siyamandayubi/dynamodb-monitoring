@@ -43,7 +43,7 @@ abstract class DatabaseWorkflowStep(protected var credentialProvider: Credential
         val rds = rdsList.first()
 
         val secretArn = context.sharedData[Keys.SECRET_ARN_KEY]!!
-        var existingSecret = secretManagerRepository.getSecret(secretArn)
+        var existingSecret = secretManagerRepository.getSecretValue(secretArn)
         val credential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), existingSecret!!.secretData)
 
 

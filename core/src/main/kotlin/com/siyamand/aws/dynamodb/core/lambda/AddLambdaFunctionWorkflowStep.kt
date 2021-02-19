@@ -1,16 +1,20 @@
 package com.siyamand.aws.dynamodb.core.lambda
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.common.initializeRepositories
+import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
+import com.siyamand.aws.dynamodb.core.role.RoleRepository
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialProvider,
                                     private val lambdaRepository: LambdaRepository,
+                                    private val roleRepository: RoleRepository,
                                     private val functionBuilder: FunctionBuilder) : WorkflowStep() {
     override val name: String = "AddLambdaFunction"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
 
+        val context = instance.context
         if (!params.containsKey("name")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "name parameter is mandatory")
         }
@@ -23,16 +27,24 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "layers parameter is mandatory")
         }
 
-        if (!instance.context.sharedData.containsKey(Keys.CODE_RESULT)) {
+        if (!context.sharedData.containsKey(Keys.CODE_RESULT)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "code parameter is mandatory")
         }
 
+        credentialProvider.initializeRepositories(lambdaRepository)
+        credentialProvider.initializeRepositoriesWithGlobalRegion(roleRepository)
+
         val name = (params["name"])!!
-        val role = (params[Keys.LAMBDA_ROLE])!!
+        val roleName = (params[Keys.LAMBDA_ROLE])!!
         val layersStr = (params["layers"])!!
-        val layers = layersStr.split(",")
-        val code = (instance.context.sharedData[Keys.CODE_RESULT])!!
-        val createFunctionEntity = functionBuilder.build(name, code, role, layers)
+        val layers = layersStr
+                .split(",")
+                .map { if(context.sharedData.containsKey(it)) (context.sharedData[it])!! else "" }
+                .filter { !it.isNullOrEmpty() }
+
+        val code = (context.sharedData[Keys.CODE_RESULT])!!
+        val role = roleRepository.getRole(roleName)
+        val createFunctionEntity = functionBuilder.build(name, code, role.resource.arn, layers)
         val result = lambdaRepository.add(createFunctionEntity)
         instance.context.sharedData[Keys.LAMBDA_ARN] = result.arn
 

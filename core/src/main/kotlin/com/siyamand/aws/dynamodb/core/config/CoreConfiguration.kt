@@ -44,8 +44,9 @@ open class CoreConfiguration {
     open fun getAddLambdaFunctionWorkflowStep(
             credentialProvider: CredentialProvider,
             lambdaRepository: LambdaRepository,
+            roleRepository: RoleRepository,
             functionBuilder: FunctionBuilder): WorkflowStep {
-        return AddLambdaFunctionWorkflowStep(credentialProvider, lambdaRepository, functionBuilder)
+        return AddLambdaFunctionWorkflowStep(credentialProvider, lambdaRepository, roleRepository, functionBuilder)
     }
 
     @Bean

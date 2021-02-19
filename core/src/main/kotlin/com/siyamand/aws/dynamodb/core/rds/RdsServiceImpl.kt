@@ -9,9 +9,7 @@ import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
-import com.siyamand.aws.dynamodb.core.role.RoleEntity
 import com.siyamand.aws.dynamodb.core.role.RoleService
-import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -35,13 +33,13 @@ class RdsServiceImpl(
         val databaseCredential = databaseCredentialBuilder.build()
         val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential, metadataId)
 
-        var existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
+        var existingSecret = secretManagerRepository.getSecretValue(createSecretRequest.name)
 
         var counter = 0;
         while (existingSecret != null) {
             counter++;
             createSecretRequest.name = "${name}_$counter";
-            existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
+            existingSecret = secretManagerRepository.getSecretValue(createSecretRequest.name)
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
@@ -57,7 +55,7 @@ class RdsServiceImpl(
 
     override suspend fun createDatabase(rdsIdentifier: String, secretName: String) {
         initialize()
-        var existingSecret = secretManagerRepository.getSecret(secretName)
+        var existingSecret = secretManagerRepository.getSecretValue(secretName)
         val credential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), existingSecret!!.secretData)
         val rdsList = rdsRepository.getRds(rdsIdentifier)
         if (!rdsList.any()) {
@@ -71,7 +69,7 @@ class RdsServiceImpl(
     override suspend fun createProxy(rdsIdentifier: String, secretName: String): ResourceEntity {
         initialize()
         val role = roleService.getOrCreateLambdaRole()
-        var existingSecret = secretManagerRepository.getSecret(secretName)
+        var existingSecret = secretManagerRepository.getSecretValue(secretName)
         val rdsList = rdsRepository.getRds(rdsIdentifier)
         if (!rdsList.any()) {
             throw Exception("No Rds has been found")

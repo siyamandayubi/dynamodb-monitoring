@@ -3,6 +3,7 @@ package com.siyamand.aws.dynamodb.core.secretManager
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialBuilder
 import com.siyamand.aws.dynamodb.core.workflow.*
+import java.time.LocalDate
 
 class CreateSecretManagerWorkflowStep(
         private var credentialProvider: CredentialProvider,
@@ -14,15 +15,15 @@ class CreateSecretManagerWorkflowStep(
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
         initialize()
         val databaseCredential = databaseCredentialBuilder.build()
-        val createSecretRequest = secretBuilder.buildCreateRequest(name, databaseCredential, instance.id)
+        val createSecretRequest = secretBuilder.buildCreateRequest(LocalDate.now().toString() + "_", databaseCredential, instance.id)
 
-        var existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
+        var existingSecret = secretManagerRepository.getSecretDetail(createSecretRequest.name)
 
         var counter = 0;
         while (existingSecret != null) {
             counter++;
-            createSecretRequest.name = "${name}_$counter";
-            existingSecret = secretManagerRepository.getSecret(createSecretRequest.name)
+            createSecretRequest.name = "${createSecretRequest.name}_$counter";
+            existingSecret = secretManagerRepository.getSecretDetail(createSecretRequest.name)
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)

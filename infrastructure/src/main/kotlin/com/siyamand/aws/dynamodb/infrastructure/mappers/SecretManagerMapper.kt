@@ -1,8 +1,11 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
+import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretEntity
+import com.siyamand.aws.dynamodb.core.secretManager.SecretDetailEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import software.amazon.awssdk.services.secretsmanager.model.CreateSecretRequest
+import software.amazon.awssdk.services.secretsmanager.model.DescribeSecretResponse
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse
 
 class SecretManagerMapper {
@@ -22,6 +25,17 @@ class SecretManagerMapper {
                     response.name(),
                     response.secretString(),
                     ResourceMapper.convert(response.arn()), response.createdDate())
+        }
+
+        fun convert(response: DescribeSecretResponse): SecretDetailEntity {
+            return SecretDetailEntity(
+                    response.name(),
+                    ResourceMapper.convert(response.arn()),
+                    response.createdDate(),
+                    response.lastAccessedDate(),
+                    response.deletedDate(),
+                    response.description() ?:"",
+                    response.tags().map { TagEntity(it.key(), it.value()) })
         }
     }
 }

@@ -2,15 +2,13 @@ package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretEntity
+import com.siyamand.aws.dynamodb.core.secretManager.SecretDetailEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.SecretManagerMapper
-import software.amazon.awssdk.services.secretsmanager.model.DeleteSecretRequest
-import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest
-import software.amazon.awssdk.services.secretsmanager.model.InvalidRequestException
-import software.amazon.awssdk.services.secretsmanager.model.ResourceNotFoundException
+import software.amazon.awssdk.services.secretsmanager.model.*
 
 class SecretManagerRepositoryImpl(private val clientBuilder: ClientBuilder) : SecretManagerRepository, AwsBaseRepositoryImpl() {
     override fun addSecret(entity: CreateSecretEntity): ResourceEntity {
@@ -32,15 +30,30 @@ class SecretManagerRepositoryImpl(private val clientBuilder: ClientBuilder) : Se
         }
     }
 
-    override fun getSecret(secretId: String): SecretEntity? {
+    override fun getSecretValue(secretId: String): SecretEntity? {
         val client = getClient(clientBuilder::buildAsyncSecretsManagerClient)
-        try {
+        return try {
             val response = client.getSecretValue(GetSecretValueRequest.builder().secretId(secretId).build())
-            return SecretManagerMapper.convert(response)
+            SecretManagerMapper.convert(response)
         } catch (ex: ResourceNotFoundException) {
-            return null
+            null
         } catch (ex: InvalidRequestException) {
-            return null
+            null
+        }
+    }
+
+    override fun getSecretDetail(secretId: String): SecretDetailEntity? {
+        val client = getClient(clientBuilder::buildAsyncSecretsManagerClient)
+        return try {
+            val response = client.describeSecret(DescribeSecretRequest
+                    .builder()
+                    .secretId(secretId)
+                    .build())
+            SecretManagerMapper.convert(response)
+        } catch (ex: ResourceNotFoundException) {
+            null
+        } catch (ex: InvalidRequestException) {
+            null
         }
     }
 
