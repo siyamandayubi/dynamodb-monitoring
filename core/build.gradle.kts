@@ -23,12 +23,14 @@ dependencies {
     implementation("io.projectreactor:reactor-core:3.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.4.2")
-    testImplementation("io.projectreactor:reactor-test:3.4.0")
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.4.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+    testImplementation("io.mockk:mockk:1.10.3")
+    testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.10")
+    testImplementation("io.projectreactor:reactor-test:3.4.0")}
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
-}
-tasks.withType<Test>(){
-    useJUnitPlatform()
 }
