@@ -1,11 +1,15 @@
 package com.siyamand.aws.dynamodb.core.workflow
 
-import java.lang.Exception
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class WorkflowManagerImpl() : WorkflowManager {
 
+    var logger: Logger = LoggerFactory.getLogger(WorkflowManagerImpl::class.java)
+
     override suspend fun execute(input: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): WorkflowResult {
 
+        logger.info("executing ${input.template.name}")
         if (!input.steps.any()) {
             throw  Exception("no step has been defined")
         }
@@ -47,9 +51,11 @@ class WorkflowManagerImpl() : WorkflowManager {
                 WorkflowStepStatus.INITIAL, WorkflowStepStatus.STARTING -> {
                     currentStepInstance.status = WorkflowStepStatus.STARTING
                     workflowPersister?.save(currentInstance)
+                    logger.info("executing execute of ${currentStep.name}")
                     currentStep.step.execute(currentInstance, owner, params)
                 }
                 WorkflowStepStatus.WAITING -> {
+                    logger.info("executing isWaiting step of${currentStep.name}")
                     currentStep.step.isWaiting(currentInstance, owner, params)
                 }
 
@@ -59,6 +65,7 @@ class WorkflowManagerImpl() : WorkflowManager {
             }
             return Pair(currentStepInstance, stepResult)
         } catch (ex: Exception) {
+            logger.error("error in running ${currentStep.name} {}", ex)
             return Pair(currentStepInstance, WorkflowResult(WorkflowResultType.ERROR, mapOf(), "${ex.message} - ${ex.stackTrace.joinToString("")}"))
         }
     }

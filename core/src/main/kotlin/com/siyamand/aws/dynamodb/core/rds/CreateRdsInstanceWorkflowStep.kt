@@ -1,15 +1,18 @@
 package com.siyamand.aws.dynamodb.core.rds
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import com.siyamand.aws.dynamodb.core.workflow.*
 import kotlinx.serialization.json.Json
 import org.springframework.core.invokeSuspendingFunction
 
 class CreateRdsInstanceWorkflowStep(
+        private val monigoringConfigProvider: MonitorConfigProvider,
         private val rdsRepository: RdsRepository,
         private val secretManagerRepository: SecretManagerRepository,
         private var credentialProvider: CredentialProvider,
@@ -32,11 +35,21 @@ class CreateRdsInstanceWorkflowStep(
 
         credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
 
+        val secretEntity = secretManagerRepository.getSecretByArn(context.sharedData[Keys.SECRET_ARN_KEY]!!)
+
         // check existing of the instance
         val rdsEntities = rdsRepository.getRds(instanceName)
         if (rdsEntities.any()) {
             val rdsEntity = rdsEntities.first()
             context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
+
+            var secretTag: TagEntity? = rdsEntity.tags.firstOrNull { it.name == monigoringConfigProvider.getAccessTagName() }
+                    ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(),"The Rds exists, but it doesn't have any tag with the given key: ${monigoringConfigProvider.getAccessTagName()}")
+
+            context.sharedData[Keys.SECRET_ARN_KEY] = secretTag!!.value
+
+            // delete new generate secret key
+            secretManagerRepository.deleteSecret(secretEntity!!.resourceEntity!!.arn)
 
             val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
             return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
@@ -46,7 +59,6 @@ class CreateRdsInstanceWorkflowStep(
             return isWaiting(workflowInstance, context, params)
         }
 
-        val secretEntity = secretManagerRepository.getSecretByArn(context.sharedData[Keys.SECRET_ARN_KEY]!!)
         val databaseCredential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secretEntity!!.secretData)
 
         val createRequest = rdsBuilder.build(instanceName, databaseCredential, secretEntity.resourceEntity, workflowInstance.id)

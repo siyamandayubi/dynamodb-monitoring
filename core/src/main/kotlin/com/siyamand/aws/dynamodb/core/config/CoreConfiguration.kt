@@ -41,12 +41,20 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
+    open fun getAddLambdaFunctionWorkflowStep(
+            credentialProvider: CredentialProvider,
+            lambdaRepository: LambdaRepository,
+            functionBuilder: FunctionBuilder): WorkflowStep {
+        return AddLambdaFunctionWorkflowStep(credentialProvider, lambdaRepository, functionBuilder)
+    }
+
+    @Bean
     open fun getAggregateMonitoringEntityCodeGeneratorStep(templateEngine: TemplateEngine): WorkflowStep {
         return AggregateMonitoringEntityCodeGeneratorStep(templateEngine)
     }
 
     @Bean
-    open fun getTamplateEngine(): TemplateEngine {
+    open fun getTemplateEngine(): TemplateEngine {
         return TemplateEngineImpl()
     }
 
@@ -115,12 +123,14 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getCreateRdsInstanceWorkflowStep(rdsRepository: RdsRepository,
-                                              secretManagerRepository: SecretManagerRepository,
-                                              credentialProvider: CredentialProvider,
-                                              resourceRepository: ResourceRepository,
-                                              rdsBuilder: RdsBuilder): WorkflowStep {
-        return CreateRdsInstanceWorkflowStep(rdsRepository, secretManagerRepository, credentialProvider, resourceRepository, rdsBuilder)
+    open fun getCreateRdsInstanceWorkflowStep(
+            monitorConfigProvider: MonitorConfigProvider,
+            rdsRepository: RdsRepository,
+            secretManagerRepository: SecretManagerRepository,
+            credentialProvider: CredentialProvider,
+            resourceRepository: ResourceRepository,
+            rdsBuilder: RdsBuilder): WorkflowStep {
+        return CreateRdsInstanceWorkflowStep(monitorConfigProvider, rdsRepository, secretManagerRepository, credentialProvider, resourceRepository, rdsBuilder)
     }
 
     @Bean
@@ -137,8 +147,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowTemplates(allSteps: List<WorkflowStep>): WorkflowTemplate {
-        return AggregateSimpleMysqlDatabaseTemplate(allSteps)
+    open fun getWorkflowTemplates(roleBuilder: RoleBuilder, allSteps: List<WorkflowStep>): WorkflowTemplate {
+        return AggregateSimpleMysqlDatabaseTemplate(roleBuilder, allSteps)
     }
 
     @Bean

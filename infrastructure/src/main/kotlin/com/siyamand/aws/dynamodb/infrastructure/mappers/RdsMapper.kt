@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
 import com.siyamand.aws.dynamodb.core.rds.*
+import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsMapper {
@@ -66,7 +67,7 @@ class RdsMapper {
 
         fun convert(target: DBProxyTarget): DbProxyTargetEntity {
             return DbProxyTargetEntity(
-                    ResourceMapper.convert(target.targetArn()),
+                    if (target.targetArn().isNullOrEmpty()) null else ResourceMapper.convert(target.targetArn()),
                     target.endpoint(),
                     target.trackedClusterId(),
                     target.rdsResourceId(),
@@ -78,12 +79,15 @@ class RdsMapper {
         fun convert(dbInstance: DBInstance): RdsEntity {
             return RdsEntity(
                     dbInstance.dbName(),
-                    dbInstance.endpoint().address(),
-                    dbInstance.endpoint().port(),
+                    dbInstance.endpoint()?.address() ?: "",
+                    dbInstance.endpoint()?.port() ?: 0,
                     dbInstance.masterUsername(),
                     dbInstance.dbInstanceStatus(),
                     ResourceMapper.convert(dbInstance.dbInstanceArn()),
-                    dbInstance.vpcSecurityGroups().map { VpcSecurityGroupMembershipEntity(it.vpcSecurityGroupId(), it.status()) }.toMutableList()
+                    dbInstance.vpcSecurityGroups().map {
+                        VpcSecurityGroupMembershipEntity(it.vpcSecurityGroupId(), it.status())
+                    }.toMutableList(),
+                    dbInstance.tagList().map { TagEntity(it.key(), it.value()) }.toMutableList()
             )
         }
 

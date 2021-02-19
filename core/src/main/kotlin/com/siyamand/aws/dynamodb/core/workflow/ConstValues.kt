@@ -13,5 +13,6 @@ object Keys {
     const val DATABASE_NAME = "database-name"
     const val PROXY_TARGET_GROUP_NAME = "rds-proxy-target-group-name"
     const val CODE_RESULT = "code-result"
+    const val LAMBDA_ROLE = "lambda-role"
     const val PROXY_TARGET_GROUP_ARN = "rds-proxy-target-group-arn"
 }

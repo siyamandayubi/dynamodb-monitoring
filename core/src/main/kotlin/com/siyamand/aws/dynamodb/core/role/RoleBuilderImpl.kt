@@ -7,10 +7,11 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class RoleBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) : RoleBuilder {
+    override val lambdaRoleName = "Dynamodb-Monitoring-DB-Role"
     override fun createLambdaRole(): CreateRoleEntity {
         val uri = javaClass.classLoader.getResource("policies/LambdaAssumeRolePolicy.json").toURI()
         val assumePolicyDocument = Files.readString(Paths.get(uri))
-        return CreateRoleEntityImpl("Dynamodb-Monitoring-DB-Role",
+        return CreateRoleEntityImpl(lambdaRoleName,
         assumePolicyDocument,
         null,
         null,

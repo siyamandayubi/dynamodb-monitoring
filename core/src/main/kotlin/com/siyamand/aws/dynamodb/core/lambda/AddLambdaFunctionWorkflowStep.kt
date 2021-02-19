@@ -6,8 +6,7 @@ import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialProvider,
                                     private val lambdaRepository: LambdaRepository,
-                                    private val functionBuilder: FunctionBuilder,
-                                    private val monitorConfigProvider: MonitorConfigProvider) : WorkflowStep() {
+                                    private val functionBuilder: FunctionBuilder) : WorkflowStep() {
     override val name: String = "AddLambdaFunction"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
@@ -16,7 +15,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "name parameter is mandatory")
         }
 
-        if (!params.containsKey("role")) {
+        if (!params.containsKey(Keys.LAMBDA_ROLE)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "role parameter is mandatory")
         }
 
@@ -24,15 +23,15 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "layers parameter is mandatory")
         }
 
-        if (!instance.context.sharedData.containsKey("code")) {
+        if (!instance.context.sharedData.containsKey(Keys.CODE_RESULT)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "code parameter is mandatory")
         }
 
         val name = (params["name"])!!
-        val role = (params["role"])!!
+        val role = (params[Keys.LAMBDA_ROLE])!!
         val layersStr = (params["layers"])!!
         val layers = layersStr.split(",")
-        val code = (instance.context.sharedData["code"])!!
+        val code = (instance.context.sharedData[Keys.CODE_RESULT])!!
         val createFunctionEntity = functionBuilder.build(name, code, role, layers)
         val result = lambdaRepository.add(createFunctionEntity)
         instance.context.sharedData[Keys.LAMBDA_ARN] = result.arn

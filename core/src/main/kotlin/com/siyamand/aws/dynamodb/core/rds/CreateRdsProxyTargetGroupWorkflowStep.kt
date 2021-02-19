@@ -46,8 +46,9 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
                         targetGroup.groupName ?: "",
                         listOf(rds.instanceName))).first()
 
-        context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = result.targetResource.arn
-        return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to result.targetResource.arn), "")
+        val arn = result.targetResource?.arn ?: ""
+        context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] =arn
+        return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to arn), "")
     }
 
     override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {

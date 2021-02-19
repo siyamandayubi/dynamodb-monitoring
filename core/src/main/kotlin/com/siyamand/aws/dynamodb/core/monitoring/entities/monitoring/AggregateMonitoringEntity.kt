@@ -9,16 +9,3 @@ class AggregateMonitoringEntity {
     val groups: MutableList<GroupByEntity> = mutableListOf()
 }
 
-@Serializable
-class GroupByEntity {
-    var fieldName: String = ""
-    var tableName: String = ""
-
-    /// Only for numeric fields
-    var startingFrom: Long = 0
-
-    // Only for numeric fields
-    var period: Long = 100
-
-    val fields: MutableList<AggregateFieldEntity> = mutableListOf()
-}

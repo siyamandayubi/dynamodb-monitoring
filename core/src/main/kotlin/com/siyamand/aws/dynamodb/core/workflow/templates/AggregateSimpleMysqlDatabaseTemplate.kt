@@ -1,8 +1,11 @@
 package com.siyamand.aws.dynamodb.core.workflow.templates
 
+import com.siyamand.aws.dynamodb.core.role.RoleBuilder
 import com.siyamand.aws.dynamodb.core.workflow.*
 
-class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<WorkflowStep>) : WorkflowTemplate {
+class AggregateSimpleMysqlDatabaseTemplate(
+        private val roleBuilder: RoleBuilder,
+        private val allSteps: Iterable<WorkflowStep>) : WorkflowTemplate {
     override val version: Int = 1
     override suspend fun getSteps(workflowContext: WorkflowContext): List<WorkflowStepInstance> {
         val steps = listOf(
@@ -39,6 +42,7 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
                 )),
                 WorkflowStepInstance("AddLambdaFunction", allSteps.first { it.name == "AddLambdaFunction" }, WorkflowStepStatus.INITIAL, mapOf(
                         "layers" to "mysql-layer,crypto-layer",
+                        Keys.LAMBDA_ROLE to roleBuilder.lambdaRoleName,
                         "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
                 )),
         )
@@ -52,7 +56,8 @@ class AggregateSimpleMysqlDatabaseTemplate(private val allSteps: Iterable<Workfl
 
     override fun getRequiredParameters(): List<RequiredWorkflowParameter> {
         return listOf(RequiredWorkflowParameter(Keys.DATABASE_NAME, WorkflowParameterType.STRING),
-                RequiredWorkflowParameter("tableName", WorkflowParameterType.STRING),
+                RequiredWorkflowParameter("tableNames", WorkflowParameterType.STRING),
+                RequiredWorkflowParameter("lambda-name", WorkflowParameterType.STRING),
                 RequiredWorkflowParameter("dbInstanceName", WorkflowParameterType.STRING))
     }
 
