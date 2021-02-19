@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring
 
+import com.siyamand.aws.dynamodb.core.common.InstantSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.Instant
@@ -8,8 +9,6 @@ import java.time.Instant
 class AggregateFieldEntity(
         val name: String,
         val path: String,
-        @Contextual
-        val from: Instant,
-        val tableName: String,
-        val aggregateType: AggregateType) {
+        @Serializable(InstantSerializer::class)
+        val from: Instant) {
 }
