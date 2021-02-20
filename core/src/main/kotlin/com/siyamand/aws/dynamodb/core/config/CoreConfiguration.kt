@@ -41,6 +41,12 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
+    open fun getAddLambdaEventSourceWorkflowStep(credentialProvider: CredentialProvider,
+                                                 lambdaRepository: LambdaRepository): WorkflowStep {
+        return AddLambdaEventSourceWorkflowStep(credentialProvider, lambdaRepository)
+    }
+
+    @Bean
     open fun getAddLambdaFunctionWorkflowStep(
             credentialProvider: CredentialProvider,
             lambdaRepository: LambdaRepository,
