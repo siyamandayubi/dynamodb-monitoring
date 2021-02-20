@@ -31,4 +31,16 @@ class FunctionBuilderImpl : FunctionBuilder {
         val bytes = Files.readAllBytes(Paths.get(uri))
         return CreateLayerEntity(name, NODEJS_RUNTIME, bytes, description, "MIT Licence")
     }
+
+    override fun buildEventSourceCreateRequest(sourceArn: String, functionName: String): CreateEventSourceRequestEntity{
+        val request= CreateEventSourceRequestEntity(sourceArn)
+        request.functionName =functionName
+        request.batchSize = 100
+        request.enabled = true
+        request.maximumBatchingWindowInSeconds = 1
+        request.maximumRecordAgeInSeconds = 10
+        request.maximumRetryAttempts = 3
+        request.startingPosition = "0"
+        return request
+    }
 }

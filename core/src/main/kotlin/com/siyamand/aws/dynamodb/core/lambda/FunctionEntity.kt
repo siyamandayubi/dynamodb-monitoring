@@ -66,23 +66,23 @@ class FunctionLayerEntity(
 
 class CreateEventSourceRequestEntity(val eventSourceArn: String? = null) {
 
-    val functionName: String? = null
+    var functionName: String? = null
 
-    val enabled: Boolean? = null
+    var enabled: Boolean? = null
 
-    val batchSize: Int? = null
+    var batchSize: Int? = null
 
-    val maximumBatchingWindowInSeconds: Int? = null
+    var maximumBatchingWindowInSeconds: Int? = null
 
-    val parallelizationFactor: Int? = null
+    var parallelizationFactor: Int? = null
 
-    val startingPosition: String? = null
+    var startingPosition: String? = null
 
-    val startingPositionTimestamp: Instant? = null
+    var startingPositionTimestamp: Instant? = null
 
-    val maximumRecordAgeInSeconds: Int? = null
+    var maximumRecordAgeInSeconds: Int? = null
 
-    val bisectBatchOnFunctionError: Boolean? = null
+    var bisectBatchOnFunctionError: Boolean? = null
 
-    val maximumRetryAttempts: Int? = null
+    var maximumRetryAttempts: Int? = null
 }

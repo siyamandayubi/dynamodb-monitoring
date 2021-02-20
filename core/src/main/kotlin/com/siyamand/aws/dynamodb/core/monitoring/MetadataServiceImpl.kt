@@ -4,15 +4,11 @@ import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.dynamodb.*
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 import com.siyamand.aws.dynamodb.core.workflow.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.TaskScheduler
 
@@ -75,10 +71,12 @@ class MetadataServiceImpl(
 
     override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
-        val table = getOrCreateMonitoringTable()
+        val monitoringTable = getOrCreateMonitoringTable()
+        val sourceTable = tableRepository.getDetail(sourceTableName)
         var workflowInstance = workflowBuilder.create(workflowName, mapOf(
                 Keys.DATABASE_NAME to entity.databaseName,
                 "lambda-name" to "lambda",
+                Keys.SOURCE_DYNAMODB_ARN to (sourceTable?.arn ?: ""),
                 "dbInstanceName" to entity.databaseName,
                 "tableNames" to (entity.groups.map { it.tableName }.joinToString(separator = ","))))
 
@@ -92,7 +90,7 @@ class MetadataServiceImpl(
                 entity
         )
 
-        tableItemRepository.add(monitoringItemConverter.convert(table.tableName, monitoringEntity))
+        tableItemRepository.add(monitoringItemConverter.convert(monitoringTable.tableName, monitoringEntity))
         val task = Runnable {
             runBlocking {
                 workflowManager.execute(workflowInstance, monitoringEntity, workflowPersister)

@@ -42,8 +42,9 @@ open class CoreConfiguration {
 
     @Bean
     open fun getAddLambdaEventSourceWorkflowStep(credentialProvider: CredentialProvider,
+                                                 functionBuilder: FunctionBuilder,
                                                  lambdaRepository: LambdaRepository): WorkflowStep {
-        return AddLambdaEventSourceWorkflowStep(credentialProvider, lambdaRepository)
+        return AddLambdaEventSourceWorkflowStep(credentialProvider, functionBuilder, lambdaRepository)
     }
 
     @Bean

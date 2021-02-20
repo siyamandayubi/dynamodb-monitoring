@@ -47,6 +47,7 @@ class AggregateSimpleMysqlDatabaseTemplate(
                         Keys.LAMBDA_ROLE to roleBuilder.lambdaRoleName,
                         "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
                 )),
+                WorkflowStepInstance("AddLambdaEventSource", allSteps.first { it.name == "AddLambdaEventSource" }, WorkflowStepStatus.INITIAL, mapOf()),
         )
 
         steps.forEach {
@@ -58,6 +59,7 @@ class AggregateSimpleMysqlDatabaseTemplate(
 
     override fun getRequiredParameters(): List<RequiredWorkflowParameter> {
         return listOf(RequiredWorkflowParameter(Keys.DATABASE_NAME, WorkflowParameterType.STRING),
+                RequiredWorkflowParameter(Keys.SOURCE_DYNAMODB_ARN, WorkflowParameterType.STRING),
                 RequiredWorkflowParameter("tableNames", WorkflowParameterType.STRING),
                 RequiredWorkflowParameter("lambda-name", WorkflowParameterType.STRING),
                 RequiredWorkflowParameter("dbInstanceName", WorkflowParameterType.STRING))

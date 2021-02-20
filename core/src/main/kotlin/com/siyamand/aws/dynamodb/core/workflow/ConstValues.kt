@@ -1,6 +1,8 @@
 package com.siyamand.aws.dynamodb.core.workflow
 
 object Keys {
+    const val EVENT_SOURCE_ARN = "event-source-arn"
+    const val SOURCE_DYNAMODB_ARN = "source-dynamodb-arn"
     const val LAMBDA_ARN = "lambda-arn"
     const val PROXY_ARN_KEY = "rds-proxy"
     const val PROXY_NAME = "rds-proxy-name"
