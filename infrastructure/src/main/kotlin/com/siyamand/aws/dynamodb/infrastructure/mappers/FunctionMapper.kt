@@ -100,6 +100,7 @@ class FunctionMapper {
                     .code(FunctionCode.builder().zipFile(SdkBytes.fromByteArray(entity.code)).build())
                     .description(entity.description)
                     .handler(entity.handler)
+                    .environment(Environment.builder().variables(entity.environmentVariables).build())
                     .runtime(entity.runtime)
                     .packageType(entity.packageType)
                     .memorySize(entity.memorySize)
@@ -107,7 +108,7 @@ class FunctionMapper {
                     .publish(entity.publish)
                     .tags(entity.tags)
 
-            if (entity.layers.any()){
+            if (entity.layers.any()) {
                 builder.layers(entity.layers)
             }
 

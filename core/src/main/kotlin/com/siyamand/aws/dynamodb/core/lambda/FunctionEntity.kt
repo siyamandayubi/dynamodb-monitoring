@@ -51,7 +51,8 @@ class CreateFunctionRequestEntity(
         val publish: Boolean? = null,
         val packageType: String? = null,
         val tags: Map<String, String>? = null,
-        val layers : List<String> = listOf(),
+        val layers: List<String> = listOf(),
+        val environmentVariables: Map<String, String> = mapOf(),
         val codeSigningConfigArn: String? = null)
 
 class FunctionLayerEntity(
