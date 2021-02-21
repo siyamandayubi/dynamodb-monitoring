@@ -2,7 +2,7 @@
 var mysql = require('mysql'); //https://www.npmjs.com/package/mysql2
 const AWS = require('aws-sdk');
 
-const _getPrivateKeyValue = async function (client, secret_key) {
+const getPrivateKeyValue = async function (client, secret_key) {
 
   return new Promise((resolve, reject) => {
     client.getSecretValue({ SecretId: secret_key }, function (err, data) {
@@ -23,7 +23,7 @@ const _getPrivateKeyValue = async function (client, secret_key) {
 };
 
 
-const _executeSql = async function (connectionConfig, sql, values) {
+const executeSql = async function (connectionConfig, sql, values) {
   const promise = new Promise(function (resolve, reject) {
 
     var connection = mysql.createConnection(connectionConfig);
@@ -64,4 +64,5 @@ const _executeSql = async function (connectionConfig, sql, values) {
   return promise;
 }
 
-export{_executeSql, _getPrivateKeyValue}
+exports.getPrivateKeyValue = getPrivateKeyValue;
+exports.executeSql = executeSql

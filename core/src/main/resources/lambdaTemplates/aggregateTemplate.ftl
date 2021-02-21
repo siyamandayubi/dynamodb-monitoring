@@ -12,12 +12,12 @@ var client = new AWS.SecretsManager({
 
 const secret_key = process.env.secret_key;
 
-var token = await _getPrivateKeyValue(secret_key);
+var token = await mysqlUtil.getPrivateKeyValue(client, secret_key);
 
 const connectionConfig = {
     host: process.env.sql_endpoint,
     port: process.env.sql_port,
-    user: token.username,
+    user: token.userName,
     database:  process.env.sql_database,
     ssl: true,
     password: token.password
@@ -98,7 +98,7 @@ exports.handler = async function (event, context) {
 
         if(scripts.length > 0){
             var scriptsStr = sripts.join(';');
-           _executeSql(connectionConfig, scriptsStr,[]);
+            mysqlUtil.executeSql(connectionConfig, scriptsStr,[]);
         }
     });
 }
