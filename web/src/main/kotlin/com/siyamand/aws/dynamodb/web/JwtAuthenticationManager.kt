@@ -16,7 +16,6 @@ class JwtAuthenticationManager(private val jwtSignerService: JwtSignerService) :
     override fun authenticate(authentication: Authentication?): Mono<Authentication> {
         return Mono.just(authentication)
                 .map { jwtSignerService.validateJwt(it?.credentials as String) }
-                .onErrorResume { Mono.empty() }
                 .map { jws ->
                     PreAuthenticatedAuthenticationToken(
                             TokenCredentialEntity(
