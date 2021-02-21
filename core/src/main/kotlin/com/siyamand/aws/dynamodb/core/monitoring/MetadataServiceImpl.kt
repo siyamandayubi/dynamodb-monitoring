@@ -100,6 +100,16 @@ class MetadataServiceImpl(
         scheduler.schedule(task, scheduler.clock.instant().plusMillis(500))
     }
 
+    override suspend fun getMonitoringTable(): TableDetailEntity? {
+        initializeRepositories()
+        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
+        if (tableName.isNullOrEmpty()) {
+            throw Exception("No config name for Monitoring Dynamodb table")
+        }
+
+        return tableRepository.getDetail(tableName)
+    }
+
     suspend fun getOrCreateMonitoringTable(): TableDetailEntity {
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
         if (tableName.isNullOrEmpty()) {

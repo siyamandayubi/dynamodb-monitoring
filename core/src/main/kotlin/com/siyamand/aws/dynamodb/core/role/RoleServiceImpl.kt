@@ -46,6 +46,17 @@ class RoleServiceImpl(
         return role
     }
 
+    override suspend fun getLambdaRole(): RoleEntity? {
+        initialize()
+
+        val createRoleRequest = roleBuilder.createLambdaRole();
+        return try {
+            roleRepository.getRole(createRoleRequest.roleName)
+        } catch (exp: NotExistException) {
+            null
+        }
+    }
+
     private suspend fun addPolicyToRole(createPolicyRequest: CreatePolicyEntity, rolePolicies: List<String>, roleName: String) {
         if (!rolePolicies.any { it == createPolicyRequest.policyName }) {
             val policies = roleRepository.getPolicies(createPolicyRequest.path)

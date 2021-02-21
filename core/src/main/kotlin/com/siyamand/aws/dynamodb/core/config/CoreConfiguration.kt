@@ -41,6 +41,11 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
+    open fun getPrerequisiteService(roleService: RoleService, metadataService: MetadataService): PrerequisiteService {
+        return PrerequisiteServiceImpl(roleService, metadataService)
+    }
+
+    @Bean
     open fun getAddLambdaEventSourceWorkflowStep(credentialProvider: CredentialProvider,
                                                  functionBuilder: FunctionBuilder,
                                                  lambdaRepository: LambdaRepository): WorkflowStep {
