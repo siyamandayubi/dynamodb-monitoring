@@ -111,8 +111,7 @@ exports.handler = async function (event, context) {
         }
 
         if(scripts.length > 0){
-            var scriptsStr = scripts.join(';');
-            await mysqlUtil.executeSql(connectionConfig, scriptsStr,[]);
+            await mysqlUtil.executeSqls(connectionConfig, scripts);
         }
     });
 }
