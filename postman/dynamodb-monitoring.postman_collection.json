@@ -1,0 +1,578 @@
+{
+	"info": {
+		"_postman_id": "1b3e3584-9496-4fcc-bae5-4d38dc7af5ab",
+		"name": "dynamodb-monitoring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyId\":\"AKIAW6BQ7KNRYZS3AXAF\",\r\n    \"secretKeyId\":\"+5GvXDx1+/E1JeC6J611nWUIIO9iMQ3j8AitlIzs\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tables",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/tables",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tables"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "monitoring items",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/monitoring/items",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"monitoring",
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "monitoring prerequisite",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/monitoring/prerequisite",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"monitoring",
+						"prerequisite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "functions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/functions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"functions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buckets",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/s3/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"s3",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get function By Name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/functions/function1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"functions",
+						"function1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get rds List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/rds/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rds",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getEndpoints",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/rds/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rds",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createLambdaRole",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/roles/createLambdaRole",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"roles",
+						"createLambdaRole"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createWorkflow",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceTableName\": \"temp\",\r\n    \"workflowName\": \"AggregateSimpleMysqlDatabaseTemplate\",\r\n    \"entity\":{\r\n        \"databaseName\":\"tesintDatabase\",\r\n        \"fields\":[\r\n            {\r\n                \"name\":\"test\",\r\n                \"path\":\"test\",\r\n                \"tableName\":\"tableName\"\r\n            }\r\n        ]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/workflow/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"workflow",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createRds",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rds/create-rds",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rds",
+						"create-rds"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createRdsProxy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rds/create-proxy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rds",
+						"create-proxy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createDatabase",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/rds/create-database",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"rds",
+						"create-database"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create function",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/functions/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"functions",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-bucket",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/s3/create-bucket",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"s3",
+						"create-bucket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-s3-object",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/s3/create-object",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"s3",
+						"create-object"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "continueWorkflow",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/Workflow/continue",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"Workflow",
+						"continue"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
