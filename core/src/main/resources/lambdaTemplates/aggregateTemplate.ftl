@@ -1,9 +1,12 @@
+String.prototype.replaceAll = function(search, replace){
+    return this.split(search).join(replace);
+}
+
 const mysqlUtil = require("/opt/nodejs/mysql")
 const region = process.env.AWS_REGION;
 var AWS = require('aws-sdk');
 
 var crypto = require('crypto');
-var hash = crypto.createHash('sha256');
 
 // Create a Secrets Manager client
 var client = new AWS.SecretsManager({
@@ -28,7 +31,7 @@ exports.handler = async function (event, context) {
     // list of tables
     var tables = {};
     <#list entity.groups as group>
-        tables.${group.tableName} = tables.${group.tableName} | {};
+        tables.${group.tableName} = tables.${group.tableName} || { groups: [] };
     </#list>
 
     event.Records.forEach(function (record) {
@@ -44,16 +47,26 @@ exports.handler = async function (event, context) {
                        fieldValue = record.${field.name}
                    }
                    var hashSource = groupValue + ":" + fieldName + "=" + fieldValue;
-                    var hashValue = hash.update(hashSource).digest(hashSource)
-                   table.groupValue = table.groupValue | {groupValue: groupValue};
-                   if (table.groupValue[hashValue] == null){
-                        table.groupValue[hashValue] = {fieldName: fieldName, fieldValue: fieldValue, count:1, max: fieldValue, min: fieldValue}
+                    var hashValue = crypto.createHash('sha256').update(hashSource).digest("hex")
+                   var existingGroup = table.groups.filter((g)=> { g.groupValue == groupValue });
+
+                   var groupValueObj = existingGroup.length > 0 ? existingGroup[0] : { items: [] };
+                   if (existingGroup.length == 0) {
+                       table.groups.push(groupValueObj);
                    }
-                   else{
-                       table.groupValue[hashValue].count++;
-                       table.groupValue[hashValue].max = table.groupValue[hashValue].max < fieldValue? fieldValue : table.groupValue[hashValue].max;
-                       table.groupValue[hashValue].min = table.groupValue[hashValue].min > fieldValue? fieldValue : table.groupValue[hashValue].min;
+
+                   groupValueObj.groupValue = groupValue;
+                   var existingItems = groupValueObj.items.filter(function() { this.hash == hashValue });
+                   if (existingItems.length == 0) {
+                       groupValueObj.items.push({ hash: hashValue, fieldName: fieldName, fieldValue: fieldValue, count: 1, max: fieldValue, min: fieldValue })
                    }
+                   else {
+                      var item = existingItems[0];
+                      item.count++;
+                      item.max = item.max < fieldValue ? fieldValue : item.max;
+                      item.min = item.min > fieldValue ? fieldValue : item.min;
+                   }
+
                </#list>
             }
         </#list>
@@ -80,9 +93,10 @@ exports.handler = async function (event, context) {
                         continue;
                     }
                     var field = groupValue[hash];
-                    var script = scriptTemplate.replace(tableName);
+                    var script = scriptTemplate.replace("@table", tableName);
                     script = script
-                            .replaceAll("@GroupValue", groupValueName)
+                            .replaceAll("@Hash", hash)
+                            .replaceAll("@GroupValue", groupValue.groupValue)
                             .replaceAll("@FieldName", field.fieldName)
                             .replaceAll("@FieldValue", field.fieldValue)
                             .replaceAll("@Count", field.count)
@@ -97,8 +111,8 @@ exports.handler = async function (event, context) {
         }
 
         if(scripts.length > 0){
-            var scriptsStr = sripts.join(';');
-            mysqlUtil.executeSql(connectionConfig, scriptsStr,[]);
+            var scriptsStr = scripts.join(';');
+            await mysqlUtil.executeSql(connectionConfig, scriptsStr,[]);
         }
     });
 }
