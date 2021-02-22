@@ -27,7 +27,7 @@ class FunctionServiceImpl(
     override suspend fun addLambda(functionName: String, code: String): ResourceEntity {
         initialize()
         val role = roleService.getOrCreateLambdaRole()
-        val createRequest = functionBuilder.build(functionName, code, role.resource.arn, listOf(), mapOf())
+        val createRequest = functionBuilder.build(functionName, code, role.resource.arn, listOf(), mapOf(), listOf(), listOf())
         return lambdaRepository.add(createRequest)
     }
 

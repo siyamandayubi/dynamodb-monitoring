@@ -9,7 +9,15 @@ class FunctionBuilderImpl : FunctionBuilder {
         const val NODEJS_RUNTIME = "nodejs12.x"
     }
 
-    override fun build(name: String, code: String, role: String, layers: List<String>, environmentVariables: Map<String, String>): CreateFunctionRequestEntity {
+    override fun build(
+            name: String,
+            code: String,
+            role: String,
+            layers: List<String>,
+            environmentVariables: Map<String, String>,
+            subnetIds: List<String>,
+            securityGroupIds: List<String>,
+    ): CreateFunctionRequestEntity {
         return CreateFunctionRequestEntity(
                 name,
                 NODEJS_RUNTIME,
@@ -22,7 +30,9 @@ class FunctionBuilderImpl : FunctionBuilder {
                 true,
                 "Zip",
                 environmentVariables = environmentVariables,
-                layers = layers
+                layers = layers,
+                subnetIds =  subnetIds,
+                securityGroupIds = securityGroupIds
         )
     }
 

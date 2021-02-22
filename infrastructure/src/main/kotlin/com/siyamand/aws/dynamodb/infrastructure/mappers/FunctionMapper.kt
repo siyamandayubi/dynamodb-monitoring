@@ -112,6 +112,14 @@ class FunctionMapper {
                 builder.layers(entity.layers)
             }
 
+            if (entity.subnetIds.any()) {
+                val vpcConfigBuilder = VpcConfig.builder().subnetIds(entity.subnetIds)
+                if (entity.securityGroupIds.any()) {
+                    vpcConfigBuilder.securityGroupIds(entity.securityGroupIds)
+                }
+                builder.vpcConfig(vpcConfigBuilder.build())
+            }
+
             return builder.build()
         }
     }

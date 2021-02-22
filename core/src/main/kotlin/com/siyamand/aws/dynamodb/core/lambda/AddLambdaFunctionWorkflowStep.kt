@@ -77,7 +77,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
 
         val code = (context.sharedData[Keys.CODE_RESULT])!!
         val role = roleRepository.getRole(roleName)
-        val createFunctionEntity = functionBuilder.build(name, code, role.resource.arn, layers, environmentVariables)
+        val createFunctionEntity = functionBuilder.build(name, code, role.resource.arn, layers, environmentVariables, listOf(), listOf())
         val result = lambdaRepository.add(createFunctionEntity)
         instance.context.sharedData[Keys.LAMBDA_ARN] = result.arn
 

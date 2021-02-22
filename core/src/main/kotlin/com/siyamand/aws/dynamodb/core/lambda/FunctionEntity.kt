@@ -53,6 +53,8 @@ class CreateFunctionRequestEntity(
         val tags: Map<String, String>? = null,
         val layers: List<String> = listOf(),
         val environmentVariables: Map<String, String> = mapOf(),
+        val subnetIds: List<String> = listOf(),
+        val securityGroupIds: List<String> = listOf(),
         val codeSigningConfigArn: String? = null)
 
 class FunctionLayerEntity(
