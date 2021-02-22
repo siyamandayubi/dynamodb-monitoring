@@ -31,7 +31,7 @@ class CredentialProviderImpl : CredentialProvider {
             return BasicCredentialEntity(awsAccessKey, awsSecretKey, null)
         }
 
-        return null
+        return principal
     }
 
     override fun getRegion(): String {
