@@ -23,6 +23,7 @@ dependencies {
     implementation("software.amazon.awssdk:arns")
     implementation("software.amazon.awssdk:s3")
     implementation("software.amazon.awssdk:iam")
+    implementation("software.amazon.awssdk:kms")
     implementation("software.amazon.awssdk:rds")
     implementation("software.amazon.awssdk:secretsmanager")
     implementation("software.amazon.awssdk:ec2")
