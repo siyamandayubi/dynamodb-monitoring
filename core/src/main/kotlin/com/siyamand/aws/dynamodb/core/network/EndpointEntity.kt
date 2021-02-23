@@ -60,3 +60,22 @@ class InternetGatewayEntity(
 )
 
 class InternetGatewayAttachmentEntity(val vpcId: String, val status: String)
+
+class VpcEntity{
+    var cidrBlock: String? = null
+
+    var dhcpOptionsId: String? = null
+
+    var state: String? = null
+
+    var vpcId: String = ""
+
+    var ownerId: String? = null
+
+    var instanceTenancy: String? = null
+
+    var isDefault: Boolean? = null
+
+    var tags: List<TagEntity> = listOf()
+
+}

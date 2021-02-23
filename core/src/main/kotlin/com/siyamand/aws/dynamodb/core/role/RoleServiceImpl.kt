@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.role
 
+import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
 import com.siyamand.aws.dynamodb.core.common.NotExistException
 import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
@@ -18,16 +19,17 @@ class RoleServiceImpl(
         return roleRepository.getRoles()
     }
 
-    private suspend fun initialize() {
-        val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+    private suspend fun initialize(credentialEntity: CredentialEntity? = null) {
+
+        val credential = credentialEntity ?: credentialProvider.getCredential()
+        ?: throw SecurityException("No Credential has been provided")
 
         roleRepository.initialize(credential, credentialProvider.getGlobalRegion());
         resourceRepository.initialize(credential, credentialProvider.getRegion())
     }
 
-    override suspend fun getOrCreateLambdaRole(): RoleEntity {
-        initialize()
+    override suspend fun getOrCreateLambdaRole(credentialEntity: CredentialEntity?): RoleEntity {
+        initialize(credentialEntity)
 
         val createRoleRequest = roleBuilder.createLambdaRole();
         val role = try {
@@ -41,6 +43,23 @@ class RoleServiceImpl(
         addPolicyToRole(policyBuilder.createLambdaEc2Policy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createLambdaPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createLambdaSecretManagerPolicy(), rolePolicies, role.name)
+        addPolicyToRole(policyBuilder.createAccessRdsProxyPolicy(), rolePolicies, role.name)
+
+        return role
+    }
+
+    override suspend fun getOrCreateRdsProxyRole(credentialEntity: CredentialEntity?): RoleEntity {
+        initialize(credentialEntity)
+
+        val createRoleRequest = roleBuilder.createRdsProxyRole();
+        val role = try {
+            roleRepository.getRole(createRoleRequest.roleName)
+        } catch (exp: NotExistException) {
+            roleRepository.addRole(createRoleRequest)
+        }
+
+        val rolePolicies = roleRepository.getRolePolicies(role.name)
+
         addPolicyToRole(policyBuilder.createRdsProxyPolicy(), rolePolicies, role.name)
 
         return role
@@ -49,9 +68,8 @@ class RoleServiceImpl(
     override suspend fun getLambdaRole(): RoleEntity? {
         initialize()
 
-        val createRoleRequest = roleBuilder.createLambdaRole();
         return try {
-            roleRepository.getRole(createRoleRequest.roleName)
+            roleRepository.getRole(monitorConfigProvider.getLambdaRole())
         } catch (exp: NotExistException) {
             null
         }

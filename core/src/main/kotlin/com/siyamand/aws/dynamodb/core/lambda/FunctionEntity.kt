@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.core.lambda
 
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import java.time.Instant
 
 class FunctionEntity(

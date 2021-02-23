@@ -21,14 +21,17 @@ class RoleMapper {
 
         fun convert(entity: CreateRoleEntity): CreateRoleRequest {
             val tags = entity.tags.map { Tag.builder().key(it.name).value(it.value).build()  }
-            return CreateRoleRequest.builder()
+            val builder = CreateRoleRequest.builder()
                     .roleName(entity.roleName)
                     .description(entity.description)
                     .tags(tags)
-                    .assumeRolePolicyDocument(entity.assumeRolePolicyDocument)
                     .maxSessionDuration(entity.maxSessionDuration)
                     .permissionsBoundary(entity.permissionsBoundary)
-                    .build()
+
+            if (!entity.assumeRolePolicyDocument.isNullOrEmpty()){
+                builder.assumeRolePolicyDocument(entity.assumeRolePolicyDocument)
+            }
+            return builder.build()
         }
 
         fun convert(entity: CreatePolicyEntity): CreatePolicyRequest {

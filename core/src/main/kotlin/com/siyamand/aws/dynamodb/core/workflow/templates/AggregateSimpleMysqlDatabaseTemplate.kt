@@ -1,10 +1,11 @@
 package com.siyamand.aws.dynamodb.core.workflow.templates
 
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.role.RoleBuilder
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AggregateSimpleMysqlDatabaseTemplate(
-        private val roleBuilder: RoleBuilder,
+        private val monitorConfigProvider: MonitorConfigProvider,
         private val allSteps: Iterable<WorkflowStep>) : WorkflowTemplate {
     override val version: Int = 1
     override suspend fun getSteps(workflowContext: WorkflowContext): List<WorkflowStepInstance> {
@@ -44,7 +45,7 @@ class AggregateSimpleMysqlDatabaseTemplate(
                 )),
                 WorkflowStepInstance("AddLambdaFunction", allSteps.first { it.name == "AddLambdaFunction" }, WorkflowStepStatus.INITIAL, mapOf(
                         "layers" to "mysql-layer,crypto-layer",
-                        Keys.LAMBDA_ROLE to roleBuilder.lambdaRoleName,
+                        Keys.LAMBDA_ROLE to monitorConfigProvider.getLambdaRole(),
                         "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
                 )),
                 WorkflowStepInstance("AddLambdaEventSource", allSteps.first { it.name == "AddLambdaEventSource" }, WorkflowStepStatus.INITIAL, mapOf()),

@@ -41,8 +41,11 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
-    open fun getPrerequisiteService(roleService: RoleService, metadataService: MetadataService): PrerequisiteService {
-        return PrerequisiteServiceImpl(roleService, metadataService)
+    open fun getPrerequisiteService(
+            monitorConfigProvider: MonitorConfigProvider,
+            roleRepository: RoleRepository,
+            metadataService: MetadataService): PrerequisiteService {
+        return PrerequisiteServiceImpl(monitorConfigProvider, roleRepository, metadataService)
     }
 
     @Bean
@@ -59,8 +62,16 @@ open class CoreConfiguration {
             rdsRepository: RdsRepository,
             secretManagerRepository: SecretManagerRepository,
             roleRepository: RoleRepository,
+            vpcRepository: VpcRepository,
             functionBuilder: FunctionBuilder): WorkflowStep {
-        return AddLambdaFunctionWorkflowStep(credentialProvider, lambdaRepository, roleRepository, rdsRepository, secretManagerRepository, functionBuilder)
+        return AddLambdaFunctionWorkflowStep(
+                credentialProvider,
+                lambdaRepository,
+                roleRepository,
+                rdsRepository,
+                secretManagerRepository,
+                vpcRepository,
+                functionBuilder)
     }
 
     @Bean
@@ -82,13 +93,13 @@ open class CoreConfiguration {
 
     @Bean
     open fun getCreateRdsProxyWorkflowStep(roleRepository: RoleRepository,
-                                           roleBuilder: RoleBuilder,
+                                           monitorConfigProvider: MonitorConfigProvider,
                                            credentialProvider: CredentialProvider,
                                            rdsRepository: RdsRepository,
                                            vpcRepository: VpcRepository,
                                            rdsBuilder: RdsBuilder,
                                            resourceRepository: ResourceRepository): WorkflowStep {
-        return CreateRdsProxyWorkflowStep(roleRepository, roleBuilder, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
+        return CreateRdsProxyWorkflowStep(roleRepository, monitorConfigProvider, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
     }
 
     @Bean
@@ -162,8 +173,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowTemplates(roleBuilder: RoleBuilder, allSteps: List<WorkflowStep>): WorkflowTemplate {
-        return AggregateSimpleMysqlDatabaseTemplate(roleBuilder, allSteps)
+    open fun getWorkflowTemplates(monitorConfigProvider: MonitorConfigProvider, allSteps: List<WorkflowStep>): WorkflowTemplate {
+        return AggregateSimpleMysqlDatabaseTemplate(monitorConfigProvider, allSteps)
     }
 
     @Bean
@@ -292,8 +303,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getFunctionBuilder(): FunctionBuilder {
-        return FunctionBuilderImpl()
+    open fun getFunctionBuilder(monitorConfigProvider: MonitorConfigProvider): FunctionBuilder {
+        return FunctionBuilderImpl(monitorConfigProvider)
     }
 
     @Bean

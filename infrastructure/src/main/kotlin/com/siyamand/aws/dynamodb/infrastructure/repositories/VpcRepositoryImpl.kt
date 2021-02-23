@@ -6,6 +6,7 @@ import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.EndpointMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.NetworkMapper
+import com.siyamand.aws.dynamodb.infrastructure.mappers.VpcMapper
 import software.amazon.awssdk.services.ec2.model.*
 
 class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepository, AwsBaseRepositoryImpl() {
@@ -28,14 +29,33 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
         return response.subnets().map { it.subnetId() }
     }
 
-    override fun getSecurityGroupVpcs(groupIds: List<String>?): List<String> {
+    override fun getSecurityGroupVpcs(groupIds: List<String>, vpcIds: List<String>): List<String> {
         val client = getClient(clientBuilder::buildEc2Client)
         val requestBuilder = DescribeSecurityGroupsRequest.builder()
-        if (groupIds != null && groupIds.any()) {
+        if (groupIds.any()) {
             requestBuilder.groupIds(groupIds)
         }
+
+        if (vpcIds.any()){
+            requestBuilder.filters(Filter.builder().name(VPC_ID_FILTER_NAME).values(vpcIds).build())
+        }
+
         val response = client.describeSecurityGroups(requestBuilder.build())
         return response.securityGroups().map { it.vpcId() }
+    }
+
+    override fun getVpcs(isDefault: Boolean, vpcIds: List<String>): PageResultEntity<VpcEntity> {
+        val client = getClient(clientBuilder::buildEc2Client)
+        var requestBuilder = DescribeVpcsRequest.builder();
+        if (vpcIds.any()) {
+            requestBuilder.vpcIds(vpcIds)
+        }
+
+        if (isDefault) {
+            requestBuilder.filters(Filter.builder().name("isDefault").values("true").build())
+        }
+        val response = client.describeVpcs(requestBuilder.build())
+        return PageResultEntity<VpcEntity>(response.vpcs().map(VpcMapper::convert), response.nextToken() ?: "")
     }
 
     override fun createEndpoint(entity: CreateEndpointEntity): EndpointEntity {

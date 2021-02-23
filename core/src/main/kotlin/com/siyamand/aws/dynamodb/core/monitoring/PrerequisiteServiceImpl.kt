@@ -1,13 +1,19 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.PrerequisteEntity
+import com.siyamand.aws.dynamodb.core.role.RoleRepository
 import com.siyamand.aws.dynamodb.core.role.RoleService
 
-class PrerequisiteServiceImpl(private val roleService: RoleService, private val metadataService: MetadataService) : PrerequisiteService {
+class PrerequisiteServiceImpl(
+        private val monitorConfigProvider: MonitorConfigProvider,
+        private val roleRepository: RoleRepository,
+        private val metadataService: MetadataService) : PrerequisiteService {
     override suspend fun getPrerequistes(): PrerequisteEntity {
-        val role = roleService.getLambdaRole()
+        val lambdaRole = roleRepository.getRole(monitorConfigProvider.getLambdaRole())
+        val rdsRole = roleRepository.getRole(monitorConfigProvider.getRdsProxyRole())
         val table = metadataService.getMonitoringTable()
 
-        return PrerequisteEntity(role, table)
+        return PrerequisteEntity(lambdaRole, rdsRole, table)
     }
 }

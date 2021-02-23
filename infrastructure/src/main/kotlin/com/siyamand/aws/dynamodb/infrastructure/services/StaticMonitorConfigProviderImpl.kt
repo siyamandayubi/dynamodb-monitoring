@@ -28,4 +28,12 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     override fun getS3BucketDefaultName(): String {
         return "dynamodbmonitoringbucket"
     }
+
+    override fun getLambdaRole(): String {
+        return "Dynamodb-Monitoring-DB-Role"
+    }
+
+    override fun getRdsProxyRole(): String {
+        return "Rds-Proxy-Monitoring-Role"
+    }
 }

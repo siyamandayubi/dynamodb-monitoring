@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.core.rds
 
 import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
@@ -11,7 +12,7 @@ import com.siyamand.aws.dynamodb.core.role.RoleService
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
-                                 private val roleBuilder: RoleBuilder,
+                                 private val monitorConfigProvider: MonitorConfigProvider,
                                  private var credentialProvider: CredentialProvider,
                                  private val rdsRepository: RdsRepository,
                                  private val vpcRepository: VpcRepository,
@@ -46,10 +47,9 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Rds has been found with the name '${arn}'")
         }
         val rds = rdsList.first()
-        val createRoleRequest = roleBuilder.createLambdaRole();
-        val role = roleRepository.getRole(createRoleRequest.roleName)
+        val role = roleRepository.getRole(monitorConfigProvider.getRdsProxyRole())
 
-        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
+        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }, listOf())
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!, instance.id)
         val proxy = rdsRepository.createProxy(request)

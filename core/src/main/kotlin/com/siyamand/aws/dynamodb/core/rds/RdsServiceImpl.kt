@@ -68,14 +68,14 @@ class RdsServiceImpl(
 
     override suspend fun createProxy(rdsIdentifier: String, secretName: String): ResourceEntity {
         initialize()
-        val role = roleService.getOrCreateLambdaRole()
+        val role = roleService.getOrCreateLambdaRole(null)
         var existingSecret = secretManagerRepository.getSecretValue(secretName)
         val rdsList = rdsRepository.getRds(rdsIdentifier)
         if (!rdsList.any()) {
             throw Exception("No Rds has been found")
         }
         val rds = rdsList.first()
-        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
+        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }, listOf())
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, existingSecret!!.resourceEntity.arn, UUID.randomUUID().toString())
         return rdsRepository.createProxy(request).dbProxyResource

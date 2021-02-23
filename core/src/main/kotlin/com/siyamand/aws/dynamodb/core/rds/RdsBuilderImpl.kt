@@ -30,6 +30,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
                 20,
                 mutableListOf(
                         TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), metadataId),
+                        TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue()),
                         TagEntity(monitorConfigProvider.getAccessTagName(), credentialResourceEntity.arn)))
     }
 
@@ -44,6 +45,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         auth.secretArn = secretArn
         request.auth.add(auth)
         request.tags.add(TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), metadataId))
+        request.tags.add(TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue()))
         return request
     }
 

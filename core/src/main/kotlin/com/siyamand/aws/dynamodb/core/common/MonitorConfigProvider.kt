@@ -7,4 +7,6 @@ interface MonitorConfigProvider {
     fun getMonitoringMetadataIdTagName(): String
     fun getAccessTagName(): String
     fun getS3BucketDefaultName(): String
+    fun getLambdaRole(): String
+    fun getRdsProxyRole(): String
 }

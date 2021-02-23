@@ -20,6 +20,14 @@ class PolicyBuilderImpl() : PolicyBuilder {
                 "/dynamodbmonitoring/lambda/policy/ec2/")
     }
 
+    override fun createRdsProxyPolicy(): CreatePolicyEntity {
+        return createPolicy(
+                "Rds-Proxy-Policy",
+                "policies/RdsProxyPolicy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for RDS Proxy to access security Manager values",
+                "/dynamodbmonitoring/rds/policy/rdsproxy/")
+    }
+
     override fun createLambdaSecretManagerPolicy(): CreatePolicyEntity {
         return createPolicy(
                 "Monitoring-Lambda-SecretManager-Policy",
@@ -28,10 +36,10 @@ class PolicyBuilderImpl() : PolicyBuilder {
                 "/dynamodbmonitoring/lambda/policy/aecretmanagerpolicy/")
     }
 
-    override fun createRdsProxyPolicy(): CreatePolicyEntity {
+    override fun createAccessRdsProxyPolicy(): CreatePolicyEntity {
         return createPolicy(
                 "Monitoring-RdsProxy-Policy",
-                "policies/ProxyPolicy.json",
+                "policies/AccessProxyPolicy.json",
                 "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions for Rds Proxy used by Monitoring-Dynamodb",
                 "/dynamodbmonitoring/rdsproxy/policy/")
     }

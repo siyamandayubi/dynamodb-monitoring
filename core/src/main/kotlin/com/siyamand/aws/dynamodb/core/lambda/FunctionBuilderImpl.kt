@@ -1,10 +1,11 @@
 package com.siyamand.aws.dynamodb.core.lambda
 
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.helpers.ZipHelper
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class FunctionBuilderImpl : FunctionBuilder {
+class FunctionBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) : FunctionBuilder {
     companion object {
         const val NODEJS_RUNTIME = "nodejs12.x"
     }
@@ -32,6 +33,7 @@ class FunctionBuilderImpl : FunctionBuilder {
                 environmentVariables = environmentVariables,
                 layers = layers,
                 subnetIds =  subnetIds,
+                tags = mapOf(monitorConfigProvider.getMonitoringVersionTagName() to monitorConfigProvider.getMonitoringVersionValue()),
                 securityGroupIds = securityGroupIds
         )
     }

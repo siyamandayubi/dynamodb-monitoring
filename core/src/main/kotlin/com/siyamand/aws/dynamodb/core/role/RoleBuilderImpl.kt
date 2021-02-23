@@ -7,16 +7,30 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 class RoleBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) : RoleBuilder {
-    override val lambdaRoleName = "Dynamodb-Monitoring-DB-Role"
     override fun createLambdaRole(): CreateRoleEntity {
         val uri = javaClass.classLoader.getResource("policies/LambdaAssumeRolePolicy.json").toURI()
         val assumePolicyDocument = Files.readString(Paths.get(uri))
-        return CreateRoleEntityImpl(lambdaRoleName,
-        assumePolicyDocument,
-        null,
-        null,
-        null,
-        mutableListOf(TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), ResourceType.ROLE.value)))
+        return CreateRoleEntityImpl(monitorConfigProvider.getLambdaRole(),
+                assumePolicyDocument,
+                null,
+                null,
+                null,
+                mutableListOf(
+                        TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), ResourceType.ROLE.value),
+                        TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue())))
+    }
+
+    override fun createRdsProxyRole(): CreateRoleEntity {
+        val uri = javaClass.classLoader.getResource("policies/RdsProxyAssumeRolePolicy.json").toURI()
+        val assumePolicyDocument = Files.readString(Paths.get(uri))
+        return CreateRoleEntityImpl(monitorConfigProvider.getRdsProxyRole(),
+                assumePolicyDocument,
+                null,
+                null,
+                null,
+                mutableListOf(
+                        TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), ResourceType.ROLE.value),
+                        TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue())))
     }
 
     private class CreateRoleEntityImpl(

@@ -4,6 +4,7 @@ import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
+import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.rds.RdsRepository
 import com.siyamand.aws.dynamodb.core.role.RoleRepository
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
@@ -15,6 +16,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
                                     private val roleRepository: RoleRepository,
                                     private val rdsRepository: RdsRepository,
                                     private val secretManagerRepository: SecretManagerRepository,
+                                    private val vpcRepository: VpcRepository,
                                     private val functionBuilder: FunctionBuilder) : WorkflowStep() {
     override val name: String = "AddLambdaFunction"
 
@@ -37,8 +39,8 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "code parameter is mandatory")
         }
 
-        if (!context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.RDS_ARN_KEY} in shared data")
+        if (!context.sharedData.containsKey(Keys.PROXY_NAME)) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.PROXY_NAME} in shared data")
         }
 
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
@@ -52,7 +54,15 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
         credentialProvider.initializeRepositories(lambdaRepository, rdsRepository, secretManagerRepository)
         credentialProvider.initializeRepositoriesWithGlobalRegion(roleRepository)
 
-        val rds = rdsRepository.getRds(context.sharedData[Keys.RDS_ARN_KEY]!!).firstOrNull()
+        val vpcList = vpcRepository.getVpcs(true, listOf())
+        if (vpcList.items.any()){
+            return  WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no default VPC has been found")
+        }
+        val vpc = vpcList.items.first()
+        val subnetIds = vpcRepository.getSubnets(listOf(vpc.vpcId))
+        val securityGroups = vpcRepository.getSecurityGroupVpcs(listOf(), listOf(vpc.vpcId))
+
+        val rds = rdsRepository.getProxies(context.sharedData[Keys.PROXY_NAME]!!).items.firstOrNull()
                 ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no Rds has been found for the given ARN: ${context.sharedData[Keys.RDS_ARN_KEY]} ")
 
         val secret = secretManagerRepository.getSecretValue(context.sharedData[Keys.SECRET_ARN_KEY]!!)
@@ -60,8 +70,8 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
         val credential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secret!!.secretData)
 
         val environmentVariables = mutableMapOf<String, String>()
-        environmentVariables["sql_endpoint"] = rds.endPoint
-        environmentVariables["sql_port"] = rds.port.toString()
+        environmentVariables["sql_endpoint"] = rds.endpoint ?: ""
+        environmentVariables["sql_port"] = "3306"
         environmentVariables["username"] = credential.userName
         environmentVariables["password"] = credential.password
         environmentVariables["sql_database"] = context.sharedData[Keys.DATABASE_NAME]!!
@@ -77,7 +87,13 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
 
         val code = (context.sharedData[Keys.CODE_RESULT])!!
         val role = roleRepository.getRole(roleName)
-        val createFunctionEntity = functionBuilder.build(name, code, role.resource.arn, layers, environmentVariables, listOf(), listOf())
+        val createFunctionEntity = functionBuilder.build(name,
+                code,
+                role.resource.arn,
+                layers,
+                environmentVariables,
+                subnetIds,
+                securityGroups)
         val result = lambdaRepository.add(createFunctionEntity)
         instance.context.sharedData[Keys.LAMBDA_ARN] = result.arn
 
