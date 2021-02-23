@@ -9,6 +9,8 @@ import software.amazon.awssdk.services.dynamodb.streams.DynamoDbStreamsAsyncClie
 import software.amazon.awssdk.services.ec2.Ec2Client
 import software.amazon.awssdk.services.iam.IamAsyncClient
 import software.amazon.awssdk.services.iam.IamAsyncClientBuilder
+import software.amazon.awssdk.services.kms.KmsAsyncClient
+import software.amazon.awssdk.services.kms.KmsClientBuilder
 import software.amazon.awssdk.services.lambda.LambdaAsyncClient
 import software.amazon.awssdk.services.rds.RdsAsyncClient
 import software.amazon.awssdk.services.resourcegroupstaggingapi.ResourceGroupsTaggingApiClient
@@ -65,5 +67,9 @@ class ClientBuilderImpl : ClientBuilder {
 
     override fun buildEc2Client(region: String, credential: AwsCredentialsProvider): Ec2Client {
         return Ec2Client.builder().region(Region.of(region)).credentialsProvider(credential).build()
+    }
+
+    override fun buildKmsAsyncClient(region: String, credential: AwsCredentialsProvider): KmsAsyncClient {
+        return KmsAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
 }
