@@ -16,7 +16,7 @@ class FunctionServiceImpl(
         return lambdaRepository.getList()
     }
 
-    override suspend fun getDetail(name: String): FunctionDetailEntity {
+    override suspend fun getDetail(name: String): FunctionDetailEntity? {
         val credential = credentialProvider.getCredential()
                 ?: throw SecurityException("No Credential has been provided");
 

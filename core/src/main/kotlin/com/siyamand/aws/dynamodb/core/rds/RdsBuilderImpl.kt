@@ -2,7 +2,6 @@ package com.siyamand.aws.dynamodb.core.rds
 
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
 import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.resource.ResourceType
 import com.siyamand.aws.dynamodb.core.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.role.RoleEntity
@@ -20,7 +19,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         return CreateDbInstanceEntityImpl(
                 name,
                 name,
-                credential.userName,
+                credential.username,
                 credential.password,
                 ENGINE,
                 ENGINE_VERSION,

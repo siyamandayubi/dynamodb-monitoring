@@ -1,5 +1,5 @@
 package com.siyamand.aws.dynamodb.web.models
 
-class StartWorkflowModel(var sourceTableName: String = "", var workflowName :String = "") {
+class StartWorkflowModel(var sourceTableName: String = "", var workflowName :String = "", var databaseName: String = "testdb") {
 }
 

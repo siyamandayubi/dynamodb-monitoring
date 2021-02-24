@@ -8,9 +8,7 @@ import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.FunctionMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import reactor.core.publisher.Mono
-import software.amazon.awssdk.services.lambda.model.GetFunctionRequest
-import software.amazon.awssdk.services.lambda.model.ListLayerVersionsRequest
-import software.amazon.awssdk.services.lambda.model.PublishLayerVersionRequest
+import software.amazon.awssdk.services.lambda.model.*
 
 
 class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRepository, AwsBaseRepositoryImpl() {
@@ -29,10 +27,14 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getDetail(name: String): FunctionDetailEntity {
+    override suspend fun getDetail(name: String): FunctionDetailEntity? {
         val client = getClient(clientBuilder::buildAsyncAwsLambda)
-        val response = client.getFunction(GetFunctionRequest.builder().functionName(name).build()).thenApply(FunctionMapper::convert)
-        return Mono.fromFuture(response).awaitFirst()
+        return try {
+            val response = client.getFunction(GetFunctionRequest.builder().functionName(name).build()).thenApply(FunctionMapper::convert)
+            Mono.fromFuture(response).awaitFirst()
+        } catch (ex: ResourceNotFoundException) {
+            null
+        }
     }
 
     override suspend fun add(requestEntity: CreateFunctionRequestEntity): ResourceEntity {

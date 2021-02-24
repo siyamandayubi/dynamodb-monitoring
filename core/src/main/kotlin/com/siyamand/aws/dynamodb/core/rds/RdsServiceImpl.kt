@@ -75,7 +75,7 @@ class RdsServiceImpl(
             throw Exception("No Rds has been found")
         }
         val rds = rdsList.first()
-        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }, listOf())
+        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, existingSecret!!.resourceEntity.arn, UUID.randomUUID().toString())
         return rdsRepository.createProxy(request).dbProxyResource

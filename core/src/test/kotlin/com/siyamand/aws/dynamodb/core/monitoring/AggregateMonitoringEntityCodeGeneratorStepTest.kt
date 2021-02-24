@@ -23,7 +23,7 @@ internal class AggregateMonitoringEntityCodeGeneratorStepTest {
         runBlocking {
             val classUnderTest = AggregateMonitoringEntityCodeGeneratorStep(TemplateEngineImpl())
 
-            val params = mapOf("code-path" to "lambdaTemplates/aggregateTemplate.ftl")
+            val params = mapOf("code-path" to "lambdaTemplates/aggregateTemplatejs")
             val workflowInstance = WorkflowInstance("id", WorkflowContext(), listOf(), 0, null)
             val owner = MonitoringBaseEntity<AggregateMonitoringEntity>("id", "sourceTable", "type", MonitorStatus.INITIAL, 1, "workflow", AggregateMonitoringEntity())
             owner.relatedData.groups.add({

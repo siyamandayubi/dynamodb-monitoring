@@ -49,10 +49,10 @@ class FunctionBuilderImpl(private val monitorConfigProvider: MonitorConfigProvid
         request.functionName =functionName
         request.batchSize = 100
         request.enabled = true
-        request.maximumBatchingWindowInSeconds = 1
-        request.maximumRecordAgeInSeconds = 10
+        request.maximumBatchingWindowInSeconds = 10
+        request.maximumRecordAgeInSeconds = -1
         request.maximumRetryAttempts = 3
-        request.startingPosition = "0"
+        request.startingPosition = "LATEST"
         return request
     }
 }

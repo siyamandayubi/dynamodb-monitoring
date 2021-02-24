@@ -15,31 +15,35 @@ class TableMapper {
 
         @Async
         fun convertDetail(describeTableResponse: DescribeTableResponse): TableDetailEntity? {
-            if (describeTableResponse == null){
-                return  null
+            if (describeTableResponse == null) {
+                return null
             }
 
             val table = describeTableResponse.table()
-           return convertDetail(table)
+            return convertDetail(table)
         }
 
         @Async
         fun convertDetail(table: TableDescription): TableDetailEntity {
             val attributes = table.attributeDefinitions().map { TableAttribute(it.attributeName(), it.attributeType().name) }
             val keySchema = table.keySchema().map { TableKeyScheme(it.attributeName(), it.keyType().name) }
+            val streamArn = table.latestStreamArn()
             return TableDetailEntity(
                     table.tableArn(),
                     table.tableName(),
                     attributes.toMutableList(),
                     keySchema.toMutableList(),
-                    table.tableStatusAsString())
+                    table.tableStatusAsString(),
+                    table.streamSpecification()?.streamEnabled() ?: false,
+                    if (streamArn.isNullOrEmpty()) null else ResourceMapper.convert(streamArn!!)
+            )
         }
 
-        fun convertToAttributeDefinition(attributeName:String, attributeType:String): AttributeDefinition{
+        fun convertToAttributeDefinition(attributeName: String, attributeType: String): AttributeDefinition {
             return AttributeDefinition.builder().attributeName(attributeName).attributeType(attributeType).build()
         }
 
-        fun convertToKeySchemaDefinition(attributeName:String, keyType:String): KeySchemaElement{
+        fun convertToKeySchemaDefinition(attributeName: String, keyType: String): KeySchemaElement {
             return KeySchemaElement.builder().attributeName(attributeName).keyType(keyType).build()
         }
     }

@@ -20,7 +20,7 @@ class FunctionController(private val functionService: FunctionService) {
     }
 
     @GetMapping("/api/functions/{name}")
-    suspend fun getFunctions(@PathVariable("name") name: String): HttpEntity<FunctionDetailEntity> {
+    suspend fun getFunctions(@PathVariable("name") name: String): HttpEntity<FunctionDetailEntity?> {
         return ResponseEntity(functionService.getDetail(name), HttpStatus.OK)
     }
 

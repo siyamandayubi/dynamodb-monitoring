@@ -25,6 +25,10 @@ class WorkflowManagerImpl() : WorkflowManager {
                         lastResult == WorkflowResultType.SUCCESS || lastResult == WorkflowResultType.WAITING)
         ) {
             val pair = executeStep(currentInstance, owner, workflowPersister)
+            if (pair.second.resultType == WorkflowResultType.ERROR){
+                logger.error(pair.second.message)
+            }
+
             val currentStepInstance = pair.first
             var stepResult = pair.second
 

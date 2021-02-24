@@ -24,21 +24,24 @@ class DatabaseRepositoryImpl : DatabaseRepository {
         try {
             DriverManager.getConnection(
                     url,
-                    databaseCredentialEntity.userName,
+                    databaseCredentialEntity.username,
                     databaseCredentialEntity.password)
                     .use { conn ->
                         conn.prepareStatement(sql)
-                                .use { stmt -> stmt.execute() }
+                                .use { stmt ->
+                                    stmt.execute()
+                                }
                     }
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
         }
     }
-    private fun getJdbcUrl(databaseConnectionEntity: DatabaseConnectionEntity, includeDatabaseName : Boolean): String {
+
+    private fun getJdbcUrl(databaseConnectionEntity: DatabaseConnectionEntity, includeDatabaseName: Boolean): String {
         var url = "jdbc:mysql://${databaseConnectionEntity.endPoint}:${databaseConnectionEntity.port}"
 
-        if (includeDatabaseName){
+        if (includeDatabaseName) {
             url = url + "/${databaseConnectionEntity.databaseName}"
         }
 

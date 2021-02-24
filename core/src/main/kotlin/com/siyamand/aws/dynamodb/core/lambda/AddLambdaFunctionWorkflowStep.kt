@@ -55,29 +55,35 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
         credentialProvider.initializeRepositoriesWithGlobalRegion(roleRepository)
 
         val vpcList = vpcRepository.getVpcs(true, listOf())
-        if (vpcList.items.any()){
-            return  WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no default VPC has been found")
+        if (!vpcList.items.any()) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no default VPC has been found")
         }
         val vpc = vpcList.items.first()
         val subnetIds = vpcRepository.getSubnets(listOf(vpc.vpcId))
-        val securityGroups = vpcRepository.getSecurityGroupVpcs(listOf(), listOf(vpc.vpcId))
+        val securityGroups = vpcRepository.getSecurityGroupsByVpcs(listOf(vpc.vpcId))
+
 
         val rds = rdsRepository.getProxies(context.sharedData[Keys.PROXY_NAME]!!).items.firstOrNull()
                 ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no Rds has been found for the given ARN: ${context.sharedData[Keys.RDS_ARN_KEY]} ")
 
-        val secret = secretManagerRepository.getSecretValue(context.sharedData[Keys.SECRET_ARN_KEY]!!)
-                ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no Secret has been found for the given ARN: ${context.sharedData[Keys.SECRET_ARN_KEY]} ")
-        val credential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secret!!.secretData)
+        if (secretManagerRepository.getSecretValue(context.sharedData[Keys.SECRET_ARN_KEY]!!) == null) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no Secret has been found for the given ARN: ${context.sharedData[Keys.SECRET_ARN_KEY]} ")
+        }
 
         val environmentVariables = mutableMapOf<String, String>()
         environmentVariables["sql_endpoint"] = rds.endpoint ?: ""
         environmentVariables["sql_port"] = "3306"
-        environmentVariables["username"] = credential.userName
-        environmentVariables["password"] = credential.password
+        environmentVariables["secret_key"] = context.sharedData[Keys.SECRET_ARN_KEY]!!
         environmentVariables["sql_database"] = context.sharedData[Keys.DATABASE_NAME]!!
 
+        val originalName = (params["name"])!!
+        var name = originalName
+        var counter = 0;
+        while (lambdaRepository.getDetail(name) != null) {
+            counter++;
+            name = "$originalName-$counter"
+        }
 
-        val name = (params["name"])!!
         val roleName = (params[Keys.LAMBDA_ROLE])!!
         val layersStr = (params["layers"])!!
         val layers = layersStr

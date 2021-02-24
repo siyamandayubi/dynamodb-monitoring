@@ -14,11 +14,11 @@ class AddLambdaEventSourceWorkflowStep(private var credentialProvider: Credentia
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.LAMBDA_ARN} in shared data")
         }
 
-        if (!context.sharedData.containsKey(Keys.SOURCE_DYNAMODB_ARN)) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.SOURCE_DYNAMODB_ARN} in shared data")
+        if (!context.sharedData.containsKey(Keys.STREAM__DYNAMODB_ARN)) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.STREAM__DYNAMODB_ARN} in shared data")
         }
 
-        val request = functionBuilder.buildEventSourceCreateRequest(context.sharedData[Keys.SOURCE_DYNAMODB_ARN]!!, context.sharedData[Keys.LAMBDA_ARN]!!)
+        val request = functionBuilder.buildEventSourceCreateRequest(context.sharedData[Keys.STREAM__DYNAMODB_ARN]!!, context.sharedData[Keys.LAMBDA_ARN]!!)
         val result = lambdaRepository.add(request)
         context.sharedData[Keys.EVENT_SOURCE_ARN] = result.arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.EVENT_SOURCE_ARN to result.arn), "")

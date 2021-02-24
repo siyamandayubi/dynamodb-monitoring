@@ -40,6 +40,13 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
         val rds = rdsList.first()
 
         val targetGroup = rdsRepository.getDbProxyTargetGroups(proxyName).items.first { it.isDefault }
+        val existingTarget = rdsRepository.getDbProxyTargets(targetGroup.groupName, proxyName)
+        if (existingTarget.items.any()) {
+            val arn = existingTarget.items.first().targetResource?.arn ?: ""
+            context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = arn
+            return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to arn), "")
+        }
+
         val result = rdsRepository.registerDbProxyTarget(
                 CreateDbProxyTargetEntity(
                         proxyName,
@@ -47,7 +54,7 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
                         listOf(rds.instanceName))).first()
 
         val arn = result.targetResource?.arn ?: ""
-        context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] =arn
+        context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to arn), "")
     }
 

@@ -31,16 +31,16 @@ class AggregateSimpleMysqlDatabaseTemplate(
                         "dbInstanceName" to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("CreateDatabase", allSteps.first { it.name == "CreateDatabase" }, WorkflowStepStatus.INITIAL, mapOf()),
-              /*  WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
+                WorkflowStepInstance("CreateRdsProxy", allSteps.first { it.name == "CreateRdsProxy" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("CreateRdsProxyTargetGroup", allSteps.first { it.name == "CreateRdsProxyTargetGroup" }, WorkflowStepStatus.INITIAL, mapOf(
                         Keys.PROXY_TARGET_GROUP_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
-                )),*/
+                )),
                 WorkflowStepInstance("CreateDatabaseTable", allSteps.first { it.name == "CreateDatabaseTable" }, WorkflowStepStatus.INITIAL, mapOf(
                         "tableNames" to (workflowContext.sharedData["tableNames"] ?: ""),
                         "sql_file" to "database/aggregate-table.sql"
                 )),
                 WorkflowStepInstance("AggregateMonitoringEntityCodeGenerator", allSteps.first { it.name == "AggregateMonitoringEntityCodeGenerator" }, WorkflowStepStatus.INITIAL, mapOf(
-                        "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
+                        "code-path" to "lambdaTemplates/aggregateTemplate.js",
                         Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("AddLambdaFunction", allSteps.first { it.name == "AddLambdaFunction" }, WorkflowStepStatus.INITIAL, mapOf(
@@ -48,6 +48,7 @@ class AggregateSimpleMysqlDatabaseTemplate(
                         Keys.LAMBDA_ROLE to monitorConfigProvider.getLambdaRole(),
                         "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
                 )),
+                WorkflowStepInstance("EnableDynamoDbStream", allSteps.first { it.name == "EnableDynamoDbStream" }, WorkflowStepStatus.INITIAL, mapOf()),
                 WorkflowStepInstance("AddLambdaEventSource", allSteps.first { it.name == "AddLambdaEventSource" }, WorkflowStepStatus.INITIAL, mapOf()),
         )
 

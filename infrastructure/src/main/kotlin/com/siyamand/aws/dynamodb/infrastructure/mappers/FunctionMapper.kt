@@ -49,7 +49,7 @@ class FunctionMapper {
                     response.createdDate(),
                     response.version(),
                     response.compatibleRuntimesAsStrings(),
-                    response.licenseInfo()
+                    response.licenseInfo()?:""
             )
         }
 

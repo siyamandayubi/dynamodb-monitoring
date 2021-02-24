@@ -19,6 +19,7 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
 
         return try {
             val returnValue = response.thenApply(TableMapper::convertDetail)
+
             fromFuture(returnValue).awaitFirst()
         } catch (resourceNotFoundException: ResourceNotFoundException){
             null

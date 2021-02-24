@@ -49,10 +49,11 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         val rds = rdsList.first()
         val role = roleRepository.getRole(monitorConfigProvider.getRdsProxyRole())
 
-        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }, listOf())
+        val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!, instance.id)
-        val proxy = rdsRepository.createProxy(request)
+        val existingProxies = rdsRepository.getProxies(rds.instanceName)
+        val proxy = if (existingProxies.items.any()) existingProxies.items.first() else rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_NAME] = proxy.dbProxyName
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
         if (proxy.status == "creating") {

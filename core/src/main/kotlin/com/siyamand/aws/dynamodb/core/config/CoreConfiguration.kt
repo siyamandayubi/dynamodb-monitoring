@@ -6,7 +6,8 @@ import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.database.*
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
+import com.siyamand.aws.dynamodb.core.dynamodb.*
+import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
 import com.siyamand.aws.dynamodb.core.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.network.VpcService
 import com.siyamand.aws.dynamodb.core.network.VpcServiceImpl
@@ -20,9 +21,6 @@ import com.siyamand.aws.dynamodb.core.secretManager.SecretBuilder
 import com.siyamand.aws.dynamodb.core.secretManager.SecretBuilderImpl
 import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
 import com.siyamand.aws.dynamodb.core.monitoring.*
-import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
-import com.siyamand.aws.dynamodb.core.dynamodb.TableServiceImpl
-import com.siyamand.aws.dynamodb.core.dynamodb.TableService
 import com.siyamand.aws.dynamodb.core.lambda.*
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandlerImpl
@@ -39,6 +37,14 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+
+    @Bean
+    open fun getEnableDynamoDbStreamWorkflowStep(
+            credentialProvider: CredentialProvider,
+            resourceRepository: ResourceRepository,
+            tableRepository: TableRepository): WorkflowStep {
+        return EnableDynamoDbStreamWorkflowStep(credentialProvider, resourceRepository, tableRepository)
+    }
 
     @Bean
     open fun getPrerequisiteService(

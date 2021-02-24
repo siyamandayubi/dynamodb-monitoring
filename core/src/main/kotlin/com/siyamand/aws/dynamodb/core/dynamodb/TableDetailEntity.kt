@@ -1,11 +1,15 @@
 package com.siyamand.aws.dynamodb.core.dynamodb
 
+import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+
 class TableDetailEntity(
         val arn: String,
         val tableName: String,
         val attributes: MutableList<TableAttribute>,
         val keySchema: MutableList<TableKeyScheme>,
-        val status :String
+        val status :String,
+        val streamEnabled: Boolean,
+        val latestStream: ResourceEntity?
 ) {
 }
 

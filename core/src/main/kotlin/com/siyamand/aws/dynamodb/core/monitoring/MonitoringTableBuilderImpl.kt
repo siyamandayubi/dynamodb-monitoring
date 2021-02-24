@@ -19,6 +19,8 @@ class MonitoringTableBuilderImpl : MonitoringTableBuilder {
                         //TableAttribute("workflow", "S"),
                 ),
                 mutableListOf(TableKeyScheme("id", "HASH")),
-                "")
+                "",
+        false,
+        null)
     }
 }

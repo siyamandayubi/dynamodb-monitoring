@@ -51,6 +51,17 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         return Mono.fromFuture(response).awaitFirst()
     }
 
+    override suspend fun getDbProxyTargets(targetGroupName: String, dbProxyName: String): PageResultEntity<DbProxyTargetEntity> {
+        val client = getClient(clientBuilder::buildAsyncRdsClient)
+        val response = client.describeDBProxyTargets(DescribeDbProxyTargetsRequest
+                .builder()
+                .targetGroupName(targetGroupName)
+                .dbProxyName(dbProxyName)
+                .build()).thenApply { PageResultEntity(it.targets().map(RdsMapper::convert), it.marker() ?: "") }
+
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
     override suspend fun registerDbProxyTarget(entity: CreateDbProxyTargetEntity): List<DbProxyTargetEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = RdsMapper.convert(entity)
