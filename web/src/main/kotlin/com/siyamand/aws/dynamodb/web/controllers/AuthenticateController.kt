@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.authentication.AuthenticationService
+import com.siyamand.aws.dynamodb.core.sdk.authentication.AuthenticationService
 import com.siyamand.aws.dynamodb.web.models.CredentialModel
 import com.siyamand.aws.dynamodb.web.models.TokenModel
 import com.siyamand.aws.dynamodb.web.services.JwtSignerService

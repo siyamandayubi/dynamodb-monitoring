@@ -4,6 +4,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
 import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.appconfig.AppConfigAsyncClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.streams.DynamoDbStreamsAsyncClient
 import software.amazon.awssdk.services.ec2.Ec2Client
@@ -72,4 +73,8 @@ class ClientBuilderImpl : ClientBuilder {
     override fun buildKmsAsyncClient(region: String, credential: AwsCredentialsProvider): KmsAsyncClient {
         return KmsAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
+
+    //override fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient {
+    //    return AppConfigAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
+    //}
 }

@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 

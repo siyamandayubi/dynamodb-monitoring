@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.network.EndpointEntity
-import com.siyamand.aws.dynamodb.core.network.VpcService
+import com.siyamand.aws.dynamodb.core.sdk.network.EndpointEntity
+import com.siyamand.aws.dynamodb.core.sdk.network.VpcService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

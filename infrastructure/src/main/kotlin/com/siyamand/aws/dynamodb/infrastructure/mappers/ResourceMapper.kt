@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.resource.TagEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import software.amazon.awssdk.arns.Arn
 import software.amazon.awssdk.services.resourcegroupstaggingapi.model.ResourceTagMapping
 

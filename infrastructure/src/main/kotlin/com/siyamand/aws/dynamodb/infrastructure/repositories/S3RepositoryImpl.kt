@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.s3.CreateBucketRequestEntity
-import com.siyamand.aws.dynamodb.core.s3.CreateS3ObjectRequestEntity
-import com.siyamand.aws.dynamodb.core.s3.S3ObjectEntity
-import com.siyamand.aws.dynamodb.core.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.sdk.s3.CreateBucketRequestEntity
+import com.siyamand.aws.dynamodb.core.sdk.s3.CreateS3ObjectRequestEntity
+import com.siyamand.aws.dynamodb.core.sdk.s3.S3ObjectEntity
+import com.siyamand.aws.dynamodb.core.sdk.s3.S3Repository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.S3Mapper
 import kotlinx.coroutines.reactive.awaitFirst

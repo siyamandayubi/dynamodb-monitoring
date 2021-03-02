@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.core.schedule
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.monitoring.MonitoringItemConverter
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowConverter

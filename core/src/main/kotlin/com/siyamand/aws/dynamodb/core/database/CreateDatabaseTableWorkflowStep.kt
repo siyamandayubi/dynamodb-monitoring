@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.core.database
 
-import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.rds.RdsRepository
-import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
-import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.rds.RdsRepository
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretManagerRepository
 import com.siyamand.aws.dynamodb.core.template.TemplateEngine
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowContext
 

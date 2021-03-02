@@ -1,9 +1,8 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.authentication.BasicCredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
-import com.siyamand.aws.dynamodb.core.role.RoleEntity
-import com.siyamand.aws.dynamodb.core.role.RoleService
+import com.siyamand.aws.dynamodb.core.sdk.authentication.BasicCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleService
 import com.siyamand.aws.dynamodb.web.models.CredentialModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus

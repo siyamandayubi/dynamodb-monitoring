@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemRepository
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.workflow.*
 

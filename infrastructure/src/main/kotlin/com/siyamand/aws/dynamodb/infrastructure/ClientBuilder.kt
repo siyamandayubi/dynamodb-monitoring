@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure
 
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
+import software.amazon.awssdk.services.appconfig.AppConfigAsyncClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
 import software.amazon.awssdk.services.dynamodb.streams.DynamoDbStreamsAsyncClient
 import software.amazon.awssdk.services.ec2.Ec2Client
@@ -25,4 +26,5 @@ interface ClientBuilder {
     fun buildAsyncSecretsManagerClient(region: String, credential: AwsCredentialsProvider): SecretsManagerClient
     fun buildEc2Client(region: String, credential: AwsCredentialsProvider): Ec2Client
     fun buildKmsAsyncClient(region: String, credential: AwsCredentialsProvider): KmsAsyncClient
+   // fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient
 }

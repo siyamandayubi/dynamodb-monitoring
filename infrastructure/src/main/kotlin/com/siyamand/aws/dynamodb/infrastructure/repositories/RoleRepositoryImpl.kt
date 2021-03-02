@@ -1,13 +1,12 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.monitoring.entities.*
 import com.siyamand.aws.dynamodb.core.common.NotExistException
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.role.CreatePolicyEntity
-import com.siyamand.aws.dynamodb.core.role.CreateRoleEntity
-import com.siyamand.aws.dynamodb.core.role.RoleEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.sdk.role.CreatePolicyEntity
+import com.siyamand.aws.dynamodb.core.sdk.role.CreateRoleEntity
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
 import kotlinx.coroutines.reactive.awaitFirst
-import com.siyamand.aws.dynamodb.core.role.RoleRepository
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RoleMapper

@@ -1,7 +1,6 @@
 package com.siyamand.aws.dynamodb.core.workflow.templates
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.role.RoleBuilder
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AggregateSimpleMysqlDatabaseTemplate(

@@ -1,8 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
-import com.siyamand.aws.dynamodb.core.network.*
-import com.siyamand.aws.dynamodb.core.resource.TagEntity
+import com.siyamand.aws.dynamodb.core.sdk.network.*
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.EndpointMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.NetworkMapper

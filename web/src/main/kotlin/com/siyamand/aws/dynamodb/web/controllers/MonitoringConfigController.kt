@@ -1,6 +1,5 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
 import com.siyamand.aws.dynamodb.core.monitoring.PrerequisiteService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity

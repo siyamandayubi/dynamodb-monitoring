@@ -1,7 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.network.VpcEntity
-import com.siyamand.aws.dynamodb.core.resource.TagEntity
+import com.siyamand.aws.dynamodb.core.sdk.network.VpcEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import software.amazon.awssdk.services.ec2.model.Vpc
 
 class VpcMapper {

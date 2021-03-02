@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueType
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueType
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemEntity
 import software.amazon.awssdk.services.dynamodb.model.*
 
 class TableItemtMapper {

@@ -1,12 +1,11 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import kotlinx.coroutines.reactive.awaitFirst
-import com.siyamand.aws.dynamodb.core.dynamodb.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableRepository
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableDetailEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.TableMapper
-import reactor.core.publisher.Mono
 import reactor.core.publisher.Mono.*
 import software.amazon.awssdk.services.dynamodb.model.*
 

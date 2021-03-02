@@ -1,10 +1,10 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
-import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
-import com.siyamand.aws.dynamodb.core.dynamodb.*
-import com.siyamand.aws.dynamodb.core.resource.ResourceRepository
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.*
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity

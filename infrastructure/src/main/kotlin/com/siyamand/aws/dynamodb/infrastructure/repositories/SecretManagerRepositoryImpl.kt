@@ -1,10 +1,10 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretDetailEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretManagerRepository
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.CreateSecretEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretDetailEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretManagerRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.SecretManagerMapper

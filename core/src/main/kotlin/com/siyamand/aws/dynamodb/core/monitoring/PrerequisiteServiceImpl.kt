@@ -2,8 +2,7 @@ package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.PrerequisteEntity
-import com.siyamand.aws.dynamodb.core.role.RoleRepository
-import com.siyamand.aws.dynamodb.core.role.RoleService
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleRepository
 
 class PrerequisiteServiceImpl(
         private val monitorConfigProvider: MonitorConfigProvider,

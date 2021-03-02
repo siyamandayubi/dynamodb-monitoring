@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.services
 
-import com.siyamand.aws.dynamodb.core.authentication.BasicCredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.authentication.BasicCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import kotlinx.coroutines.reactive.awaitFirst
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment

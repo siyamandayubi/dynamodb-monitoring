@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.core.common
 
-import com.siyamand.aws.dynamodb.core.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 
 suspend fun CredentialProvider.initializeRepositories(vararg repositories: AWSBaseRepository) {
     val credential = this.getCredential()

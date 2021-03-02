@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.authentication.BasicCredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
-import com.siyamand.aws.dynamodb.core.authentication.CredentialType
-import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.BasicCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialType
+import com.siyamand.aws.dynamodb.core.sdk.authentication.TokenCredentialEntity
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials

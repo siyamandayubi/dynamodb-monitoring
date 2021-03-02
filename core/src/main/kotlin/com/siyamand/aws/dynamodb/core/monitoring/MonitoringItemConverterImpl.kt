@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.asEnumOrDefault
-import com.siyamand.aws.dynamodb.core.dynamodb.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemEntity
-import com.siyamand.aws.dynamodb.core.dynamodb.TableItemReaderDecorator
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemReaderDecorator
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString

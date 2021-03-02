@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.web
 
-import com.siyamand.aws.dynamodb.core.authentication.TokenCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.TokenCredentialEntity
 import com.siyamand.aws.dynamodb.web.services.JwtSignerService
 import com.siyamand.aws.dynamodb.web.services.TokenClaims
 import org.springframework.security.authentication.ReactiveAuthenticationManager

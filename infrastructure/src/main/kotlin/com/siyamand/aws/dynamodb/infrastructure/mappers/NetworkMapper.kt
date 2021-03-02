@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.network.InternetGatewayAttachmentEntity
-import com.siyamand.aws.dynamodb.core.network.InternetGatewayEntity
-import com.siyamand.aws.dynamodb.core.resource.TagEntity
+import com.siyamand.aws.dynamodb.core.sdk.network.InternetGatewayAttachmentEntity
+import com.siyamand.aws.dynamodb.core.sdk.network.InternetGatewayEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import software.amazon.awssdk.services.ec2.model.CreateInternetGatewayResponse
 
 class NetworkMapper {

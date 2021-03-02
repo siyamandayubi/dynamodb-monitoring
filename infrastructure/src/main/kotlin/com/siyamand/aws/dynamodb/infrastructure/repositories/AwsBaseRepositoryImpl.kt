@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.authentication.CredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialEntity
 import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
 import com.siyamand.aws.dynamodb.infrastructure.mappers.CredentialMapper
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider

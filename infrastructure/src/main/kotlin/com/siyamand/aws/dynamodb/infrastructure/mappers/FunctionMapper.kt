@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.lambda.*
+import com.siyamand.aws.dynamodb.core.sdk.lambda.*
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.services.lambda.model.*
 import java.nio.charset.Charset

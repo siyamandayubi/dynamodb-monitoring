@@ -1,8 +1,8 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
-import com.siyamand.aws.dynamodb.core.lambda.*
-import com.siyamand.aws.dynamodb.core.resource.ResourceEntity
+import com.siyamand.aws.dynamodb.core.sdk.lambda.*
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import kotlinx.coroutines.reactive.awaitFirst
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.FunctionMapper

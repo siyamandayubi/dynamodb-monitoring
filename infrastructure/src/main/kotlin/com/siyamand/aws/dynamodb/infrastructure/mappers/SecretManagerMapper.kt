@@ -1,9 +1,9 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.resource.TagEntity
-import com.siyamand.aws.dynamodb.core.secretManager.CreateSecretEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretDetailEntity
-import com.siyamand.aws.dynamodb.core.secretManager.SecretEntity
+import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.CreateSecretEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretDetailEntity
+import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretEntity
 import software.amazon.awssdk.services.secretsmanager.model.Tag
 import software.amazon.awssdk.services.secretsmanager.model.CreateSecretRequest
 import software.amazon.awssdk.services.secretsmanager.model.DescribeSecretResponse
