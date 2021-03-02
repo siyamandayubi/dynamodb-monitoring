@@ -40,7 +40,7 @@ class AggregateSimpleMysqlDatabaseTemplate(
                         "sql_file" to "database/aggregate-table.sql"
                 )),
                 WorkflowStepInstance("AggregateMonitoringEntityCodeGenerator", allSteps.first { it.name == "AggregateMonitoringEntityCodeGenerator" }, WorkflowStepStatus.INITIAL, mapOf(
-                        "code-path" to "lambdaTemplates/aggregateTemplate.js",
+                        "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
                         Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
                 )),
                 WorkflowStepInstance("AddLambdaFunction", allSteps.first { it.name == "AddLambdaFunction" }, WorkflowStepStatus.INITIAL, mapOf(
