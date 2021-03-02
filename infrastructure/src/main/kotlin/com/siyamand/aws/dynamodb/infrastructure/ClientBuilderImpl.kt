@@ -74,7 +74,7 @@ class ClientBuilderImpl : ClientBuilder {
         return KmsAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
     }
 
-    //override fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient {
-    //    return AppConfigAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
-    //}
+    override fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient {
+        return AppConfigAsyncClient.builder().region(Region.of(region)).credentialsProvider(credential).build()
+    }
 }

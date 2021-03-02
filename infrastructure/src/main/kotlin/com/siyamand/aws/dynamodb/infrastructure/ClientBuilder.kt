@@ -26,5 +26,5 @@ interface ClientBuilder {
     fun buildAsyncSecretsManagerClient(region: String, credential: AwsCredentialsProvider): SecretsManagerClient
     fun buildEc2Client(region: String, credential: AwsCredentialsProvider): Ec2Client
     fun buildKmsAsyncClient(region: String, credential: AwsCredentialsProvider): KmsAsyncClient
-   // fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient
+    fun buildAppConfigAsyncClient(region: String, credential: AwsCredentialsProvider): AppConfigAsyncClient
 }
