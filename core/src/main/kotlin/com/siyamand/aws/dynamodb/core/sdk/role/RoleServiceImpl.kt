@@ -44,6 +44,7 @@ class RoleServiceImpl(
         addPolicyToRole(policyBuilder.createLambdaPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createLambdaSecretManagerPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createAccessRdsProxyPolicy(), rolePolicies, role.name)
+        addPolicyToRole(policyBuilder.createAppConfigAccessPolicy(), rolePolicies, role.name)
 
         return role
     }

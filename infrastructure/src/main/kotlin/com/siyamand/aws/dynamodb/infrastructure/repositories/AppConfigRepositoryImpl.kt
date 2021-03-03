@@ -36,9 +36,9 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun addHostedConfigurationVersion(entity: CreateHostedConfigurationVersionEntity): String? {
+    override suspend fun addHostedConfigurationVersion(entity: CreateHostedConfigurationVersionEntity): HostedConfigurationVersionEntity {
         val client = getClient(clientBuilder::buildAppConfigAsyncClient)
-        val response = client.createHostedConfigurationVersion(AppConfigMapper.convert(entity)).thenApply { it.versionNumber()?.toString() }
+        val response = client.createHostedConfigurationVersion(AppConfigMapper.convert(entity)).thenApply(AppConfigMapper::convert)
         return Mono.fromFuture(response).awaitFirst()
     }
 
@@ -61,7 +61,7 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getEnvironments(applicationId:String, nextToken: String): PageResultEntity<EnvironmentEntity> {
+    override suspend fun getEnvironments(applicationId: String, nextToken: String): PageResultEntity<EnvironmentEntity> {
         val requestBuilder = ListEnvironmentsRequest.builder().applicationId(applicationId)
         if (!nextToken.isNullOrEmpty()) {
             requestBuilder.nextToken(nextToken)
@@ -74,7 +74,7 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getProfiles(applicationId:String, nextToken: String): PageResultEntity<ConfigurationProfileEntity> {
+    override suspend fun getProfiles(applicationId: String, nextToken: String): PageResultEntity<ConfigurationProfileEntity> {
         val requestBuilder = ListConfigurationProfilesRequest.builder().applicationId(applicationId)
         if (!nextToken.isNullOrEmpty()) {
             requestBuilder.nextToken(nextToken)
@@ -87,6 +87,18 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
         return Mono.fromFuture(response).awaitFirst()
     }
 
+    override suspend fun getHostedConfigurations(applicationId: String, nextToken: String): PageResultEntity<HostedConfigurationVersionEntity> {
+        val requestBuilder = ListHostedConfigurationVersionsRequest.builder().applicationId(applicationId)
+        if (!nextToken.isNullOrEmpty()) {
+            requestBuilder.nextToken(nextToken)
+        }
+        val client = getClient(clientBuilder::buildAppConfigAsyncClient)
+        val response = client.listHostedConfigurationVersions(requestBuilder.build()).thenApply {
+            PageResultEntity(it.items().map(AppConfigMapper::convert), it.nextToken() ?: "")
+        }
+
+        return Mono.fromFuture(response).awaitFirst()
+    }
     override suspend fun getDeploymentStrategies(nextToken: String): PageResultEntity<DeploymentStrategyEntity> {
         val requestBuilder = ListDeploymentStrategiesRequest.builder()
         if (!nextToken.isNullOrEmpty()) {
@@ -99,6 +111,22 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
 
         return Mono.fromFuture(response).awaitFirst()
     }
+
+    override suspend fun getDeployments(applicationId: String, environmentId: String): PageResultEntity<DeploymentStatusEntity> {
+        val client = getClient(clientBuilder::buildAppConfigAsyncClient)
+        val request = ListDeploymentsRequest
+                .builder()
+                .applicationId(applicationId)
+                .environmentId(environmentId)
+                .build()
+        val response = client.listDeployments(request)
+                .thenApply {
+                    PageResultEntity<DeploymentStatusEntity>(it.items().map(AppConfigMapper::convert), it.nextToken()
+                            ?: "")
+                }
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
     override suspend fun getDeployment(applicationId: String, environmentId: String, deploymentNumber: Int): DeploymentStatusEntity {
         val client = getClient(clientBuilder::buildAppConfigAsyncClient)
         val response = client.getDeployment(GetDeploymentRequest

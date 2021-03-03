@@ -24,6 +24,7 @@ import com.siyamand.aws.dynamodb.core.monitoring.*
 import com.siyamand.aws.dynamodb.core.sdk.lambda.*
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandlerImpl
+import com.siyamand.aws.dynamodb.core.sdk.appconfig.*
 import com.siyamand.aws.dynamodb.core.sdk.secretManager.CreateSecretManagerWorkflowStep
 import com.siyamand.aws.dynamodb.core.template.TemplateEngine
 import com.siyamand.aws.dynamodb.core.template.TemplateEngineImpl
@@ -37,6 +38,16 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+
+    @Bean
+    open fun getAppConfigBuilder(monitorConfigProvider: MonitorConfigProvider): AppConfigBuilder {
+        return AppConfigBuilderImpl(monitorConfigProvider)
+    }
+
+    @Bean
+    open fun getAppConfigService(appConfigRepository: AppConfigRepository, credentialProvider: CredentialProvider, appConfigBuilder: AppConfigBuilder): AppConfigService {
+        return AppConfigServiceImpl(appConfigRepository, credentialProvider, appConfigBuilder)
+    }
 
     @Bean
     open fun getEnableDynamoDbStreamWorkflowStep(

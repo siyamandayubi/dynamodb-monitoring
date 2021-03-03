@@ -136,10 +136,6 @@ class AppConfigMapper {
 
         fun convert(response: StartDeploymentResponse): DeploymentStatusEntity {
             return DeploymentStatusEntity(
-                    response.applicationId(),
-                    response.environmentId(),
-                    response.deploymentStrategyId(),
-                    response.configurationProfileId(),
                     response.deploymentNumber() ?: 0,
                     response.description() ?: "",
                     response.stateAsString() ?: "",
@@ -149,12 +145,19 @@ class AppConfigMapper {
                     response.completedAt())
         }
 
+        fun convert(response: DeploymentSummary): DeploymentStatusEntity {
+            return DeploymentStatusEntity(
+                    response.deploymentNumber() ?: 0,
+                    "",
+                    response.stateAsString() ?: "",
+                    listOf(),
+                    (response.percentageComplete() ?: 0.0) as Float,
+                    response.startedAt(),
+                    response.completedAt())
+        }
+
         fun convert(response: GetDeploymentResponse): DeploymentStatusEntity {
             return DeploymentStatusEntity(
-                    response.applicationId(),
-                    response.environmentId(),
-                    response.deploymentStrategyId(),
-                    response.configurationProfileId(),
                     response.deploymentNumber() ?: 0,
                     response.description() ?: "",
                     response.stateAsString() ?: "",
@@ -175,6 +178,24 @@ class AppConfigMapper {
                     response.description(),
                     response.locationUri(),
                     response.retrievalRoleArn())
+        }
+
+        fun convert(response: HostedConfigurationVersionSummary): HostedConfigurationVersionEntity {
+            return HostedConfigurationVersionEntity(
+                    response.applicationId(),
+                    response.configurationProfileId(),
+                    response.description(),
+                    response.contentType(),
+                    response.versionNumber())
+        }
+
+        fun convert(response: CreateHostedConfigurationVersionResponse): HostedConfigurationVersionEntity {
+            return HostedConfigurationVersionEntity(
+                    response.applicationId(),
+                    response.configurationProfileId(),
+                    response.description(),
+                    response.contentType(),
+                    response.versionNumber())
         }
 
         fun convert(response: ConfigurationProfileSummary): ConfigurationProfileEntity {

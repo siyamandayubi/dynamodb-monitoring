@@ -11,6 +11,7 @@ import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.sdk.s3.S3Repository
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.sdk.appconfig.AppConfigRepository
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
@@ -33,6 +34,11 @@ open class InfrastructureConfiguration {
     @Bean
     open fun getVpcRepository(clientBuilder: ClientBuilder): VpcRepository {
         return  VpcRepositoryImpl(clientBuilder)
+    }
+
+    @Bean
+    open fun getAppConfigRepository(clientBuilder: ClientBuilder): AppConfigRepository {
+        return  AppConfigRepositoryImpl(clientBuilder)
     }
 
     @Bean

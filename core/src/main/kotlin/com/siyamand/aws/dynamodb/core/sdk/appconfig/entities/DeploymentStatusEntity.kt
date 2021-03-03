@@ -3,10 +3,6 @@ package com.siyamand.aws.dynamodb.core.sdk.appconfig.entities
 import java.time.Instant
 
 class DeploymentStatusEntity(
-        val applicationId: String,
-        val environmentId: String,
-        val deploymentStrategyId: String,
-        val configurationProfileId: String,
         val deploymentNumber: Int,
         val description: String,
         val state: String,

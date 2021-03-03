@@ -44,6 +44,14 @@ class PolicyBuilderImpl() : PolicyBuilder {
                 "/dynamodbmonitoring/rdsproxy/policy/")
     }
 
+    override fun createAppConfigAccessPolicy(): CreatePolicyEntity {
+        return createPolicy(
+                "Monitoring-AppConfig-Access-Policy",
+                "policies/AppConfigReadOnlyPolicy.json",
+                "This Policy has been created by Dynamodb monitoring tool. The policy contain necessary permissions to have readonly access to Application Configuration",
+                "/dynamodbmonitoring/appconfig/policy/")
+    }
+
     private fun createPolicy(name: String, resourcePath: String, description: String, path: String): CreatePolicyEntityImpl {
         val uri = javaClass.classLoader.getResource(resourcePath).toURI()
         val policyDocument = Files.readString(Paths.get(uri))
