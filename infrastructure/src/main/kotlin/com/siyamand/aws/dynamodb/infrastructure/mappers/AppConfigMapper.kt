@@ -38,16 +38,29 @@ class AppConfigMapper {
                     .build()
         }
 
-        fun convert(entity: CreateHostedConfigurationVersionEntity): CreateHostedConfigurationVersionRequest {
-            val builder =  CreateHostedConfigurationVersionRequest
+        fun convert(entity: StartDeploymentEntity): StartDeploymentRequest {
+            return StartDeploymentRequest
                     .builder()
                     .applicationId(entity.applicationId)
                     .description(entity.description)
                     .configurationProfileId(entity.configurationProfileId)
-                    .content(SdkBytes.fromByteArray( entity.content))
+                    .configurationVersion(entity.configurationVersion)
+                    .deploymentStrategyId(entity.deploymentStrategyId)
+                    .environmentId(entity.environmentId)
+                    .tags(entity.tags)
+                    .build()
+        }
+
+        fun convert(entity: CreateHostedConfigurationVersionEntity): CreateHostedConfigurationVersionRequest {
+            val builder = CreateHostedConfigurationVersionRequest
+                    .builder()
+                    .applicationId(entity.applicationId)
+                    .description(entity.description)
+                    .configurationProfileId(entity.configurationProfileId)
+                    .content(SdkBytes.fromByteArray(entity.content))
                     .contentType(entity.contentType)
 
-            if (entity.latestVersionNumber != null){
+            if (entity.latestVersionNumber != null) {
                 builder.latestVersionNumber(entity.latestVersionNumber)
             }
             return builder.build()
@@ -93,13 +106,66 @@ class AppConfigMapper {
                     response.replicateToAsString())
         }
 
+        fun convert(response: DeploymentStrategy): DeploymentStrategyEntity {
+            return DeploymentStrategyEntity(
+                    response.id(),
+                    response.name(),
+                    response.description(),
+                    response.deploymentDurationInMinutes(),
+                    response.finalBakeTimeInMinutes(),
+                    response.growthFactor(),
+                    response.growthTypeAsString(),
+                    response.replicateToAsString())
+        }
+
         fun convert(response: CreateApplicationResponse): ApplicationEntity {
             return ApplicationEntity(response.id(), response.name(), response.description())
+        }
+
+        fun convert(response: Application): ApplicationEntity {
+            return ApplicationEntity(response.id(), response.name(), response.description())
+        }
+
+        fun convert(response: Environment): EnvironmentEntity {
+            return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description())
         }
 
         fun convert(response: CreateEnvironmentResponse): EnvironmentEntity {
             return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description())
         }
+
+        fun convert(response: StartDeploymentResponse): DeploymentStatusEntity {
+            return DeploymentStatusEntity(
+                    response.applicationId(),
+                    response.environmentId(),
+                    response.deploymentStrategyId(),
+                    response.configurationProfileId(),
+                    response.deploymentNumber() ?: 0,
+                    response.description() ?: "",
+                    response.stateAsString() ?: "",
+                    if (response.hasEventLog()) response.eventLog().map { convert(it) } else listOf(),
+                    (response.percentageComplete() ?: 0.0) as Float,
+                    response.startedAt(),
+                    response.completedAt())
+        }
+
+        fun convert(response: GetDeploymentResponse): DeploymentStatusEntity {
+            return DeploymentStatusEntity(
+                    response.applicationId(),
+                    response.environmentId(),
+                    response.deploymentStrategyId(),
+                    response.configurationProfileId(),
+                    response.deploymentNumber() ?: 0,
+                    response.description() ?: "",
+                    response.stateAsString() ?: "",
+                    if (response.hasEventLog()) response.eventLog().map { convert(it) } else listOf(),
+                    (response.percentageComplete() ?: 0.0) as Float,
+                    response.startedAt(),
+                    response.completedAt())
+        }
+
+        private fun convert(it: DeploymentEvent) =
+                DeploymentEventEntity(it.eventTypeAsString(), it.triggeredByAsString(), it.description(), it.occurredAt())
 
         fun convert(response: CreateConfigurationProfileResponse): ConfigurationProfileEntity {
             return ConfigurationProfileEntity(
@@ -109,6 +175,16 @@ class AppConfigMapper {
                     response.description(),
                     response.locationUri(),
                     response.retrievalRoleArn())
+        }
+
+        fun convert(response: ConfigurationProfileSummary): ConfigurationProfileEntity {
+            return ConfigurationProfileEntity(
+                    response.id(),
+                    response.applicationId(),
+                    response.name(),
+                    "",
+                    response.locationUri(),
+                    "")
         }
     }
 }
