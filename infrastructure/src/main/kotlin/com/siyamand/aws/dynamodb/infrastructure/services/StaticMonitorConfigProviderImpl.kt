@@ -33,6 +33,10 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
         return "Dynamodb-Monitoring-DB-Role"
     }
 
+    override fun getAppConfigRole(): String {
+        return "Dynamodb-Monitoring-AppConfig-Role"
+    }
+
     override fun getRdsProxyRole(): String {
         return "Rds-Proxy-Monitoring-Role"
     }

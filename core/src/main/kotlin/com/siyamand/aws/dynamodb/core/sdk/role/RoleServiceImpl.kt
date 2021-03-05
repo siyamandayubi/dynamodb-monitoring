@@ -45,11 +45,27 @@ class RoleServiceImpl(
         addPolicyToRole(policyBuilder.createLambdaSecretManagerPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createAccessRdsProxyPolicy(), rolePolicies, role.name)
         addPolicyToRole(policyBuilder.createAppConfigAccessPolicy(), rolePolicies, role.name)
-        addPolicyToRole(policyBuilder.createLambdaS3Policy(), rolePolicies, role.name)
+        addPolicyToRole(policyBuilder.createS3AccessPolicy(), rolePolicies, role.name)
 
         return role
     }
 
+    override suspend fun getOrCreateAppConfigRole(credentialEntity: CredentialEntity?): RoleEntity {
+        initialize(credentialEntity)
+
+        val createRoleRequest = roleBuilder.createAppConfigRole();
+        val role = try {
+            roleRepository.getRole(createRoleRequest.roleName)
+        } catch (exp: NotExistException) {
+            roleRepository.addRole(createRoleRequest)
+        }
+
+        val rolePolicies = roleRepository.getRolePolicies(role.name)
+
+        addPolicyToRole(policyBuilder.createS3AccessPolicy(), rolePolicies, role.name)
+
+        return role
+    }
     override suspend fun getOrCreateRdsProxyRole(credentialEntity: CredentialEntity?): RoleEntity {
         initialize(credentialEntity)
 
@@ -72,6 +88,16 @@ class RoleServiceImpl(
 
         return try {
             roleRepository.getRole(monitorConfigProvider.getLambdaRole())
+        } catch (exp: NotExistException) {
+            null
+        }
+    }
+
+     override suspend fun getAppConfigRole(): RoleEntity? {
+        initialize()
+
+        return try {
+            roleRepository.getRole(monitorConfigProvider.getAppConfigRole())
         } catch (exp: NotExistException) {
             null
         }

@@ -18,7 +18,7 @@ class S3ServiceImpl(
         s3Repository.enableBucketVersioning(name)
     }
 
-    override suspend fun addObject(name: String, monitoringId: String, data: ByteArray): S3ObjectEntity {
+    override suspend fun addObject(name: String, mimeType: String, monitoringId: String, data: ByteArray): S3ObjectEntity {
         initialize()
         val buckets = s3Repository.getBuckets();
         var bucket = buckets.filter { it == monitorConfigProvider.getS3BucketDefaultName() }.firstOrNull()
@@ -29,9 +29,26 @@ class S3ServiceImpl(
                 bucket,
                 name,
                 data,
+                mimeType,
                 mapOf(
                         monitorConfigProvider.getMonitoringVersionTagName() to monitorConfigProvider.getMonitoringVersionValue(),
                         monitorConfigProvider.getMonitoringMetadataIdTagName() to monitoringId)))
+    }
+
+    override suspend fun getObjectVersions(prefix: String): List<S3ObjectVersionEntity> {
+        initialize()
+        val returnValue: MutableList<S3ObjectVersionEntity> = mutableListOf()
+        val bucket = monitorConfigProvider.getS3BucketDefaultName()
+        var marker = ""
+        var lastResult = s3Repository.getObjectVersions(bucket, prefix, marker)
+        returnValue.addAll(lastResult.items)
+        while (!lastResult.nextPageToken.isNullOrEmpty()) {
+            marker = lastResult.nextPageToken ?: ""
+            lastResult = s3Repository.getObjectVersions(bucket, prefix, marker)
+            returnValue.addAll(lastResult.items)
+        }
+
+        return returnValue
     }
 
     override suspend fun getBuckets(): List<String> {

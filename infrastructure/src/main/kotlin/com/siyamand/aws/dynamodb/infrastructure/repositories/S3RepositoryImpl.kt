@@ -1,9 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
-import com.siyamand.aws.dynamodb.core.sdk.s3.CreateBucketRequestEntity
-import com.siyamand.aws.dynamodb.core.sdk.s3.CreateS3ObjectRequestEntity
-import com.siyamand.aws.dynamodb.core.sdk.s3.S3ObjectEntity
-import com.siyamand.aws.dynamodb.core.sdk.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.sdk.s3.*
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.S3Mapper
 import kotlinx.coroutines.reactive.awaitFirst
@@ -23,9 +21,9 @@ class S3RepositoryImpl(private val clientBuilder: ClientBuilder) : S3Repository,
         return Mono.fromFuture(response).awaitFirst()
     }
 
-     override suspend fun enableBucketVersioning(bucket: String): String {
+    override suspend fun enableBucketVersioning(bucket: String): String {
         val client = getClient(clientBuilder::buildAsyncS3Client)
-       val response = client.putBucketVersioning(PutBucketVersioningRequest
+        val response = client.putBucketVersioning(PutBucketVersioningRequest
                 .builder()
                 .bucket(bucket)
                 .versioningConfiguration(
@@ -33,13 +31,33 @@ class S3RepositoryImpl(private val clientBuilder: ClientBuilder) : S3Repository,
                                 .builder()
                                 .status(BucketVersioningStatus.ENABLED).build())
                 .build())
-               .thenApply { "Success" }
+                .thenApply { "Success" }
         return Mono.fromFuture(response).awaitFirst()
     }
 
     override suspend fun getBuckets(): List<String> {
         val client = getClient(clientBuilder::buildAsyncS3Client)
         val response = client.listBuckets().thenApply { it.buckets().map { it.name() } }
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun getObjectVersions(bucket: String, prefix: String, marker: String): PageResultEntity<S3ObjectVersionEntity> {
+        val client = getClient(clientBuilder::buildAsyncS3Client)
+        val requestBuilder =
+                ListObjectVersionsRequest
+                        .builder()
+                        .prefix(prefix)
+                        .bucket(bucket)
+
+        if (!marker.isNullOrEmpty()) {
+            requestBuilder.keyMarker(marker)
+        }
+
+        val response = client.listObjectVersions(requestBuilder.build())
+                .thenApply {
+                    PageResultEntity<S3ObjectVersionEntity>(it.versions().map(S3Mapper::convert), it.nextKeyMarker()
+                            ?: "")
+                }
         return Mono.fromFuture(response).awaitFirst()
     }
 
@@ -55,7 +73,7 @@ class S3RepositoryImpl(private val clientBuilder: ClientBuilder) : S3Repository,
             requestBuilder.tagging(tagging)
         }
 
-        val response = client.putObject(requestBuilder.build(), ByteArrayAsyncRequestBody(entity.data)).thenApply { S3ObjectEntity(entity.key,entity.bucket, it.eTag()) }
+        val response = client.putObject(requestBuilder.build(), ByteArrayAsyncRequestBody(entity.data, entity.mimeType)).thenApply { S3ObjectEntity(entity.key, entity.bucket, it.eTag()) }
 
         return Mono.fromFuture(response).awaitFirst()
     }

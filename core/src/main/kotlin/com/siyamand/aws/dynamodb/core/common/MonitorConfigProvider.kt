@@ -9,4 +9,5 @@ interface MonitorConfigProvider {
     fun getS3BucketDefaultName(): String
     fun getLambdaRole(): String
     fun getRdsProxyRole(): String
+    fun getAppConfigRole(): String
 }

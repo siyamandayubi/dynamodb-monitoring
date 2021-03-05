@@ -7,5 +7,5 @@ interface PolicyBuilder {
     fun createLambdaEc2Policy(): CreatePolicyEntity
     fun createRdsProxyPolicy(): CreatePolicyEntity
     fun createAppConfigAccessPolicy(): CreatePolicyEntity
-    fun createLambdaS3Policy(): CreatePolicyEntity
+    fun createS3AccessPolicy(): CreatePolicyEntity
 }

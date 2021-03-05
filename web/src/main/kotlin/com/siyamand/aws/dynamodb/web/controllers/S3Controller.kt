@@ -24,7 +24,7 @@ class S3Controller(private val s3Service: S3Service) {
     @PostMapping("/api/s3/create-object")
     suspend fun createObject(): HttpEntity<S3ObjectEntity> {
         val code = "exports.handler = async (event) => {    const response = {        statusCode: 200,        body: JSON.stringify('Hello from Lambda!'),    };    return response;};"
-       val obj =  s3Service.addObject("function3.zip", "x", ZipHelper.zip(code, "index.js"))
+       val obj =  s3Service.addObject("function3.zip", "x", "zip", ZipHelper.zip(code, "index.js"))
         return ResponseEntity(obj, HttpStatus.OK)
     }
 

@@ -60,14 +60,15 @@ class AppConfigServiceImpl(
                 .getProfiles(application.id!!, "")
                 .items
                 .firstOrNull { it.name == profileName }
+        val objectName = "$applicationName-config"
         if (profile == null) {
-            val role = roleService.getLambdaRole()
-            val configS3 = s3Service.addObject("$applicationName-config", monitoringId, content.toByteArray(StandardCharsets.UTF_8))
+            val role = roleService.getAppConfigRole()
+            val configS3 = s3Service.addObject(objectName, monitoringId, "json", content.toByteArray(StandardCharsets.UTF_8))
             val request = appConfigBuilder.buildProfile(application.id!!, profileName, "s3://${configS3.bucket}/${configS3.key}", role!!.resource.arn, monitoringId)
             profile = appConfigRepository.addConfigurationProfile(request)
         }
 
-        var hostedConfig: HostedConfigurationVersionEntity? = null
+        /*var hostedConfig: HostedConfigurationVersionEntity? = null
 
         if (profile != null) {
             hostedConfig = appConfigRepository
@@ -76,20 +77,21 @@ class AppConfigServiceImpl(
                     .lastOrNull()
         }
         if (hostedConfig == null) {
-            val request = appConfigBuilder.buildHostedConfiguration(application.id!!, "", content)
+            val request = appConfigBuilder.buildHostedConfiguration(application.id!!, profile.id, content)
             hostedConfig = appConfigRepository.addHostedConfigurationVersion(request)
-        }
+        }*/
+        val objectVersion = s3Service.getObjectVersions(objectName).sortedByDescending { it.versionId }.first()
 
         var deployment = appConfigRepository
                 .getDeployments(application.id!!, environment.id!!)
                 .items
                 .firstOrNull()
-        if (deployment == null) {
+        if (deployment == null || deployment.state == "ROLLED_BACK") {
             val request = appConfigBuilder.buildDeployment(application.id!!,
                     environment!!.id!!,
                     deploymentStrategy!!.id!!,
-                    hostedConfig.configurationProfileId,
-                    hostedConfig.latestVersionNumber.toString(),
+                    profile.id,
+                    objectVersion.versionId,
                     monitoringId)
             deployment = appConfigRepository.startDeployment(request)
         }

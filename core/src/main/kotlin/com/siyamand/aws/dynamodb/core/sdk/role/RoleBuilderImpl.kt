@@ -20,6 +20,19 @@ class RoleBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) 
                         TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue())))
     }
 
+    override fun createAppConfigRole(): CreateRoleEntity {
+        val uri = javaClass.classLoader.getResource("policies/AppConfigAssumeRolePolicy.json").toURI()
+        val assumePolicyDocument = Files.readString(Paths.get(uri))
+        return CreateRoleEntityImpl(monitorConfigProvider.getAppConfigRole(),
+                assumePolicyDocument,
+                null,
+                null,
+                null,
+                mutableListOf(
+                        TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), ResourceType.ROLE.value),
+                        TagEntity(monitorConfigProvider.getMonitoringVersionTagName(), monitorConfigProvider.getMonitoringVersionValue())))
+    }
+
     override fun createRdsProxyRole(): CreateRoleEntity {
         val uri = javaClass.classLoader.getResource("policies/RdsProxyAssumeRolePolicy.json").toURI()
         val assumePolicyDocument = Files.readString(Paths.get(uri))

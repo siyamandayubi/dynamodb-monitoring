@@ -26,6 +26,12 @@ class RoleController(private val roleService: RoleService) {
         return ResponseEntity(role, HttpStatus.OK)
     }
 
+    @PostMapping("/api/roles/createAppConfigRole")
+    suspend fun createAppConfigRole(@RequestBody credentialModel: CredentialModel): HttpEntity<RoleEntity> {
+        val role = this.roleService.getOrCreateAppConfigRole(BasicCredentialEntity(credentialModel.keyId, credentialModel.secretKeyId, null))
+        return ResponseEntity(role, HttpStatus.OK)
+    }
+
     @PostMapping("/api/roles/createRdsProxyRole")
     suspend fun createRdsProxyRole(@RequestBody credentialModel: CredentialModel): HttpEntity<RoleEntity> {
         val role = this.roleService.getOrCreateRdsProxyRole(BasicCredentialEntity(credentialModel.keyId, credentialModel.secretKeyId, null))

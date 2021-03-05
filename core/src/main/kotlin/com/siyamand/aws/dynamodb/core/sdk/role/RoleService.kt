@@ -7,4 +7,6 @@ interface RoleService {
     suspend fun getOrCreateLambdaRole(credentialEntity: CredentialEntity?): RoleEntity
     suspend fun getLambdaRole(): RoleEntity?
     suspend fun getOrCreateRdsProxyRole(credentialEntity: CredentialEntity?): RoleEntity
+    suspend fun getOrCreateAppConfigRole(credentialEntity: CredentialEntity?): RoleEntity
+    suspend fun getAppConfigRole(): RoleEntity?
 }
