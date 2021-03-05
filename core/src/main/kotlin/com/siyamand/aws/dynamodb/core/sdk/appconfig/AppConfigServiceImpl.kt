@@ -1,11 +1,21 @@
 package com.siyamand.aws.dynamodb.core.sdk.appconfig
 
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
+import com.siyamand.aws.dynamodb.core.sdk.appconfig.entities.HostedConfigurationVersionEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.role.RoleService
+import com.siyamand.aws.dynamodb.core.sdk.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.sdk.s3.S3Service
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import java.nio.charset.StandardCharsets
 
 class AppConfigServiceImpl(
         private val appConfigRepository: AppConfigRepository,
         private val credentialProvider: CredentialProvider,
+        private val s3Service: S3Service,
+        private val roleService: RoleService,
         private val appConfigBuilder: AppConfigBuilder) : AppConfigService {
 
     override suspend fun createConfig(
@@ -13,7 +23,8 @@ class AppConfigServiceImpl(
             environmentName: String,
             deploymentStrategyName: String,
             profileName: String,
-            content: String) {
+            contentObj: Map<String, String>) {
+        val content = Json.encodeToString(contentObj)
         credentialProvider.initializeRepositories(appConfigRepository)
         val monitoringId = "test"
         // application
@@ -50,16 +61,22 @@ class AppConfigServiceImpl(
                 .items
                 .firstOrNull { it.name == profileName }
         if (profile == null) {
-            val request = appConfigBuilder.buildProfile(application.id!!, "", profileName, monitoringId)
+            val role = roleService.getLambdaRole()
+            val configS3 = s3Service.addObject("$applicationName-config", monitoringId, content.toByteArray(StandardCharsets.UTF_8))
+            val request = appConfigBuilder.buildProfile(application.id!!, profileName, "s3://${configS3.bucket}/${configS3.key}", role!!.resource.arn, monitoringId)
             profile = appConfigRepository.addConfigurationProfile(request)
         }
 
-        var hostedConfig = appConfigRepository
-                .getHostedConfigurations(application.id!!, "")
-                .items
-                .lastOrNull()
+        var hostedConfig: HostedConfigurationVersionEntity? = null
+
+        if (profile != null) {
+            hostedConfig = appConfigRepository
+                    .getHostedConfigurations(application.id!!, profile.id, "")
+                    .items
+                    .lastOrNull()
+        }
         if (hostedConfig == null) {
-            val request = appConfigBuilder.buildHostedConfiguration(application.id!!, profile.id, content)
+            val request = appConfigBuilder.buildHostedConfiguration(application.id!!, "", content)
             hostedConfig = appConfigRepository.addHostedConfigurationVersion(request)
         }
 
@@ -71,7 +88,7 @@ class AppConfigServiceImpl(
             val request = appConfigBuilder.buildDeployment(application.id!!,
                     environment!!.id!!,
                     deploymentStrategy!!.id!!,
-                    profile.id,
+                    hostedConfig.configurationProfileId,
                     hostedConfig.latestVersionNumber.toString(),
                     monitoringId)
             deployment = appConfigRepository.startDeployment(request)

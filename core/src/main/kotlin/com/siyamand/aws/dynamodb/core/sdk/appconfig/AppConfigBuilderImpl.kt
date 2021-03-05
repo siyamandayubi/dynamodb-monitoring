@@ -31,9 +31,9 @@ class AppConfigBuilderImpl(private val monitorConfigProvider: MonitorConfigProvi
                 "",
                 1,
                 1,
-                null,
-                null,
-                null,
+                20.0F,
+                "Linear",
+                "NONE",
                 mapOf(
                         monitorConfigProvider.getMonitoringVersionTagName() to monitorConfigProvider.getMonitoringVersionValue(),
                         monitorConfigProvider.getMonitoringMetadataIdTagName() to monitoringId)
@@ -41,13 +41,13 @@ class AppConfigBuilderImpl(private val monitorConfigProvider: MonitorConfigProvi
     }
 
 
-    override fun buildProfile(applicationId: String, address: String, name: String, monitoringId: String): CreateConfigurationProfileEntity {
+    override fun buildProfile(applicationId: String, name: String, locationUri: String, roleArn: String, monitoringId: String): CreateConfigurationProfileEntity {
         return CreateConfigurationProfileEntity(
                 applicationId,
                 name,
                 "",
-                address,
-                monitorConfigProvider.getLambdaRole(),
+                locationUri,
+                roleArn,
                 mapOf(
                         monitorConfigProvider.getMonitoringVersionTagName() to monitorConfigProvider.getMonitoringVersionValue(),
                         monitorConfigProvider.getMonitoringMetadataIdTagName() to monitoringId)

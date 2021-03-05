@@ -12,6 +12,7 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RoleMapper
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.iam.model.*
+import java.util.concurrent.TimeUnit
 
 class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleRepository, AwsBaseRepositoryImpl() {
     override suspend fun getRoles(): List<RoleEntity> {
@@ -22,9 +23,9 @@ class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleReposit
 
     override suspend fun getRole(roleName: String): RoleEntity {
         val client = getClient(clientBuilder::buildAmazonIdentityManagementAsyncClient)
-        val response = client.getRole(GetRoleRequest.builder().roleName(roleName).build()).thenApply { RoleMapper.convert(it.role()) }
+        val response = client.getRole(GetRoleRequest.builder().roleName(roleName).build()).thenApply { RoleMapper.convert(it.role()) }.orTimeout(1, TimeUnit.MINUTES)
 
-        val errorHandler: (Throwable)->Throwable = fun(exp: Throwable): Throwable {
+        val errorHandler: (Throwable) -> Throwable = fun(exp: Throwable): Throwable {
             return if (exp is NoSuchEntityException) NotExistException(exp)
             else exp
         }

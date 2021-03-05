@@ -14,7 +14,11 @@ class ApplicationConfigController(private val appConfigService: AppConfigService
 
     @PostMapping("/api/appConfig/Create")
     suspend fun createApplication(@RequestBody model: CreateAppConfigModel): HttpEntity<String> {
-        appConfigService.createConfig(model.applicationName, model.environment, model.strategyName, model.profileName, model.content)
+        val contentObj = mapOf(
+                "name" to "siyamand",
+                "family" to "ayubi"
+        )
+        appConfigService.createConfig(model.applicationName, model.environment, model.strategyName, model.profileName, contentObj)
         return ResponseEntity("OK", HttpStatus.OK)
     }
 }

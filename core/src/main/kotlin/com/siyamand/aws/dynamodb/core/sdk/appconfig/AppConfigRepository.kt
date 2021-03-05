@@ -17,5 +17,5 @@ interface AppConfigRepository : AWSBaseRepository {
     suspend fun getProfiles(applicationId: String, nextToken: String): PageResultEntity<ConfigurationProfileEntity>
     suspend fun getDeploymentStrategies(nextToken: String): PageResultEntity<DeploymentStrategyEntity>
     suspend fun getDeployments(applicationId: String, environmentId: String): PageResultEntity<DeploymentStatusEntity>
-    suspend fun getHostedConfigurations(applicationId: String, nextToken: String): PageResultEntity<HostedConfigurationVersionEntity>
+    suspend fun getHostedConfigurations(applicationId: String, profileId: String, nextToken: String): PageResultEntity<HostedConfigurationVersionEntity>
 }

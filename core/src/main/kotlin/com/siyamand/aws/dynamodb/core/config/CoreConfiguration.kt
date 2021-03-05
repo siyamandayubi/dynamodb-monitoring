@@ -45,8 +45,12 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getAppConfigService(appConfigRepository: AppConfigRepository, credentialProvider: CredentialProvider, appConfigBuilder: AppConfigBuilder): AppConfigService {
-        return AppConfigServiceImpl(appConfigRepository, credentialProvider, appConfigBuilder)
+    open fun getAppConfigService(appConfigRepository: AppConfigRepository,
+                                 credentialProvider: CredentialProvider,
+                                 roleService: RoleService,
+                                 s3Service: S3Service,
+                                 appConfigBuilder: AppConfigBuilder): AppConfigService {
+        return AppConfigServiceImpl(appConfigRepository, credentialProvider, s3Service, roleService, appConfigBuilder)
     }
 
     @Bean

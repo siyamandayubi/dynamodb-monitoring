@@ -6,5 +6,5 @@ interface AppConfigService {
             environmentName: String,
             deploymentStrategyName: String,
             profileName: String,
-            content: String)
+            content: Map<String, String>)
 }

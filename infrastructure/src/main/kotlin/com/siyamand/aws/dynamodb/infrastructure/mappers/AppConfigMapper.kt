@@ -27,15 +27,18 @@ class AppConfigMapper {
         }
 
         fun convert(entity: CreateConfigurationProfileEntity): CreateConfigurationProfileRequest {
-            return CreateConfigurationProfileRequest
+            val builder = CreateConfigurationProfileRequest
                     .builder()
                     .applicationId(entity.applicationId)
                     .description(entity.description)
                     .name(entity.name)
-                    .locationUri(entity.locationUri)
                     .retrievalRoleArn(entity.retrievalRoleArn)
                     .tags(entity.tags)
-                    .build()
+
+            if (!entity.locationUri.isNullOrEmpty()){
+                builder.locationUri(entity.locationUri)
+            }
+            return builder.build()
         }
 
         fun convert(entity: StartDeploymentEntity): StartDeploymentRequest {
@@ -56,9 +59,13 @@ class AppConfigMapper {
                     .builder()
                     .applicationId(entity.applicationId)
                     .description(entity.description)
-                    .configurationProfileId(entity.configurationProfileId)
+
                     .content(SdkBytes.fromByteArray(entity.content))
                     .contentType(entity.contentType)
+
+            if (!entity.configurationProfileId.isNullOrEmpty()){
+                builder.configurationProfileId(entity.configurationProfileId)
+            }
 
             if (entity.latestVersionNumber != null) {
                 builder.latestVersionNumber(entity.latestVersionNumber)
@@ -110,7 +117,7 @@ class AppConfigMapper {
             return DeploymentStrategyEntity(
                     response.id(),
                     response.name(),
-                    response.description(),
+                    response.description() ?: "",
                     response.deploymentDurationInMinutes(),
                     response.finalBakeTimeInMinutes(),
                     response.growthFactor(),
@@ -119,19 +126,21 @@ class AppConfigMapper {
         }
 
         fun convert(response: CreateApplicationResponse): ApplicationEntity {
-            return ApplicationEntity(response.id(), response.name(), response.description())
+            return ApplicationEntity(response.id(), response.name(), response.description() ?: "")
         }
 
         fun convert(response: Application): ApplicationEntity {
-            return ApplicationEntity(response.id(), response.name(), response.description())
+            return ApplicationEntity(response.id(), response.name(), response.description() ?: "")
         }
 
         fun convert(response: Environment): EnvironmentEntity {
-            return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description())
+            return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description()
+                    ?: "")
         }
 
         fun convert(response: CreateEnvironmentResponse): EnvironmentEntity {
-            return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description())
+            return EnvironmentEntity(response.id(), response.applicationId(), response.stateAsString(), response.name(), response.description()
+                    ?: "")
         }
 
         fun convert(response: StartDeploymentResponse): DeploymentStatusEntity {
@@ -168,14 +177,15 @@ class AppConfigMapper {
         }
 
         private fun convert(it: DeploymentEvent) =
-                DeploymentEventEntity(it.eventTypeAsString(), it.triggeredByAsString(), it.description(), it.occurredAt())
+                DeploymentEventEntity(it.eventTypeAsString(), it.triggeredByAsString(), it.description()
+                        ?: "", it.occurredAt())
 
         fun convert(response: CreateConfigurationProfileResponse): ConfigurationProfileEntity {
             return ConfigurationProfileEntity(
                     response.id(),
                     response.applicationId(),
                     response.name(),
-                    response.description(),
+                    response.description() ?: "",
                     response.locationUri(),
                     response.retrievalRoleArn())
         }
@@ -183,8 +193,8 @@ class AppConfigMapper {
         fun convert(response: HostedConfigurationVersionSummary): HostedConfigurationVersionEntity {
             return HostedConfigurationVersionEntity(
                     response.applicationId(),
-                    response.configurationProfileId(),
-                    response.description(),
+                    response.configurationProfileId()?:"",
+                    response.description() ?: "",
                     response.contentType(),
                     response.versionNumber())
         }
@@ -193,7 +203,7 @@ class AppConfigMapper {
             return HostedConfigurationVersionEntity(
                     response.applicationId(),
                     response.configurationProfileId(),
-                    response.description(),
+                    response.description() ?: "",
                     response.contentType(),
                     response.versionNumber())
         }

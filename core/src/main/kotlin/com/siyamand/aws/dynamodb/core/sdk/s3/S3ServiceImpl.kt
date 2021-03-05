@@ -13,14 +13,25 @@ class S3ServiceImpl(
         return s3Repository.addBucket(CreateBucketRequestEntity(monitorConfigProvider.getS3BucketDefaultName()))
     }
 
-    override suspend fun addObject(name: String, code: String): S3ObjectEntity {
+    override suspend fun enableBucketVersions(name: String) {
+        initialize()
+        s3Repository.enableBucketVersioning(name)
+    }
+
+    override suspend fun addObject(name: String, monitoringId: String, data: ByteArray): S3ObjectEntity {
         initialize()
         val buckets = s3Repository.getBuckets();
         var bucket = buckets.filter { it == monitorConfigProvider.getS3BucketDefaultName() }.firstOrNull()
         if (bucket == null) {
             bucket = s3Repository.addBucket(CreateBucketRequestEntity(monitorConfigProvider.getS3BucketDefaultName()))
         }
-        return s3Repository.addObject(CreateS3ObjectRequestEntity(bucket, name, ZipHelper.zip(code, "index.js")))
+        return s3Repository.addObject(CreateS3ObjectRequestEntity(
+                bucket,
+                name,
+                data,
+                mapOf(
+                        monitorConfigProvider.getMonitoringVersionTagName() to monitorConfigProvider.getMonitoringVersionValue(),
+                        monitorConfigProvider.getMonitoringMetadataIdTagName() to monitoringId)))
     }
 
     override suspend fun getBuckets(): List<String> {

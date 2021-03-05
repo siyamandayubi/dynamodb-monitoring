@@ -5,5 +5,4 @@ class CreateAppConfigModel {
     var applicationName: String = ""
     var environment: String = ""
     var strategyName: String = ""
-    var content: String = ""
 }

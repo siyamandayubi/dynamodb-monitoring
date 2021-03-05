@@ -8,6 +8,7 @@ import com.siyamand.aws.dynamodb.infrastructure.mappers.AppConfigMapper
 import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.appconfig.model.*
+import java.util.concurrent.TimeUnit
 
 class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppConfigRepository, AwsBaseRepositoryImpl() {
 
@@ -19,7 +20,7 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
 
     override suspend fun addEnvironment(entity: CreateEnvironmentEntity): EnvironmentEntity {
         val client = getClient(clientBuilder::buildAppConfigAsyncClient)
-        val response = client.createEnvironment(AppConfigMapper.convert(entity)).thenApply { AppConfigMapper.convert(it!!) }
+        val response = client.createEnvironment(AppConfigMapper.convert(entity)).thenApply { AppConfigMapper.convert(it!!) }.orTimeout(1, TimeUnit.MINUTES)
         return Mono.fromFuture(response).awaitFirst()
     }
 
@@ -87,8 +88,11 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getHostedConfigurations(applicationId: String, nextToken: String): PageResultEntity<HostedConfigurationVersionEntity> {
-        val requestBuilder = ListHostedConfigurationVersionsRequest.builder().applicationId(applicationId)
+    override suspend fun getHostedConfigurations(applicationId: String, profileId: String, nextToken: String): PageResultEntity<HostedConfigurationVersionEntity> {
+        val requestBuilder = ListHostedConfigurationVersionsRequest
+                .builder()
+                .applicationId(applicationId)
+                .configurationProfileId(profileId)
         if (!nextToken.isNullOrEmpty()) {
             requestBuilder.nextToken(nextToken)
         }
@@ -99,6 +103,7 @@ class AppConfigRepositoryImpl(private val clientBuilder: ClientBuilder) : AppCon
 
         return Mono.fromFuture(response).awaitFirst()
     }
+
     override suspend fun getDeploymentStrategies(nextToken: String): PageResultEntity<DeploymentStrategyEntity> {
         val requestBuilder = ListDeploymentStrategiesRequest.builder()
         if (!nextToken.isNullOrEmpty()) {

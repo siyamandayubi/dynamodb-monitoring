@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("software.amazon.awssdk:bom:2.15.44"))
+    implementation(platform("software.amazon.awssdk:bom:2.16.11"))
 
     implementation("software.amazon.awssdk:dynamodb")
     implementation("software.amazon.awssdk:sts")
