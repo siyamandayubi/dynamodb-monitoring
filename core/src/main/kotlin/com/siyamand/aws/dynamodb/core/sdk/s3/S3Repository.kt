@@ -9,4 +9,5 @@ interface S3Repository : AWSBaseRepository {
     suspend fun getBuckets(): List<String>
     suspend fun enableBucketVersioning(bucket: String): String
     suspend fun getObjectVersions(bucket: String, prefix: String, marker: String): PageResultEntity<S3ObjectVersionEntity>
+    suspend fun getObject(bucket: String, prefix: String): S3ObjectEntityWithData
 }

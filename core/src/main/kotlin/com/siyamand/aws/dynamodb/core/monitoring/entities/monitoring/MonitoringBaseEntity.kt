@@ -6,6 +6,6 @@ class MonitoringBaseEntity<T>(
         val type :String,
         var status: MonitorStatus,
         val version: Int,
-        var workflow: String,
+        var workflowS3Key: String,
         val relatedData: T) {
 }

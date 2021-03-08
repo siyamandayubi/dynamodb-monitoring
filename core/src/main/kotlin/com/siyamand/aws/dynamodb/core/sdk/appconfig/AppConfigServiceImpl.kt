@@ -68,18 +68,6 @@ class AppConfigServiceImpl(
             profile = appConfigRepository.addConfigurationProfile(request)
         }
 
-        /*var hostedConfig: HostedConfigurationVersionEntity? = null
-
-        if (profile != null) {
-            hostedConfig = appConfigRepository
-                    .getHostedConfigurations(application.id!!, profile.id, "")
-                    .items
-                    .lastOrNull()
-        }
-        if (hostedConfig == null) {
-            val request = appConfigBuilder.buildHostedConfiguration(application.id!!, profile.id, content)
-            hostedConfig = appConfigRepository.addHostedConfigurationVersion(request)
-        }*/
         val objectVersion = s3Service.getObjectVersions(objectName).sortedByDescending { it.versionId }.first()
 
         var deployment = appConfigRepository

@@ -4,6 +4,6 @@ import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMo
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 
 interface WorkflowConverter {
-    suspend fun  build(monitoringBaseEntity: MonitoringBaseEntity<AggregateMonitoringEntity>): WorkflowInstance
+    suspend fun  build(monitoringBaseEntity: MonitoringBaseEntity<AggregateMonitoringEntity>, workflowString: String): WorkflowInstance
     fun  serialize(workflowInstance: WorkflowInstance): String
 }

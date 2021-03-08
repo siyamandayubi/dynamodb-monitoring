@@ -22,7 +22,7 @@ class MonitoringItemConverterImpl : MonitoringItemConverter {
                 reader.str("type"),
                 reader.str("status").asEnumOrDefault(MonitorStatus.PENDING),
                 reader.int("version") ?: 0,
-                reader.str("workflow"),
+                reader.str("workflowS3Arn"),
                 aggregateMonitoringEntity
         )
     }
@@ -36,7 +36,7 @@ class MonitoringItemConverterImpl : MonitoringItemConverter {
                 "type" to AttributeValueEntity(entity.type),
                 "status" to AttributeValueEntity(entity.status.name),
                 "version" to AttributeValueEntity(entity.version),
-                "workflow" to AttributeValueEntity(entity.workflow),
+                "workflowS3Arn" to AttributeValueEntity(entity.workflowS3Key),
                 "relatedData" to AttributeValueEntity(relatedData)
         )
 

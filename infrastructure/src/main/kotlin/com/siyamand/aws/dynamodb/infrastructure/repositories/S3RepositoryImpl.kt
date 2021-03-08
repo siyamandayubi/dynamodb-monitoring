@@ -8,6 +8,7 @@ import kotlinx.coroutines.reactive.awaitFirst
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.core.async.AsyncResponseTransformer
 import software.amazon.awssdk.core.internal.async.ByteArrayAsyncRequestBody
+import software.amazon.awssdk.core.internal.async.ByteArrayAsyncResponseTransformer
 import software.amazon.awssdk.services.s3.model.*
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -38,6 +39,20 @@ class S3RepositoryImpl(private val clientBuilder: ClientBuilder) : S3Repository,
     override suspend fun getBuckets(): List<String> {
         val client = getClient(clientBuilder::buildAsyncS3Client)
         val response = client.listBuckets().thenApply { it.buckets().map { it.name() } }
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+
+    override suspend fun getObject(bucket: String, prefix: String): S3ObjectEntityWithData {
+        val client = getClient(clientBuilder::buildAsyncS3Client)
+        val transformer = ByteArrayAsyncResponseTransformer<GetObjectResponse>()
+        val response = client.getObject(
+                GetObjectRequest.builder().bucket(bucket).key(prefix).build(), AsyncResponseTransformer.toBytes()
+                )
+                .thenApply {
+                    val response = it.response()
+                    S3ObjectEntityWithData(prefix,bucket,response.eTag()?:"", response.versionId(), it.asByteArray())
+                }
         return Mono.fromFuture(response).awaitFirst()
     }
 

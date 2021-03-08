@@ -8,11 +8,13 @@ import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
+import com.siyamand.aws.dynamodb.core.sdk.s3.S3Service
 import com.siyamand.aws.dynamodb.core.workflow.*
 import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.TaskScheduler
 
 class MetadataServiceImpl(
+        private val s3Service: S3Service,
         private val workflowConverter: WorkflowConverter,
         private val resourceRepository: ResourceRepository,
         private val monitorConfigProvider: MonitorConfigProvider,
@@ -51,14 +53,20 @@ class MetadataServiceImpl(
         if (tableName.isNullOrEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
-        var workflow: TableItemEntity? = tableItemRepository.getItem(tableName, mapOf("id" to AttributeValueEntity(id))).firstOrNull()
+        var tableItem: TableItemEntity? = tableItemRepository.getItem(tableName, mapOf("id" to AttributeValueEntity(id))).firstOrNull()
                 ?: throw Exception("No workflow has been found. id= $id")
 
-        var monitoringItem = monitoringItemConverter.convertToAggregateEntity(workflow!!)
+        var monitoringItem = monitoringItemConverter.convertToAggregateEntity(tableItem!!)
         if (monitoringItem.status != MonitorStatus.PENDING && monitoringItem.status != MonitorStatus.INITIAL) {
             throw Exception("Workflow with id=$id has final status.")
         }
-        val workflowInstance = workflowConverter.build(monitoringItem)
+        val workflowStr: String = if (!monitoringItem.workflowS3Key.isNullOrEmpty()) {
+            val s3Obj = s3Service.getObject(monitoringItem.workflowS3Key)
+            s3Obj.data.decodeToString()
+        } else {
+            "{}"
+        }
+        val workflowInstance = workflowConverter.build(monitoringItem, workflowStr)
 
         val task = Runnable {
             runBlocking {

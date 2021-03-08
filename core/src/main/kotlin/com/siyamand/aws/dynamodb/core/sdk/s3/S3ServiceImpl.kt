@@ -5,7 +5,7 @@ import com.siyamand.aws.dynamodb.core.helpers.ZipHelper
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 
 class S3ServiceImpl(
-        private val credentialProvider: CredentialProvider,
+        private var credentialProvider: CredentialProvider,
         private val s3Repository: S3Repository,
         private val monitorConfigProvider: MonitorConfigProvider) : S3Service {
     override suspend fun createBucket(): String {
@@ -16,6 +16,11 @@ class S3ServiceImpl(
     override suspend fun enableBucketVersions(name: String) {
         initialize()
         s3Repository.enableBucketVersioning(name)
+    }
+
+    override suspend fun getObject(name: String): S3ObjectEntityWithData {
+        initialize()
+        return s3Repository.getObject(monitorConfigProvider.getS3BucketDefaultName(), name)
     }
 
     override suspend fun addObject(name: String, mimeType: String, monitoringId: String, data: ByteArray): S3ObjectEntity {
@@ -49,6 +54,10 @@ class S3ServiceImpl(
         }
 
         return returnValue
+    }
+
+    override suspend fun threadSafe() {
+        credentialProvider = credentialProvider.threadSafe()
     }
 
     override suspend fun getBuckets(): List<String> {

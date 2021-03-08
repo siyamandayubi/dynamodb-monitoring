@@ -133,12 +133,13 @@ open class CoreConfiguration {
 
     @Bean
     open fun getWorkflowJobHandler(monitorConfigProvider: MonitorConfigProvider,
+                                   s3Service: S3Service,
                                    monitoringItemConverter: MonitoringItemConverter,
                                    workflowConverter: WorkflowConverter,
                                    workflowManager: WorkflowManager,
                                    workflowPersister: WorkflowPersister,
                                    tableItemRepository: TableItemRepository): WorkflowJobHandler {
-        return WorkflowJobHandlerImpl(monitorConfigProvider, monitoringItemConverter, workflowConverter, workflowManager, workflowPersister, tableItemRepository)
+        return WorkflowJobHandlerImpl(monitorConfigProvider, s3Service, monitoringItemConverter, workflowConverter, workflowManager, workflowPersister, tableItemRepository)
     }
 
     @Bean
@@ -216,10 +217,12 @@ open class CoreConfiguration {
     @Bean
     open fun getWorkflowPersister(
             tableItemRepository: TableItemRepository,
+            credentialProvider: CredentialProvider,
+            s3Service: S3Service,
             monitoringItemBuilder: MonitoringItemConverter,
             workflowConverter: WorkflowConverter,
             monitorConfigProvider: MonitorConfigProvider): WorkflowPersister {
-        return WorkflowPersisterImpl(tableItemRepository, monitoringItemBuilder, workflowConverter, monitorConfigProvider)
+        return WorkflowPersisterImpl(tableItemRepository, credentialProvider, monitoringItemBuilder, workflowConverter, s3Service, monitorConfigProvider)
     }
 
     @Bean
@@ -234,6 +237,7 @@ open class CoreConfiguration {
 
     @Bean
     open fun getMonitoringService(
+            s3Service: S3Service,
             workflowConverter: WorkflowConverter,
             monitorConfigProvider: MonitorConfigProvider,
             tableRepository: TableRepository,
@@ -247,6 +251,7 @@ open class CoreConfiguration {
             resourceRepository: ResourceRepository,
             scheduler: TaskScheduler): MetadataService {
         return MetadataServiceImpl(
+                s3Service,
                 workflowConverter,
                 resourceRepository,
                 monitorConfigProvider,
