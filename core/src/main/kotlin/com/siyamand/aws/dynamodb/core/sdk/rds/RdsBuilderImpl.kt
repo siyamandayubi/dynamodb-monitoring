@@ -4,6 +4,8 @@ import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateDbInstanceEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.*
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
 
 

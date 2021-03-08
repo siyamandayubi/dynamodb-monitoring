@@ -2,6 +2,9 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateDbInstanceEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateProxyEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsEntity
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
 
 interface RdsBuilder {

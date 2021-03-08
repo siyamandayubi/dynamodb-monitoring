@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.sdk.rds.RdsListEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsListEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.rds.RdsService
 import com.siyamand.aws.dynamodb.web.models.CreateRdsModel

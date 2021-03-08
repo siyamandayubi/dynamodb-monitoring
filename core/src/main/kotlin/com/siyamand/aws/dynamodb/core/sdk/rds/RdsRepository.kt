@@ -2,6 +2,8 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.common.AWSBaseRepository
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateDbInstanceEntity
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.*
 
 interface RdsRepository : AWSBaseRepository {
     suspend fun getRds(name: String):  List<RdsEntity>

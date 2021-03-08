@@ -8,6 +8,7 @@ import com.siyamand.aws.dynamodb.core.database.DatabaseRepository
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.*
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleService
 import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretManagerRepository

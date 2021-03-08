@@ -2,6 +2,7 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateDbProxyTargetEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.workflow.*
 

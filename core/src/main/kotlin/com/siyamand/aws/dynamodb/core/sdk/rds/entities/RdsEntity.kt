@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.sdk.rds
+package com.siyamand.aws.dynamodb.core.sdk.rds.entities
 
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
@@ -15,6 +15,3 @@ class RdsEntity(
 
 }
 
-class RdsListEntity(val marker: String?, val list: List<RdsEntity>)
-
-class VpcSecurityGroupMembershipEntity(val vpcSecurityGroupId: String, val status: String)

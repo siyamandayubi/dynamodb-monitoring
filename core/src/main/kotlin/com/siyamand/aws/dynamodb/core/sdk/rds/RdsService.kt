@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.sdk.rds
 
+import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsListEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 
 interface RdsService {

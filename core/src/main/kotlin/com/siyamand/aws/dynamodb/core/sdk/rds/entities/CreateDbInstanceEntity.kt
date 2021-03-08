@@ -1,4 +1,4 @@
-package com.siyamand.aws.dynamodb.core.sdk.rds
+package com.siyamand.aws.dynamodb.core.sdk.rds.entities
 
 import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 
