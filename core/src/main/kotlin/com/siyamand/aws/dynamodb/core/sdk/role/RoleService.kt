@@ -9,4 +9,5 @@ interface RoleService {
     suspend fun getOrCreateRdsProxyRole(credentialEntity: CredentialEntity?): RoleEntity
     suspend fun getOrCreateAppConfigRole(credentialEntity: CredentialEntity?): RoleEntity
     suspend fun getAppConfigRole(): RoleEntity?
+    suspend fun threadSafe()
 }

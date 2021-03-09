@@ -40,6 +40,21 @@ import org.springframework.scheduling.TaskScheduler
 open class CoreConfiguration {
 
     @Bean
+    open fun getCreateAppConfigWorkflowStep(credentialProvider: CredentialProvider,
+                                            appConfigRepository: AppConfigRepository,
+                                            s3Service: S3Service,
+                                            roleService: RoleService,
+                                            appConfigBuilder: AppConfigBuilder): WorkflowStep {
+
+        return CreateAppConfigWorkflowStep(credentialProvider, appConfigRepository, s3Service, roleService, appConfigBuilder)
+    }
+
+    @Bean
+    open fun getRdsConfigBuilder(): RdsConfigBuilder {
+        return RdsConfigBuilderImpl()
+    }
+
+    @Bean
     open fun getAppConfigBuilder(monitorConfigProvider: MonitorConfigProvider): AppConfigBuilder {
         return AppConfigBuilderImpl(monitorConfigProvider)
     }

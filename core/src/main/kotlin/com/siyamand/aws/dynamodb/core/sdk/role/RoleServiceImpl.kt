@@ -9,7 +9,7 @@ import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 class RoleServiceImpl(
         private val roleRepository: RoleRepository,
         private val resourceRepository: ResourceRepository,
-        private val credentialProvider: CredentialProvider,
+        private var credentialProvider: CredentialProvider,
         private val monitorConfigProvider: MonitorConfigProvider,
         private val policyBuilder: PolicyBuilder,
         private val roleBuilder: RoleBuilder) : RoleService {
@@ -101,6 +101,10 @@ class RoleServiceImpl(
         } catch (exp: NotExistException) {
             null
         }
+    }
+
+    override suspend fun threadSafe(){
+        this.credentialProvider = credentialProvider.threadSafe()
     }
 
     private suspend fun addPolicyToRole(createPolicyRequest: CreatePolicyEntity, rolePolicies: List<String>, roleName: String) {

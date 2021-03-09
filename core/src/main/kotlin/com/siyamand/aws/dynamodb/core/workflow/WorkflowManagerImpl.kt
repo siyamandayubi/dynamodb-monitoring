@@ -10,6 +10,7 @@ class WorkflowManagerImpl() : WorkflowManager {
     override suspend fun execute(input: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): WorkflowResult {
 
         logger.info("executing ${input.template.name}")
+
         if (!input.steps.any()) {
             throw  Exception("no step has been defined")
         }
