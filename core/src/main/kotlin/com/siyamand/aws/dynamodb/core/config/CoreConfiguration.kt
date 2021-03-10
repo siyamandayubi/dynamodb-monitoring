@@ -29,6 +29,9 @@ import com.siyamand.aws.dynamodb.core.sdk.secretManager.CreateSecretManagerWorkf
 import com.siyamand.aws.dynamodb.core.template.TemplateEngine
 import com.siyamand.aws.dynamodb.core.template.TemplateEngineImpl
 import com.siyamand.aws.dynamodb.core.workflow.*
+import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.AssignWorkflowStep
+import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.IfElseWorkflowStep
+import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.JumpWorkflowStep
 import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDatabaseTemplate
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -38,6 +41,29 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+
+    @Bean
+    open fun getRdsConfigBuilderWorkflowStep(
+            credentialProvider: CredentialProvider,
+            rdsRepository: RdsRepository,
+            rdsConfigBuilder: RdsConfigBuilder): WorkflowStep {
+        return RdsConfigBuilderWorkflowStep(credentialProvider, rdsRepository, rdsConfigBuilder)
+    }
+
+    @Bean
+    open fun getAssignWorkflowStep(templateEngine: TemplateEngine): WorkflowStep {
+        return AssignWorkflowStep(templateEngine)
+    }
+
+    @Bean
+    open fun getIfElseWorkflowStep(templateEngine: TemplateEngine): WorkflowStep {
+        return IfElseWorkflowStep(templateEngine)
+    }
+
+    @Bean
+    open fun getJumpWorkflowStep(): WorkflowStep {
+        return JumpWorkflowStep()
+    }
 
     @Bean
     open fun getCreateAppConfigWorkflowStep(credentialProvider: CredentialProvider,

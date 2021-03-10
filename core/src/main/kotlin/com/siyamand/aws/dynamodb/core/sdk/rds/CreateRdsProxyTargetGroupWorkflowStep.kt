@@ -22,11 +22,6 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS key ${Keys.RDS_ARN_KEY} found")
         }
 
-        // check RDS key
-        if (!params.containsKey(Keys.PROXY_TARGET_GROUP_NAME)) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No '${Keys.PROXY_TARGET_GROUP_NAME}' exists in params")
-        }
-
         credentialProvider.initializeRepositories(resourceRepository, rdsRepository)
 
         val proxyName = context.sharedData[Keys.PROXY_NAME]!!

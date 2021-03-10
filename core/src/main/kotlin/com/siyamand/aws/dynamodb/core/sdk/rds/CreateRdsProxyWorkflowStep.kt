@@ -50,7 +50,7 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!, instance.id)
-        val existingProxies = rdsRepository.getProxies(rds.instanceName)
+        val existingProxies = rdsRepository.getProxy(rds.instanceName)
         val proxy = if (existingProxies.items.any()) existingProxies.items.first() else rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_NAME] = proxy.dbProxyName
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
@@ -74,7 +74,7 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         credentialProvider.initializeRepositories(resourceRepository, rdsRepository, vpcRepository)
 
         val proxyName = context.sharedData[Keys.PROXY_NAME]!!
-        val proxies = rdsRepository.getProxies(proxyName)
+        val proxies = rdsRepository.getProxy(proxyName)
         if (!proxies.items.any()) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Proxy has been found: $proxyName")
         }

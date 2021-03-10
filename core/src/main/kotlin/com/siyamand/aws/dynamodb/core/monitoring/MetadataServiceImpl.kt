@@ -86,6 +86,7 @@ class MetadataServiceImpl(
                 "lambda-name" to "lambda",
                 Keys.SOURCE_DYNAMODB_ARN to (sourceTable?.arn ?: ""),
                 "dbInstanceName" to entity.databaseName,
+                "instancesCount" to entity.instancesCount.toString(),
                 "tableNames" to (entity.groups.map { it.tableName }.joinToString(separator = ","))))
 
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(

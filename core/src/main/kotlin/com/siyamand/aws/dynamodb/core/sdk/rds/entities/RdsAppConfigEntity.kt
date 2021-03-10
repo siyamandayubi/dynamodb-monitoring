@@ -1,10 +1,14 @@
 package com.siyamand.aws.dynamodb.core.sdk.rds.entities
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class RdsAppConfigEntity{
     var endpoints: MutableList<RdsAppConfigItemEntity> = mutableListOf()
     var databaseName: String = ""
 }
 
+@Serializable
 class RdsAppConfigItemEntity {
     var arn: String = ""
     var endPoint: String = ""

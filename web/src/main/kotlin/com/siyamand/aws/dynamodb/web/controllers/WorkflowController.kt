@@ -22,6 +22,7 @@ class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, pri
     suspend fun startWorkflow(@RequestBody startWorkflowModel: StartWorkflowModel): HttpEntity<String> {
         val aggregateMonitoringEntity = AggregateMonitoringEntity()
         aggregateMonitoringEntity.databaseName = startWorkflowModel.databaseName
+        aggregateMonitoringEntity.instancesCount = 2
         aggregateMonitoringEntity.groups.add({
             val groupByEntity = GroupByEntity()
             groupByEntity.fieldName = "category"

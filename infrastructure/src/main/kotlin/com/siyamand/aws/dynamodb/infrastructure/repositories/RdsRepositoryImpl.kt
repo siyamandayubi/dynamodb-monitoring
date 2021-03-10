@@ -11,11 +11,11 @@ import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepository, AwsBaseRepositoryImpl() {
-    override suspend fun getRds(identifier: String): List<RdsEntity> {
+    override suspend fun getRds(vararg identifier: String): List<RdsEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val response = client.describeDBInstances(DescribeDbInstancesRequest
                 .builder()
-                .filters(Filter.builder().name("db-instance-id").values(identifier).build())
+                .filters(Filter.builder().name("db-instance-id").values(identifier.toList()).build())
                 .build())
                 .thenApply { it.dbInstances().map(RdsMapper::convert) }
 
@@ -42,14 +42,28 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getProxies(name: String): PageResultEntity<RdsProxyEntity> {
+    override suspend fun getProxy(name: String): PageResultEntity<RdsProxyEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val response = client
                 .describeDBProxies(DescribeDbProxiesRequest.builder().dbProxyName(name).build())
                 .thenApply {
-                    PageResultEntity<RdsProxyEntity>(it.dbProxies().map(RdsMapper::convert), it.marker() ?: "")
+                    PageResultEntity(it.dbProxies().map(RdsMapper::convert), it.marker() ?: "")
                 }
 
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
+    override suspend fun listProxies(marker: String): PageResultEntity<RdsProxyEntity> {
+        val client = getClient(clientBuilder::buildAsyncRdsClient)
+        val requestBuilder = DescribeDbProxiesRequest.builder()
+        if (!marker.isNullOrEmpty()){
+            requestBuilder.marker(marker)
+        }
+        val response = client
+                .describeDBProxies(requestBuilder.build())
+                .thenApply {
+                    PageResultEntity(it.dbProxies().map(RdsMapper::convert), it.marker() ?: "")
+                }
         return Mono.fromFuture(response).awaitFirst()
     }
 

@@ -18,4 +18,5 @@ object Keys {
     const val CODE_RESULT = "code-result"
     const val LAMBDA_ROLE = "lambda-role"
     const val PROXY_TARGET_GROUP_ARN = "rds-proxy-target-group-arn"
+    const val DEPLOYMNET_NUMBER = "app-config-deployment-arn"
 }

@@ -61,7 +61,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
         val securityGroups = vpcRepository.getSecurityGroupsByVpcs(listOf(vpc.vpcId))
 
 
-        val rds = rdsRepository.getProxies(context.sharedData[Keys.PROXY_NAME]!!).items.firstOrNull()
+        val rds = rdsRepository.getProxy(context.sharedData[Keys.PROXY_NAME]!!).items.firstOrNull()
                 ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no Rds has been found for the given ARN: ${context.sharedData[Keys.RDS_ARN_KEY]} ")
 
         if (secretManagerRepository.getSecretValue(context.sharedData[Keys.SECRET_ARN_KEY]!!) == null) {

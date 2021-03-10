@@ -26,7 +26,7 @@ class WorkflowManagerImpl() : WorkflowManager {
                         lastResult == WorkflowResultType.SUCCESS || lastResult == WorkflowResultType.WAITING)
         ) {
             val pair = executeStep(currentInstance, owner, workflowPersister)
-            if (pair.second.resultType == WorkflowResultType.ERROR){
+            if (pair.second.resultType == WorkflowResultType.ERROR) {
                 logger.error(pair.second.message)
             }
 
@@ -56,11 +56,11 @@ class WorkflowManagerImpl() : WorkflowManager {
                 WorkflowStepStatus.INITIAL, WorkflowStepStatus.STARTING -> {
                     currentStepInstance.status = WorkflowStepStatus.STARTING
                     workflowPersister?.save(currentInstance)
-                    logger.info("executing execute of ${currentStep.name}")
+                    logger.info("executing execute of ${currentStep.identifier}")
                     currentStep.step.execute(currentInstance, owner, params)
                 }
                 WorkflowStepStatus.WAITING -> {
-                    logger.info("executing isWaiting step of${currentStep.name}")
+                    logger.info("executing isWaiting step of${currentStep.identifier}")
                     currentStep.step.isWaiting(currentInstance, owner, params)
                 }
 
@@ -70,7 +70,7 @@ class WorkflowManagerImpl() : WorkflowManager {
             }
             return Pair(currentStepInstance, stepResult)
         } catch (ex: Exception) {
-            logger.error("error in running ${currentStep.name} {}", ex)
+            logger.error("error in running ${currentStep.identifier} {}", ex)
             return Pair(currentStepInstance, WorkflowResult(WorkflowResultType.ERROR, mapOf(), "${ex.message} - ${ex.stackTrace.joinToString("")}"))
         }
     }
@@ -79,7 +79,13 @@ class WorkflowManagerImpl() : WorkflowManager {
         var newStepIndex = instance.currentStep
         if (result.resultType == WorkflowResultType.SUCCESS) {
             currentStep.status = WorkflowStepStatus.FINISHED
-            if (instance.currentStep < instance.steps.size) {
+            if (!result.nextStep.isNullOrEmpty()) {
+                val nextStep = instance.steps.indexOfFirst { it.identifier == result.nextStep }
+                if (nextStep == -1){
+                    throw IllegalArgumentException("couldn't find the step ${result.nextStep}")
+                }
+                newStepIndex = nextStep
+            } else if (instance.currentStep < instance.steps.size) {
                 newStepIndex++
             }
         } else if (result.resultType == WorkflowResultType.WAITING) {

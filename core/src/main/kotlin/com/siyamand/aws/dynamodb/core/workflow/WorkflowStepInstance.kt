@@ -6,7 +6,7 @@ import kotlinx.serialization.Transient
 
 @Serializable
 class WorkflowStepInstance(
-        val name: String,
+        val identifier: String,
         @Transient
         var step: WorkflowStep = EmptyWorkflowStep(),
         var status: WorkflowStepStatus = WorkflowStepStatus.INITIAL,
