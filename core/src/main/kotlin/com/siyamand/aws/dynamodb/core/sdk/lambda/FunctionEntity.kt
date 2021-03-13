@@ -11,7 +11,8 @@ class FunctionEntity(
         val packageType: String? = null,
         val handler: String? = null,
         val timeout: Int? = null,
-        val memorySize: Int? = null
+        val memorySize: Int? = null,
+        val layers: List<ResourceEntity> = listOf()
 )
 
 class FunctionDetailEntity(val entity: FunctionEntity, val code: FunctionCodeLocationEntity)
@@ -64,6 +65,11 @@ class FunctionLayerEntity(
         val version: Long,
         val compatibleRuntimes: MutableList<String> = mutableListOf(),
         val licenseInfo: String = ""
+)
+
+class FunctionLayerListEntity(
+        val name: String,
+        val resourceEntity: ResourceEntity
 )
 
 class CreateEventSourceRequestEntity(val eventSourceArn: String? = null) {

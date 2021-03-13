@@ -10,4 +10,5 @@ interface MonitorConfigProvider {
     fun getLambdaRole(): String
     fun getRdsProxyRole(): String
     fun getAppConfigRole(): String
+    fun getAppConfigLayerArn(region: String): String
 }

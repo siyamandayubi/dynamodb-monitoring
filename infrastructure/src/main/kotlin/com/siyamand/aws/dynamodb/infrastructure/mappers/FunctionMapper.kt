@@ -1,6 +1,7 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
 import com.siyamand.aws.dynamodb.core.sdk.lambda.*
+import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.services.lambda.model.*
 import java.nio.charset.Charset
@@ -18,7 +19,8 @@ class FunctionMapper {
                     function.packageTypeAsString(),
                     function.handler(),
                     function.timeout(),
-                    function.memorySize())
+                    function.memorySize(),
+                    function.layers().filter { !it.arn().isNullOrEmpty() }.map { ResourceMapper.convert(it.arn()!!) })
         }
 
         fun convert(functionCode: FunctionCode): FunctionCodeEntity {
@@ -49,8 +51,12 @@ class FunctionMapper {
                     response.createdDate(),
                     response.version(),
                     response.compatibleRuntimesAsStrings(),
-                    response.licenseInfo()?:""
+                    response.licenseInfo() ?: ""
             )
+        }
+
+        fun convert(response: LayersListItem): FunctionLayerListEntity {
+            return FunctionLayerListEntity(response.layerName(), ResourceMapper.convert(response.layerArn()))
         }
 
         fun convert(functionCode: FunctionCodeLocation): FunctionCodeLocationEntity {

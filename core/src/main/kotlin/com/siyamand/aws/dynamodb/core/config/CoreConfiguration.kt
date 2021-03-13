@@ -236,8 +236,10 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getWorkflowTemplates(monitorConfigProvider: MonitorConfigProvider, allSteps: List<WorkflowStep>): WorkflowTemplate {
-        return AggregateSimpleMysqlDatabaseTemplate(monitorConfigProvider, allSteps)
+    open fun getWorkflowTemplates(
+            monitorConfigProvider: MonitorConfigProvider,
+            credentialProvider: CredentialProvider, allSteps: List<WorkflowStep>): WorkflowTemplate {
+        return AggregateSimpleMysqlDatabaseTemplate(monitorConfigProvider, credentialProvider, allSteps)
     }
 
     @Bean

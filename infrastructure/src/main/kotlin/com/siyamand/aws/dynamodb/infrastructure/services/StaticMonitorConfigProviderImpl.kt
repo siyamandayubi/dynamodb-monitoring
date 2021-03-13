@@ -40,4 +40,8 @@ class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     override fun getRdsProxyRole(): String {
         return "Rds-Proxy-Monitoring-Role"
     }
+
+    override fun getAppConfigLayerArn(region: String): String{
+        return "arn:aws:lambda:$region:728743619870:layer:AWS-AppConfig-Extension:15"
+    }
 }

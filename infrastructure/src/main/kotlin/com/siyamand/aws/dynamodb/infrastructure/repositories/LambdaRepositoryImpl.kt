@@ -27,6 +27,19 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         return Mono.fromFuture(response).awaitFirst()
     }
 
+    override suspend fun getLayers(marker: String): PageResultEntity<FunctionLayerListEntity> {
+        val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
+        val requestBuilder = ListLayersRequest.builder()
+        if (!marker.isNullOrEmpty()) {
+            requestBuilder.marker(marker)
+        }
+        val response = awsLambda
+                .listLayers(requestBuilder.build())
+                .thenApply { PageResultEntity(it.layers().map(FunctionMapper::convert), it.nextMarker() ?: "") }
+
+        return Mono.fromFuture(response).awaitFirst()
+    }
+
     override suspend fun getDetail(name: String): FunctionDetailEntity? {
         val client = getClient(clientBuilder::buildAsyncAwsLambda)
         return try {

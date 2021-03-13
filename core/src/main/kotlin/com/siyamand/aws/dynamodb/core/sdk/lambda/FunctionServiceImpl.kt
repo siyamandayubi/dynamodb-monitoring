@@ -3,6 +3,9 @@ package com.siyamand.aws.dynamodb.core.sdk.lambda
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.common.initializeRepositories
+import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleService
 
 class FunctionServiceImpl(
@@ -24,6 +27,14 @@ class FunctionServiceImpl(
         return lambdaRepository.getDetail(name)
     }
 
+    override suspend fun getLayers(marker: String): PageResultEntity<FunctionLayerListEntity> {
+        credentialProvider.initializeRepositoriesWithGlobalRegion(lambdaRepository)
+        return lambdaRepository.getLayers(marker)
+    }
+    override suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity> {
+        credentialProvider.initializeRepositories(lambdaRepository)
+        return lambdaRepository.getLayer(name)
+    }
     override suspend fun addLambda(functionName: String, code: String): ResourceEntity {
         initialize()
         val role = roleService.getOrCreateLambdaRole(null)

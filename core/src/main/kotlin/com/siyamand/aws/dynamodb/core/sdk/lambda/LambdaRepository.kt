@@ -11,4 +11,5 @@ interface LambdaRepository : AWSBaseRepository {
     suspend fun add(request: CreateEventSourceRequestEntity): ResourceEntity
     suspend fun add(entity: CreateLayerEntity): FunctionLayerEntity
     suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity>
+    suspend fun getLayers(marker: String): PageResultEntity<FunctionLayerListEntity >
 }

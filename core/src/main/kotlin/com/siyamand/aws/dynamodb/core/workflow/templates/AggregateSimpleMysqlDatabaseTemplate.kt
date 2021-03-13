@@ -1,10 +1,12 @@
 package com.siyamand.aws.dynamodb.core.workflow.templates
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AggregateSimpleMysqlDatabaseTemplate(
         private val monitorConfigProvider: MonitorConfigProvider,
+        private val credentialProvider: CredentialProvider,
         private val allSteps: Iterable<WorkflowStep>) : WorkflowTemplate {
     override val version: Int = 1
     override suspend fun getSteps(workflowContext: WorkflowContext): List<WorkflowStepInstance> {
@@ -13,6 +15,17 @@ class AggregateSimpleMysqlDatabaseTemplate(
         fun addStep(identifier: String, stepName: String, params: Map<String, String> = mapOf(), stepStatus: WorkflowStepStatus = WorkflowStepStatus.INITIAL) {
             steps.add(WorkflowStepInstance(identifier, allSteps.first { it.name == stepName }, stepStatus, params))
         }
+
+        addStep("AddLambdaLayer-Mysql", "AddLambdaLayer", mapOf(
+                Keys.LAMBDA_LAYER_PATH to "lambda/layers/mysql/mysql.zip",
+                Keys.LAMBDA_LAYER_NAME to "mysql-layer",
+                "output" to "mysql-layer",
+                "description" to "The layer contains mysql module and helper functions to execute queries and loading secrets from secret manager"))
+        addStep("AddLambdaLayer-aggretate-v1", "AddLambdaLayer", mapOf(
+                Keys.LAMBDA_LAYER_PATH to "lambda/layers/aggretate_v1/aggregate_v1.zip",
+                Keys.LAMBDA_LAYER_NAME to "aggregate-v1-layer",
+                "output" to "aggregate-v1-layer",
+                "description" to "The layer contains helper functions to generate sql statement from dynamodb change stream"))
 
         addStep("AddLambdaLayer-Mysql", "AddLambdaLayer", mapOf(
                 Keys.LAMBDA_LAYER_PATH to "lambda/layers/mysql/mysql.zip",
@@ -66,10 +79,14 @@ class AggregateSimpleMysqlDatabaseTemplate(
                 "appConfigContent" to "config"))
         addStep("AggregateMonitoringEntityCodeGenerator","AggregateMonitoringEntityCodeGenerator",mapOf(
                 "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
+                "dbConfig" to "config",
                 Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
         ))
+        addStep("AssignAppConfigArn",
+                "Assign",
+                mapOf("appConfigLayerArn" to monitorConfigProvider.getAppConfigLayerArn(credentialProvider.getRegion())))
         addStep("AddLambdaFunction","AddLambdaFunction", mapOf(
-                "layers" to "mysql-layer,crypto-layer",
+                "layers" to "appConfigLayerArn,mysql-layer,crypto-layer,aggregate-v1-layer",
                 Keys.LAMBDA_ROLE to monitorConfigProvider.getLambdaRole(),
                 "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
         ))

@@ -1,16 +1,12 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.sdk.lambda.FunctionDetailEntity
-import com.siyamand.aws.dynamodb.core.sdk.lambda.FunctionEntity
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.sdk.lambda.*
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
-import com.siyamand.aws.dynamodb.core.sdk.lambda.FunctionService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class FunctionController(private val functionService: FunctionService) {
@@ -24,6 +20,15 @@ class FunctionController(private val functionService: FunctionService) {
         return ResponseEntity(functionService.getDetail(name), HttpStatus.OK)
     }
 
+    @GetMapping("/api/layers/")
+    suspend fun getLayers(@RequestAttribute("marker", required =  false) marker: String?): HttpEntity<PageResultEntity<FunctionLayerListEntity>> {
+        return ResponseEntity(functionService.getLayers(marker ?: ""), HttpStatus.OK)
+    }
+
+    @GetMapping("/api/layers/{name}")
+    suspend fun getLayer(@PathVariable("name", required =  false) name: String?): HttpEntity<PageResultEntity<FunctionLayerEntity>> {
+        return ResponseEntity(functionService.getLayer(name ?: ""), HttpStatus.OK)
+    }
     @PostMapping("/api/functions/create")
     suspend fun create(): HttpEntity<ResourceEntity> {
         val code = "exports.handler = async (event) => {    const response = {        statusCode: 200,        body: JSON.stringify('Hello from Lambda!'),    };    return response;};"

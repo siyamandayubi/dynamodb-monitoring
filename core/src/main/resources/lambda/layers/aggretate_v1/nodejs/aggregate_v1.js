@@ -210,7 +210,7 @@ const buildScripts = (tables) => {
                     .replaceAll("@EndDate", date)
                     .replaceAll("@StartDate", date);
 
-                scripts.push(script);
+                scripts.push({script: script, hash: item.hash});
             })
         });
     }

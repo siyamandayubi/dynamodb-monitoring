@@ -19,6 +19,11 @@ class AggregateMonitoringEntityCodeGeneratorStep(private val templateEngine: Tem
         val entity = genericCastOrNull<MonitoringBaseEntity<AggregateMonitoringEntity>>(owner)
                 ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "type mismatch: owner")
 
+        val dbConfigKey = if (params.containsKey("dbConfig")) params["dbConfig"]!! else ""
+        val dbConfig = if (!dbConfigKey.isNullOrEmpty() && instance.context.sharedData.containsKey(dbConfigKey))
+            instance.context.sharedData[dbConfigKey]!!
+        else ""
+
         val codePath = params["code-path"] ?: ""
 
         val uri = javaClass.classLoader.getResource(codePath).toURI()
@@ -27,6 +32,7 @@ class AggregateMonitoringEntityCodeGeneratorStep(private val templateEngine: Tem
         val templateEngineParams = mutableMapOf<String, Any>()
         templateEngineParams.putAll(params)
         templateEngineParams["entity"] = entity.relatedData
+        templateEngineParams["dbConfig"] = dbConfig
         templateEngineParams["workflow"] = instance
         val result = templateEngine.execute(template, templateEngineParams)
 
