@@ -100,6 +100,7 @@ class MetadataServiceImpl(
         )
 
         tableItemRepository.add(monitoringItemConverter.convert(monitoringTable.tableName, monitoringEntity))
+        workflowPersister.threadSafe()
         val task = Runnable {
             runBlocking {
                 workflowManager.execute(workflowInstance, monitoringEntity, workflowPersister)

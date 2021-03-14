@@ -11,16 +11,16 @@ class IfElseWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowS
     override val name: String = "IfElse"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        if (params.containsKey("condition")) {
+        if (!params.containsKey("condition")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'condition' field is not provided")
         }
-        if (params.containsKey("else")) {
+        if (!params.containsKey("else")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'else' field is not provided")
         }
 
         val resultStr = templateEngine.execute(params["condition"]!!, instance.context.sharedData.mapValues { it.value as Any })
         val result = try {
-            resultStr.toBoolean()
+            resultStr.trim(' ', '\n').toBoolean()
         } catch (ex: Exception) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "$resultStr can not be cast to boolena")
         }

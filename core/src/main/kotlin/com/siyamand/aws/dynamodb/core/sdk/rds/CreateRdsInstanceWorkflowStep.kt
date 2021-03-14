@@ -30,7 +30,16 @@ class CreateRdsInstanceWorkflowStep(
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "dbInstanceName is mandatory")
         }
 
-        val instanceName = params["dbInstanceName"] ?: ""
+        // check database name
+        if (!context.sharedData.containsKey(Keys.DATABASE_NAME)) {
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "The '${Keys.DATABASE_NAME}' field is mandatory")
+        }
+        val databaseName = context.sharedData[Keys.DATABASE_NAME]!!
+
+        val instanceParamName = params["dbInstanceName"]!!
+        val instanceName = if (context.sharedData.containsKey(instanceParamName))
+            context.sharedData[instanceParamName]!!
+        else ""
 
         credentialProvider.initializeRepositories(rdsRepository, secretManagerRepository, resourceRepository)
 
@@ -43,7 +52,7 @@ class CreateRdsInstanceWorkflowStep(
             context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
 
             var secretTag: TagEntity? = rdsEntity.tags.firstOrNull { it.name == monigoringConfigProvider.getAccessTagName() }
-                    ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(),"The Rds exists, but it doesn't have any tag with the given key: ${monigoringConfigProvider.getAccessTagName()}")
+                    ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "The Rds exists, but it doesn't have any tag with the given key: ${monigoringConfigProvider.getAccessTagName()}")
 
             context.sharedData[Keys.SECRET_ARN_KEY] = secretTag!!.value
 
@@ -60,7 +69,7 @@ class CreateRdsInstanceWorkflowStep(
 
         val databaseCredential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secretEntity!!.secretData)
 
-        val createRequest = rdsBuilder.build(instanceName, databaseCredential, secretEntity.resourceEntity, workflowInstance.id)
+        val createRequest = rdsBuilder.build(instanceName, databaseName, databaseCredential, secretEntity.resourceEntity, workflowInstance.id)
         val rdsEntity = rdsRepository.createRds(createRequest)
         context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
         val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING

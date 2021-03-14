@@ -11,7 +11,7 @@ class JumpWorkflowStep() : WorkflowStep() {
     override val name: String = "Jump"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        if (params.containsKey("target")) {
+        if (!params.containsKey("target")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'target' field is not provided")
         }
 

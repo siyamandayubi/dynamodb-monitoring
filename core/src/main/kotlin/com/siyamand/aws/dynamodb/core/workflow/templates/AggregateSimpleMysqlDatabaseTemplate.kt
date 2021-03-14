@@ -26,15 +26,8 @@ class AggregateSimpleMysqlDatabaseTemplate(
                 Keys.LAMBDA_LAYER_NAME to "aggregate-v1-layer",
                 "output" to "aggregate-v1-layer",
                 "description" to "The layer contains helper functions to generate sql statement from dynamodb change stream"))
-
-        addStep("AddLambdaLayer-Mysql", "AddLambdaLayer", mapOf(
-                Keys.LAMBDA_LAYER_PATH to "lambda/layers/mysql/mysql.zip",
-                Keys.LAMBDA_LAYER_NAME to "mysql-layer",
-                "output" to "mysql-layer",
-                "description" to "The layer contains mysql module and helper functions to execute queries and loading secrets from secret manager"))
-
         addStep(
-                "AddLambdaLayer-Mysql", "AddLambdaLayer",
+                "AddLambdaLayer-Crypto", "AddLambdaLayer",
                 mapOf(
                         Keys.LAMBDA_LAYER_PATH to "lambda/layers/crypto/crypto.zip",
                         Keys.LAMBDA_LAYER_NAME to "crypto-layer",
@@ -43,23 +36,24 @@ class AggregateSimpleMysqlDatabaseTemplate(
         )
 
         addStep("CreateSecret", "CreateSecret")
-        addStep("AssignCounter", "Assign", mapOf("newValue" to "1", "variable" to "counter"))
-        addStep("AssignCounter", "Assign", mapOf("newValue" to "", "variable" to "rdsList"))
-        addStep("AssignCounter", "Assign", mapOf("newValue" to "", "variable" to "proxyList"))
-        addStep("StartLoop", "IfElse", mapOf("else" to "AggregateMonitoringEntityCodeGenerator",
+        addStep("AssignCounter", "Assign", mapOf("newValue" to "0", "variable" to "counter"))
+        addStep("AssignRdsList", "Assign", mapOf("newValue" to "", "variable" to "rdsList"))
+        addStep("AssignProxyList", "Assign", mapOf("newValue" to "", "variable" to "proxyList"))
+        addStep("StartLoop", "IfElse", mapOf("else" to "RdsConfigBuilder",
                 "condition" to "<#assign max = instancesCount?number>\n" +
                         "<#assign num = counter?number>\n" +
                         "<#if (num < max)>\n" +
-                        "\n" +
+                        "true\n" +
                         "<#else>\n" +
                         "false" +
                         "</#if>"))
 
-        addStep("AssignCounter", "Assign", mapOf("vdbInstanceName" to "\${dbInstanceName}-\${counter}", "variable" to "counter"))
+        addStep("IncreaseCounter", "Assign", mapOf("newValue" to "<#assign x = counter?number>\${x + 1}", "variable" to "counter"))
+        addStep("AssignInstanceName", "Assign", mapOf("newValue" to "\${dbInstanceName}-\${counter}", "variable" to "vdbInstanceName"))
         addStep("CreateRdsInstance", "CreateRdsInstance", mapOf(
-                "dbInstanceName" to (workflowContext.sharedData["vdbInstanceName"] ?: "")
-        ))
-        addStep("AssignCounter", "Assign", mapOf("newValue" to "\${rdsList},\${${Keys.RDS_ARN_KEY}}", "variable" to "rdsList"))
+                "dbInstanceName" to "vdbInstanceName")
+        )
+        addStep("AssignRdsList", "Assign", mapOf("newValue" to "\${rdsList},\${${Keys.RDS_ARN_KEY}}", "variable" to "rdsList"))
 
         addStep("CreateDatabase", "CreateDatabase")
         addStep("CreateRdsProxy", "CreateRdsProxy")

@@ -11,10 +11,10 @@ class AssignWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowS
     override val name: String = "Assign"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        if (params.containsKey("newValue")) {
+        if (!params.containsKey("newValue")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'newValue' field is not provided")
         }
-        if (params.containsKey("variable")) {
+        if (!params.containsKey("variable")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'variable' field is not provided")
         }
 

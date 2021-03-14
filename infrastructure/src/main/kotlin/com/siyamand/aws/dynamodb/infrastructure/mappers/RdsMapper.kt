@@ -79,7 +79,7 @@ class RdsMapper {
 
         fun convert(dbInstance: DBInstance): RdsEntity {
             return RdsEntity(
-                    dbInstance.dbName(),
+                    dbInstance.dbInstanceIdentifier() ?: "",
                     dbInstance.endpoint()?.address() ?: "",
                     dbInstance.endpoint()?.port() ?: 0,
                     dbInstance.masterUsername(),

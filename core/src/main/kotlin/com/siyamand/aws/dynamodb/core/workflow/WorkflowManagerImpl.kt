@@ -85,6 +85,8 @@ class WorkflowManagerImpl() : WorkflowManager {
                     throw IllegalArgumentException("couldn't find the step ${result.nextStep}")
                 }
                 newStepIndex = nextStep
+                val steps = instance.steps.filter { instance.steps.indexOf(it) >= nextStep }
+                steps.forEach { it.status = WorkflowStepStatus.INITIAL }
             } else if (instance.currentStep < instance.steps.size) {
                 newStepIndex++
             }

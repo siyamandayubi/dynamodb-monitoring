@@ -44,7 +44,7 @@ class RdsServiceImpl(
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
-        val createRequest = rdsBuilder.build(name, databaseCredential, credentialResource, metadataId)
+        val createRequest = rdsBuilder.build(name, name, databaseCredential, credentialResource, metadataId)
 
         return rdsRepository.createRds(createRequest).resource
     }

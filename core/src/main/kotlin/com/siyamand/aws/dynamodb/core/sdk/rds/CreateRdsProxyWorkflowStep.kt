@@ -2,6 +2,7 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
 import com.siyamand.aws.dynamodb.core.sdk.network.VpcRepository
@@ -50,7 +51,11 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         val vpcs = vpcRepository.getSecurityGroupVpcs(rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId })
         val subnets = vpcRepository.getSubnets(vpcs)
         val request = rdsBuilder.createProxyEntity(role, subnets, rds, context.sharedData[Keys.SECRET_ARN_KEY]!!, instance.id)
-        val existingProxies = rdsRepository.getProxy(rds.instanceName)
+        val existingProxies = try {
+            rdsRepository.getProxy(rds.instanceName)
+        } catch (ex: Exception) {
+            PageResultEntity(listOf(), "")
+        }
         val proxy = if (existingProxies.items.any()) existingProxies.items.first() else rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_NAME] = proxy.dbProxyName
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn

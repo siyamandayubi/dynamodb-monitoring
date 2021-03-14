@@ -66,7 +66,7 @@ class WorkflowPersisterImpl(
         tableItemRepository.update(newItem)
     }
 
-    suspend fun threadSafe(){
+    override suspend fun threadSafe(){
         s3Service.threadSafe()
         this.credentialProvider = this.credentialProvider.threadSafe()
     }
