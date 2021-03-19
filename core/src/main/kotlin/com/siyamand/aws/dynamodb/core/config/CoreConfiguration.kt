@@ -32,6 +32,7 @@ import com.siyamand.aws.dynamodb.core.workflow.*
 import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.AssignWorkflowStep
 import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.IfElseWorkflowStep
 import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.JumpWorkflowStep
+import com.siyamand.aws.dynamodb.core.workflow.defaultSteps.RemoveVariableWorkflowStep
 import com.siyamand.aws.dynamodb.core.workflow.templates.AggregateSimpleMysqlDatabaseTemplate
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -41,6 +42,10 @@ import org.springframework.scheduling.TaskScheduler
 @Configuration
 @ComponentScan
 open class CoreConfiguration {
+    @Bean
+    open fun getRemoveVariableWorkflowStep(): WorkflowStep {
+        return RemoveVariableWorkflowStep()
+    }
 
     @Bean
     open fun getRdsConfigBuilderWorkflowStep(
