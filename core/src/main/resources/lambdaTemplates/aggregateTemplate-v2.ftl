@@ -18,9 +18,6 @@ exports.handler = async function (event, context) {
     if (token == null) {
         token = await mysqlUtil.getPrivateKeyValue(client, secret_key);
     }
-     if (connectionConfig == null) {
-         var token = await mysqlUtil.getPrivateKeyValue(client, secret_key);
-     }
 
     // list of tables
     var tables = {};
@@ -31,21 +28,23 @@ exports.handler = async function (event, context) {
         group = { fieldName: "${group.fieldName}", path:"${group.path}", tableName:"${group.tableName}", fields:[]};
         fieldReferences.groups.push(group);
         <#list group.fields as field>
-            field = {fieldName: "${field.fieldName}", path:"${field.path}" };
+            field = {fieldName: "${field.name}", path:"${field.path}" };
             group.fields.push(field);
         </#list>
     </#list>
 
-    aggregateUtil.fillTables(tables, fieldReferences, records,(v)=>{return crypto.createHash('sha256').update(v).digest("hex");});
+    aggregateUtil.fillTables(tables, fieldReferences, event.Records,(v)=>{return crypto.createHash('sha256').update(v).digest("hex");});
     var scripts = aggregateUtil.buildScripts(tables)
 
     if(scripts.length > 0){
-       scripts.foreach(script => {
-            val hash = script.hash.substring(0,3);
-            val endpoint = dbConfigs.endpoints.filter(item => item.start >= hash && item.end <= hash);
+       for(var i = 0; i < scripts.length; i++)
+       {
+            var script = scripts[i];
+            var hash = script.hash.substring(0,3);
+            var endpoint = dbConfigs.endpoints.filter(item => item.start <= hash && item.end >= hash);
             if (endpoint.length > 0){
                 connectionConfig = {
-                    host: endPoint[0].endPoint,
+                    host: endpoint[0].endPoint,
                     port: endpoint[0].port,
                     user: token.username,
                     database: dbConfigs.databaseName,
@@ -54,7 +53,7 @@ exports.handler = async function (event, context) {
                 };
                 await mysqlUtil.executeSqls(connectionConfig, script.script);
             }
-       });
+       };
     }
 }
 

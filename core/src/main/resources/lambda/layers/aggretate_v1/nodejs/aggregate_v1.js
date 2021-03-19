@@ -61,7 +61,11 @@ const fillTables = (tables, fieldReferences, records, hashFunction) => {
             let table = tables[group.tableName];
 
             table.groups = table.groups || [];
-            if (newData[group.fieldName] == null && oldData[group.fieldName == null]) {
+            if (
+                (newData && oldData && newData[group.fieldName] == null && oldData[group.fieldName] == null) ||
+                (newData && !oldData && newData[group.fieldName] == null) ||
+                (!newData && oldData && oldData[group.fieldName] == null) ||
+                (!newData && !oldData)) {
                 return;
             }
 
@@ -181,8 +185,8 @@ const getFieldValueAndType = (data, fieldName, fieldPath) => {
 
 const buildScripts = (tables) => {
     let scripts = [];
-    const scriptTemplate = "INSERT INTO @table (GroupValue,     FieldName,    FieldValue,     StartDate,   EndDate,    InsertCount, UpdateCount, DeleteCount,   Max,    Min, MinItemCount, MaxItemCount, Sum,   Hash)" +
-        "VALUES            ('@GroupValue', '@FieldName', '@FieldValue', '@StartDate', '@EndDate', @InsertCount, @UpdateCount, @DeleteCount, @Max, @Min, @MinItemCount, @MaxItemCount, @Sum, '@Hash')" +
+    const scriptTemplate = "INSERT INTO @table (GroupValue,     FieldName,    FieldValue,     StartDate,   EndDate,    InsertCount, UpdateCount, DeleteCount,   Max,    Min, MinItemsCount, MaxItemsCount, Sum,   Hash)" +
+        "VALUES            ('@GroupValue', '@FieldName', '@FieldValue', '@StartDate', '@EndDate', @InsertCount, @UpdateCount, @DeleteCount, '@Max', '@Min', @MinItemCount, @MaxItemCount, @Sum, '@Hash')" +
         " ON DUPLICATE KEY UPDATE InsertCount = InsertCount + @InsertCount,  UpdateCount = UpdateCount + @UpdateCount,  DeleteCount = DeleteCount + @DeleteCount, Min = IF(Min<'@Min',Min,'@Min'),  Max = IF(Max>'@Max',Max,'@Max')";
     const date = getDate(new Date());
     for (const tableName in tables) {
@@ -196,7 +200,7 @@ const buildScripts = (tables) => {
                 let script = scriptTemplate.replace("@table", tableName);
                 script = script
                     .replaceAll("@Hash", item.hash)
-                    .replaceAll("@GroupValue", groupValue.groupValue)
+                    .replaceAll("@GroupValue", groupValue.groupValue.value)
                     .replaceAll("@FieldName", item.fieldName)
                     .replaceAll("@FieldValue", item.fieldValue)
                     .replaceAll("@InsertCount", item.insertCount)

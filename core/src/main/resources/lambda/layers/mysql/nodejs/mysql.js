@@ -23,17 +23,14 @@ const getPrivateKeyValue = async function (client, secret_key) {
 
 const executeSql = async function (connectionConfig, sql, values) {
     const promise = new Promise(function (resolve, reject) {
-
         var connection = mysql.createConnection(connectionConfig);
         connection.on('error', function (err) {
-            console.log("Error happend");
-            console.log(err.code);
             console.log(err);
         });
 
         connection.connect(function (err) {
             if (err) {
-                console.log('error connecting: ' + err.stack);
+                console.log('error connecting: ' + err.message + " stack:" + err.stack);
                 return;
             }
         });
