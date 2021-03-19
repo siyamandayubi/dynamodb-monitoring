@@ -1,11 +1,18 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.4.0"
+    id("org.springframework.boot") version "2.4.0" apply (false)
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     kotlin("jvm") version "1.4.21"
     `java-library`
 }
+
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
+}
+
 group = "com.siyamand.aws.dynamodb"
 version = "1.0.0"
 
@@ -49,4 +56,8 @@ dependencies {
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }

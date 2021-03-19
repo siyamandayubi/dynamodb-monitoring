@@ -1,11 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.4.0"
+    id("org.springframework.boot") version "2.4.0" apply (false)
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     kotlin("jvm") version "1.4.21"
     kotlin("plugin.serialization") version "1.4.21"
     `java-library`
+}
+
+dependencyManagement {
+    imports {
+        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)
+    }
 }
 group = "com.siyamand.aws.dynamodb"
 version = "1.0.0"
@@ -31,7 +37,12 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.10")
     testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
-    testImplementation("io.projectreactor:reactor-test:3.4.0")}
+    testImplementation("io.projectreactor:reactor-test:3.4.0")
+}
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
