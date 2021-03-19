@@ -48,6 +48,8 @@ class AggregateSimpleMysqlDatabaseTemplate(
                         "false" +
                         "</#if>"))
 
+        addStep("RemoveRdsArn", "Remove",
+                mapOf("variable" to "${Keys.RDS_ARN_KEY},${Keys.PROXY_ARN_KEY},${Keys.PROXY_NAME}, ${Keys.PROXY_TARGET_GROUP_ARN}"))
         addStep("IncreaseCounter", "Assign", mapOf("newValue" to "<#assign x = counter?number>\${x + 1}", "variable" to "counter"))
         addStep("AssignInstanceName", "Assign", mapOf("newValue" to "\${dbInstanceName}-\${counter}", "variable" to "vdbInstanceName"))
         addStep("CreateRdsInstance", "CreateRdsInstance", mapOf(
@@ -64,28 +66,31 @@ class AggregateSimpleMysqlDatabaseTemplate(
                 "sql_file" to "database/aggregate-table.sql"
         ))
         addStep("Jump", "Jump", mapOf("target" to "StartLoop"))
-        addStep("RdsConfigBuilder", "RdsConfigBuilder", mapOf("output" to "config", "proxyList" to "proxyList"))
-        addStep("CreateAppConfig", "CreateAppConfig", mapOf(
+        addStep("RdsConfigBuilder", "RdsConfigBuilder", mapOf(
+                "output" to "config",
+                "proxyList" to "proxyList",
+                Keys.DATABASE_NAME to (workflowContext.sharedData[Keys.DATABASE_NAME] ?: "")))
+/*        addStep("CreateAppConfig", "CreateAppConfig", mapOf(
                 "applicationName" to workflowContext.sharedData["dbInstanceName"]!!,
                 "environmentName" to "production",
                 "deploymentStrategyName" to "simple",
                 "profileName" to "workflowContext.sharedData[\"dbInstanceName\"]!!",
-                "appConfigContent" to "config"))
-        addStep("AggregateMonitoringEntityCodeGenerator","AggregateMonitoringEntityCodeGenerator",mapOf(
-                "code-path" to "lambdaTemplates/aggregateTemplate.ftl",
+                "appConfigContent" to "config"))*/
+        addStep("AggregateMonitoringEntityCodeGenerator", "AggregateMonitoringEntityCodeGenerator", mapOf(
+                "code-path" to "lambdaTemplates/aggregateTemplate-v2.ftl",
                 "dbConfig" to "config",
-                Keys.DATABASE_NAME to (workflowContext.sharedData["dbInstanceName"] ?: "")
+                Keys.DATABASE_NAME to (workflowContext.sharedData[Keys.DATABASE_NAME] ?: "")
         ))
         addStep("AssignAppConfigArn",
                 "Assign",
-                mapOf("appConfigLayerArn" to monitorConfigProvider.getAppConfigLayerArn(credentialProvider.getRegion())))
-        addStep("AddLambdaFunction","AddLambdaFunction", mapOf(
+                mapOf("variable" to "appConfigLayerArn", "newValue" to monitorConfigProvider.getAppConfigLayerArn(credentialProvider.getRegion())))
+        addStep("AddLambdaFunction", "AddLambdaFunction", mapOf(
                 "layers" to "appConfigLayerArn,mysql-layer,crypto-layer,aggregate-v1-layer",
                 Keys.LAMBDA_ROLE to monitorConfigProvider.getLambdaRole(),
                 "name" to (workflowContext.sharedData["lambda-name"] ?: "defaultFuncion")
         ))
-        addStep("EnableDynamoDbStream","EnableDynamoDbStream")
-        addStep("AddLambdaEventSource","AddLambdaEventSource")
+        addStep("EnableDynamoDbStream", "EnableDynamoDbStream")
+        addStep("AddLambdaEventSource", "AddLambdaEventSource")
 
         steps.forEach {
             it.step.initialize()

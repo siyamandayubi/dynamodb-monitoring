@@ -57,7 +57,9 @@ class MetadataServiceImpl(
                 ?: throw Exception("No workflow has been found. id= $id")
 
         var monitoringItem = monitoringItemConverter.convertToAggregateEntity(tableItem!!)
-        if (monitoringItem.status != MonitorStatus.PENDING && monitoringItem.status != MonitorStatus.INITIAL) {
+        if (monitoringItem.status != MonitorStatus.PENDING &&
+                monitoringItem.status != MonitorStatus.INITIAL &&
+                monitoringItem.status != MonitorStatus.ERROR) {
             throw Exception("Workflow with id=$id has final status.")
         }
         val workflowStr: String = if (!monitoringItem.workflowS3Key.isNullOrEmpty()) {
@@ -68,9 +70,10 @@ class MetadataServiceImpl(
         }
         val workflowInstance = workflowConverter.build(monitoringItem, workflowStr)
 
+        workflowPersister.threadSafe()
         val task = Runnable {
             runBlocking {
-                workflowManager.execute(workflowInstance, workflowPersister)
+                workflowManager.execute(workflowInstance, monitoringItem, workflowPersister)
             }
         }
 
@@ -83,7 +86,7 @@ class MetadataServiceImpl(
         val sourceTable = tableRepository.getDetail(sourceTableName)
         var workflowInstance = workflowBuilder.create(workflowName, mapOf(
                 Keys.DATABASE_NAME to entity.databaseName,
-                "lambda-name" to "lambda",
+                "lambda-name" to entity.databaseName,
                 Keys.SOURCE_DYNAMODB_ARN to (sourceTable?.arn ?: ""),
                 "dbInstanceName" to entity.databaseName,
                 "instancesCount" to entity.instancesCount.toString(),

@@ -9,4 +9,5 @@ interface FunctionService {
     suspend fun addLambda(functionName: String, code: String): ResourceEntity
     suspend fun getLayers(marker: String): PageResultEntity<FunctionLayerListEntity>
     suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity>
+    suspend fun addLayer(layerName: String, path: String, description: String): FunctionLayerEntity
 }

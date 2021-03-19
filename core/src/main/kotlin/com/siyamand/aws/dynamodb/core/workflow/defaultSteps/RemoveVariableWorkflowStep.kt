@@ -7,20 +7,21 @@ import com.siyamand.aws.dynamodb.core.workflow.WorkflowResultType
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowStep
 import kotlin.contracts.contract
 
-class AssignWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowStep() {
-    override val name: String = "Assign"
+class RemoveVariableWorkflowStep : WorkflowStep() {
+    override val name: String = "Remove"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        if (!params.containsKey("newValue")) {
-            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'newValue' field is not provided")
-        }
         if (!params.containsKey("variable")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'variable' field is not provided")
         }
 
-        val variable = params["variable"]!!
-        instance.context.sharedData[variable] = templateEngine.execute(params["newValue"]!!, instance.context.sharedData.mapValues { it.value as Any })
+        val variables = params["variable"]!!.split(',').map { it.trim(' ', '\n') }
 
+        variables.forEach { variable ->
+            if (instance.context.sharedData.containsKey(variable)) {
+                instance.context.sharedData.remove(variable)
+            }
+        }
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
     }
 

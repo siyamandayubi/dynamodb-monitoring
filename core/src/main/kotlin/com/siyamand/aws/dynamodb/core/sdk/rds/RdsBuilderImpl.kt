@@ -19,8 +19,8 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
 
     override fun build(instanceName: String, databaseName:String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity, metadataId: String): CreateDbInstanceEntity {
         return CreateDbInstanceEntityImpl(
-                instanceName,
                 databaseName,
+                instanceName,
                 credential.username,
                 credential.password,
                 ENGINE,

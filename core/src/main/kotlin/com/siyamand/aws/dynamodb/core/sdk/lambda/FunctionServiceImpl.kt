@@ -31,15 +31,22 @@ class FunctionServiceImpl(
         credentialProvider.initializeRepositoriesWithGlobalRegion(lambdaRepository)
         return lambdaRepository.getLayers(marker)
     }
+
     override suspend fun getLayer(name: String): PageResultEntity<FunctionLayerEntity> {
         credentialProvider.initializeRepositories(lambdaRepository)
         return lambdaRepository.getLayer(name)
     }
+
     override suspend fun addLambda(functionName: String, code: String): ResourceEntity {
         initialize()
         val role = roleService.getOrCreateLambdaRole(null)
         val createRequest = functionBuilder.build(functionName, code, role.resource.arn, listOf(), mapOf(), listOf(), listOf())
         return lambdaRepository.add(createRequest)
+    }
+
+    override suspend fun addLayer(layerName: String, path: String, description: String): FunctionLayerEntity {
+        initialize()
+        return lambdaRepository.add(functionBuilder.buildLayer(layerName, description, path))
     }
 
     private suspend fun initialize() {

@@ -57,7 +57,9 @@ class CreateRdsInstanceWorkflowStep(
             context.sharedData[Keys.SECRET_ARN_KEY] = secretTag!!.value
 
             // delete new generate secret key
-            secretManagerRepository.deleteSecret(secretEntity!!.resourceEntity!!.arn)
+            if (secretEntity?.resourceEntity?.arn != secretTag?.value) {
+                secretManagerRepository.deleteSecret(secretEntity!!.resourceEntity!!.arn)
+            }
 
             val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
             return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")

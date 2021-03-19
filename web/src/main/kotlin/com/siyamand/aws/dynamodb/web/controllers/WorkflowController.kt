@@ -27,6 +27,7 @@ class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, pri
             val groupByEntity = GroupByEntity()
             groupByEntity.fieldName = "category"
             groupByEntity.tableName = "categoryAggr"
+            groupByEntity.path = "category"
             groupByEntity.fields.add(AggregateFieldEntity("name", "name", Instant.now()))
             groupByEntity
         }())

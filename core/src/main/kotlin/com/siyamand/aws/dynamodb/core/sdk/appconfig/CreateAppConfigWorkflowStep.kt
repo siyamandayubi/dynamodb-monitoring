@@ -36,10 +36,14 @@ class CreateAppConfigWorkflowStep(
         }
         val profileName = params["profileName"]!!
 
-        if (!instance.context.sharedData.containsKey("appConfigContent")) {
+        if (!params.containsKey("appConfigContent")) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "appConfigContent param is mandatory")
         }
-        val content = instance.context.sharedData["appConfigContent"]!!
+        val appConfigKey = params["appConfigContent"]!!
+        if (!instance.context.sharedData.containsKey(appConfigKey)){
+            return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "appConfigContent param is mandatory")
+        }
+        val content = instance.context.sharedData[appConfigKey]!!
         val monitoringId = instance.id
 
         credentialProvider.initializeRepositories(appConfigRepository)

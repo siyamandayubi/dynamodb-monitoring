@@ -49,7 +49,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "no ${Keys.DATABASE_NAME} in shared data")
         }
 
-        credentialProvider.initializeRepositories(lambdaRepository, rdsRepository, secretManagerRepository)
+        credentialProvider.initializeRepositories(lambdaRepository, rdsRepository, secretManagerRepository, vpcRepository)
         credentialProvider.initializeRepositoriesWithGlobalRegion(roleRepository)
 
         val vpcList = vpcRepository.getVpcs(true, listOf())

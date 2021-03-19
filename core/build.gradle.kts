@@ -30,6 +30,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.10.3")
     testImplementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.4.10")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     testImplementation("io.projectreactor:reactor-test:3.4.0")}
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"

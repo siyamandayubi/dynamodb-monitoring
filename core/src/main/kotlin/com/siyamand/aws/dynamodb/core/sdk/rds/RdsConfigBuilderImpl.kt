@@ -17,7 +17,7 @@ class RdsConfigBuilderImpl : RdsConfigBuilder {
         val returnValue = RdsAppConfigEntity()
         returnValue.databaseName = databaseName
 
-        val step = 4096 / rdsProxies.size
+        val step = 4095 / rdsProxies.size
         var start = 0
         var order = 0
         returnValue.endpoints.addAll(rdsProxies.map {

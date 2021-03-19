@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class GroupByEntity {
     var fieldName: String = ""
+    var path: String = ""
     var tableName: String = ""
 
     /// Only for numeric fields
