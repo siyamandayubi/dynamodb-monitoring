@@ -8,5 +8,4 @@ interface MetadataService {
     suspend fun getMonitoredTables(): List<MonitoringBaseEntity<AggregateMonitoringEntity>>
     suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity : AggregateMonitoringEntity)
     suspend fun resumeWorkflow(id: String)
-    suspend fun getMonitoringTable(): TableDetailEntity?
 }

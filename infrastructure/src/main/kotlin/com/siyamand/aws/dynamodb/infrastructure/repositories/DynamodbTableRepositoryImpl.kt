@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.infrastructure.repositories
 
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.CreateIndexEntity
 import kotlinx.coroutines.reactive.awaitFirst
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableDetailEntity
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableEntity
@@ -20,9 +21,22 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
             val returnValue = response.thenApply(TableMapper::convertDetail)
 
             fromFuture(returnValue).awaitFirst()
-        } catch (resourceNotFoundException: ResourceNotFoundException){
+        } catch (resourceNotFoundException: ResourceNotFoundException) {
             null
         }
+    }
+
+    override suspend fun addIndex(tableName: String, createIndexEntity: CreateIndexEntity): TableDetailEntity {
+        val db = getClient(clientBuilder::buildAsyncDynamodb)
+        val response = db.updateTable(UpdateTableRequest
+                .builder()
+                .tableName(tableName)
+                .attributeDefinitions(createIndexEntity.keySchema.map { TableMapper.convertToAttributeDefinition(it.attributeName, it.attributeType) })
+                .globalSecondaryIndexUpdates(TableMapper.convert(createIndexEntity))
+                .build())
+                .thenApply { TableMapper.convertDetail(it.tableDescription()) }
+
+        return fromFuture(response).awaitFirst()
     }
 
     override suspend fun getList(): List<TableEntity> {
@@ -39,6 +53,7 @@ class DynamodbTableRepositoryImpl(private val clientBuilder: ClientBuilder) : Ta
                 .tableName(t.tableName)
                 .attributeDefinitions(t.attributes.map { TableMapper.convertToAttributeDefinition(it.attributeName, it.attributeType) })
                 .keySchema(t.keySchema.map { TableMapper.convertToKeySchemaDefinition(it.attributeName, it.keyType) })
+                .globalSecondaryIndexes(t.indexes.map { TableMapper.convertIndex(it) })
                 .billingMode(BillingMode.PAY_PER_REQUEST)
                 .build()
         val response = db.createTable(createTableRequest).thenApply { TableMapper.convertDetail(it.tableDescription()) }

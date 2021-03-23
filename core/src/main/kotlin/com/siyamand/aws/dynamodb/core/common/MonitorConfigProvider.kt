@@ -11,4 +11,5 @@ interface MonitorConfigProvider {
     fun getRdsProxyRole(): String
     fun getAppConfigRole(): String
     fun getAppConfigLayerArn(region: String): String
+    fun getMonitoringTableSourceTableIndexName(): String
 }

@@ -111,8 +111,11 @@ open class CoreConfiguration {
     open fun getPrerequisiteService(
             monitorConfigProvider: MonitorConfigProvider,
             roleRepository: RoleRepository,
-            metadataService: MetadataService): PrerequisiteService {
-        return PrerequisiteServiceImpl(monitorConfigProvider, roleRepository, metadataService)
+            roleService: RoleService,
+            credentialProvider: CredentialProvider,
+            tableRepository: TableRepository,
+            monitoringTableBuilder: MonitoringTableBuilder): PrerequisiteService {
+        return PrerequisiteServiceImpl(monitorConfigProvider, credentialProvider, roleRepository, roleService, tableRepository, monitoringTableBuilder)
     }
 
     @Bean
@@ -236,8 +239,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getMonitoringTableBuilder(): MonitoringTableBuilder {
-        return MonitoringTableBuilderImpl()
+    open fun getMonitoringTableBuilder(configProvider: MonitorConfigProvider): MonitoringTableBuilder {
+        return MonitoringTableBuilderImpl(configProvider)
     }
 
     @Bean
@@ -286,24 +289,22 @@ open class CoreConfiguration {
     @Bean
     open fun getMonitoringService(
             s3Service: S3Service,
+            prerequisiteReadonlyService: PrerequisiteReadonlyService,
             workflowConverter: WorkflowConverter,
             monitorConfigProvider: MonitorConfigProvider,
             tableRepository: TableRepository,
-            monitoringTableBuilder: MonitoringTableBuilder,
             credentialProvider: CredentialProvider,
             workflowManager: WorkflowManager,
             workflowPersister: WorkflowPersister,
             workflowBuilder: WorkflowBuilder,
             tableItemRepository: TableItemRepository,
             monitoringItemConverter: MonitoringItemConverter,
-            resourceRepository: ResourceRepository,
             scheduler: TaskScheduler): MetadataService {
         return MetadataServiceImpl(
                 s3Service,
+                prerequisiteReadonlyService,
                 workflowConverter,
-                resourceRepository,
                 monitorConfigProvider,
-                monitoringTableBuilder,
                 credentialProvider,
                 workflowBuilder,
                 workflowManager,

@@ -15,10 +15,9 @@ import org.springframework.scheduling.TaskScheduler
 
 class MetadataServiceImpl(
         private val s3Service: S3Service,
+        private val prerequisiteReadonlyService: PrerequisiteReadonlyService,
         private val workflowConverter: WorkflowConverter,
-        private val resourceRepository: ResourceRepository,
         private val monitorConfigProvider: MonitorConfigProvider,
-        private val monitoringTableBuilder: MonitoringTableBuilder,
         private val credentialProvider: CredentialProvider,
         private val workflowBuilder: WorkflowBuilder,
         private val workflowManager: WorkflowManager,
@@ -47,7 +46,7 @@ class MetadataServiceImpl(
     }
 
     override suspend fun resumeWorkflow(id: String) {
-        credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
+        credentialProvider.initializeRepositories(tableRepository, tableItemRepository)
 
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
         if (tableName.isNullOrEmpty()) {
@@ -81,8 +80,10 @@ class MetadataServiceImpl(
     }
 
     override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
-        credentialProvider.initializeRepositories(tableRepository, tableItemRepository, resourceRepository)
-        val monitoringTable = getOrCreateMonitoringTable()
+        credentialProvider.initializeRepositories(tableRepository, tableItemRepository)
+        val monitoringTable = prerequisiteReadonlyService.getMonitoringTable()
+                ?: throw Exception("monitoring table has not been created")
+
         val sourceTable = tableRepository.getDetail(sourceTableName)
         var workflowInstance = workflowBuilder.create(workflowName, mapOf(
                 Keys.DATABASE_NAME to entity.databaseName,
@@ -111,30 +112,6 @@ class MetadataServiceImpl(
         }
 
         scheduler.schedule(task, scheduler.clock.instant().plusMillis(500))
-    }
-
-    override suspend fun getMonitoringTable(): TableDetailEntity? {
-        initializeRepositories()
-        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
-            throw Exception("No config name for Monitoring Dynamodb table")
-        }
-
-        return tableRepository.getDetail(tableName)
-    }
-
-    suspend fun getOrCreateMonitoringTable(): TableDetailEntity {
-        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
-            throw Exception("No config name for Monitoring Dynamodb table")
-        }
-
-        var table = tableRepository.getDetail(tableName)
-        if (table != null) {
-            return table
-        }
-
-        return tableRepository.add(monitoringTableBuilder.build(tableName))
     }
 
     suspend fun initializeRepositories() {

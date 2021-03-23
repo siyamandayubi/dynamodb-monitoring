@@ -1,10 +1,9 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
-import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableAttribute
-import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableDetailEntity
-import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableKeyScheme
+import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.*
 
-class MonitoringTableBuilderImpl : MonitoringTableBuilder {
+class MonitoringTableBuilderImpl(val configProvider: MonitorConfigProvider) : MonitoringTableBuilder {
     override fun build(tableName: String): TableDetailEntity {
 
         return TableDetailEntity(
@@ -18,9 +17,16 @@ class MonitoringTableBuilderImpl : MonitoringTableBuilder {
                         //TableAttribute("version", "N"),
                         //TableAttribute("workflow", "S"),
                 ),
-                mutableListOf(TableKeyScheme("id", "HASH")),
+                mutableListOf(TableKeyScheme("id", "HASH", "S")),
+                listOf(IndexEntity(configProvider.getMonitoringTableSourceTableIndexName(),"", listOf(TableKeyScheme("sourceTable", "HASH", "S")))),
                 "",
-        false,
-        null)
+                false,
+                null)
+    }
+
+    override fun buildIndexRequest(): CreateIndexEntity {
+        return CreateIndexEntity(
+                configProvider.getMonitoringTableSourceTableIndexName(),
+                listOf(TableKeyScheme("sourceTable", "HASH", "S")))
     }
 }

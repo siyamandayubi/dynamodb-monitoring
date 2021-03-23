@@ -7,6 +7,7 @@ class TableDetailEntity(
         val tableName: String,
         val attributes: MutableList<TableAttribute>,
         val keySchema: MutableList<TableKeyScheme>,
+        val indexes: List<IndexEntity>,
         val status :String,
         val streamEnabled: Boolean,
         val latestStream: ResourceEntity?
@@ -15,4 +16,4 @@ class TableDetailEntity(
 
 class TableAttribute(val attributeName: String, val attributeType: String)
 
-class TableKeyScheme(val attributeName: String, val keyType: String)
+class TableKeyScheme(val attributeName: String, val keyType: String, val attributeType: String)
