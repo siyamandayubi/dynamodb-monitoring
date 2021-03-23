@@ -4,20 +4,21 @@ import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.*
 
 class MonitoringTableBuilderImpl(val configProvider: MonitorConfigProvider) : MonitoringTableBuilder {
+    override val keyName: String = "id"
     override fun build(tableName: String): TableDetailEntity {
 
         return TableDetailEntity(
                 "",
                 tableName,
                 mutableListOf(
-                        TableAttribute("id", "S")
+                        TableAttribute(keyName, "S")
                         //TableAttribute("sourceTable", "S"),
                         //TableAttribute("type", "S"),
                         //TableAttribute("status", "S"),
                         //TableAttribute("version", "N"),
                         //TableAttribute("workflow", "S"),
                 ),
-                mutableListOf(TableKeyScheme("id", "HASH", "S")),
+                mutableListOf(TableKeyScheme(keyName, "HASH", "S")),
                 listOf(IndexEntity(configProvider.getMonitoringTableSourceTableIndexName(),"", listOf(TableKeyScheme("sourceTable", "HASH", "S")))),
                 "",
                 false,

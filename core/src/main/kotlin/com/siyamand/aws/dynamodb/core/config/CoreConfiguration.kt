@@ -299,8 +299,8 @@ open class CoreConfiguration {
             workflowBuilder: WorkflowBuilder,
             tableItemRepository: TableItemRepository,
             monitoringItemConverter: MonitoringItemConverter,
-            scheduler: TaskScheduler): MetadataService {
-        return MetadataServiceImpl(
+            scheduler: TaskScheduler): WorkflowService {
+        return WorkflowServiceImpl(
                 s3Service,
                 prerequisiteReadonlyService,
                 workflowConverter,

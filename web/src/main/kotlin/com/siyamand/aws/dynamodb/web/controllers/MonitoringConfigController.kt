@@ -1,6 +1,6 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
+import com.siyamand.aws.dynamodb.core.monitoring.WorkflowService
 import com.siyamand.aws.dynamodb.core.monitoring.PrerequisiteService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class MonitoringConfigController(private val metadataService: MetadataService, private val prerequisiteService: PrerequisiteService) {
+class MonitoringConfigController(private val metadataService: WorkflowService, private val prerequisiteService: PrerequisiteService) {
 
     @GetMapping("/api/monitoring/items")
     suspend fun getMonitoringStatus(): HttpEntity<List<MonitoringBaseEntity<AggregateMonitoringEntity>>> {

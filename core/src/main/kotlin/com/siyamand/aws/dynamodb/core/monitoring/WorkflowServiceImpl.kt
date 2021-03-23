@@ -4,7 +4,6 @@ import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.*
-import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
@@ -13,7 +12,7 @@ import com.siyamand.aws.dynamodb.core.workflow.*
 import kotlinx.coroutines.runBlocking
 import org.springframework.scheduling.TaskScheduler
 
-class MetadataServiceImpl(
+class WorkflowServiceImpl(
         private val s3Service: S3Service,
         private val prerequisiteReadonlyService: PrerequisiteReadonlyService,
         private val workflowConverter: WorkflowConverter,
@@ -25,7 +24,7 @@ class MetadataServiceImpl(
         private val tableItemRepository: TableItemRepository,
         private val monitoringItemConverter: MonitoringItemConverter,
         private val tableRepository: TableRepository,
-        private val scheduler: TaskScheduler) : MetadataService {
+        private val scheduler: TaskScheduler) : WorkflowService {
 
     override suspend fun getMonitoredTables(): List<MonitoringBaseEntity<AggregateMonitoringEntity>> {
         val returnValue = mutableListOf<MonitoringBaseEntity<AggregateMonitoringEntity>>()

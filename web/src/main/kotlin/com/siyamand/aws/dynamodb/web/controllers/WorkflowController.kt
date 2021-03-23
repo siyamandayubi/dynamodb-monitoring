@@ -1,11 +1,10 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
+import com.siyamand.aws.dynamodb.core.monitoring.WorkflowService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateFieldEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.GroupByEntity
 import com.siyamand.aws.dynamodb.core.schedule.WorkflowJobHandler
-import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 import com.siyamand.aws.dynamodb.web.models.ResumeWorkflowModel
 import com.siyamand.aws.dynamodb.web.models.StartWorkflowModel
 import org.springframework.http.HttpEntity
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 
 @RestController
-class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, private val metadataService: MetadataService) {
+class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, private val metadataService: WorkflowService) {
     @PostMapping("/api/workflow/start")
     suspend fun startWorkflow(@RequestBody startWorkflowModel: StartWorkflowModel): HttpEntity<String> {
         val aggregateMonitoringEntity = AggregateMonitoringEntity()
