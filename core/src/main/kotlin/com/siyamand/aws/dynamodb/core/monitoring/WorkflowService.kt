@@ -5,7 +5,6 @@ import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMo
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
 
 interface WorkflowService {
-    suspend fun getMonitoredTables(): List<MonitoringBaseEntity<AggregateMonitoringEntity>>
     suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity : AggregateMonitoringEntity)
     suspend fun resumeWorkflow(id: String)
 }

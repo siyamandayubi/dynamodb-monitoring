@@ -26,25 +26,7 @@ class WorkflowServiceImpl(
         private val tableRepository: TableRepository,
         private val scheduler: TaskScheduler) : WorkflowService {
 
-    override suspend fun getMonitoredTables(): List<MonitoringBaseEntity<AggregateMonitoringEntity>> {
-        val returnValue = mutableListOf<MonitoringBaseEntity<AggregateMonitoringEntity>>()
-
-        credentialProvider.initializeRepositories(tableItemRepository)
-
-        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        var currentBatch = tableItemRepository.getList(tableName, null)
-        // fetch first batch
-        returnValue.addAll(currentBatch.items.map { monitoringItemConverter.convertToAggregateEntity(it) })
-
-        // fetch next pages
-        while (currentBatch.nextPageToken != null && currentBatch.nextPageToken?.any() == true) {
-            currentBatch = tableItemRepository.getList(tableName, null)
-            returnValue.addAll(currentBatch.items.map { monitoringItemConverter.convertToAggregateEntity(it) })
-        }
-        return returnValue
-    }
-
-    override suspend fun resumeWorkflow(id: String) {
+     override suspend fun resumeWorkflow(id: String) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository)
 
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()

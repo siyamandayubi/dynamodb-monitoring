@@ -25,7 +25,7 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         val db = getClient(clientBuilder::buildAsyncDynamodb)
 
         val requestBuilder = ScanRequest.builder().tableName(tableName)
-        if (startKey != null) {
+        if (startKey != null && startKey.any()) {
             requestBuilder.exclusiveStartKey(TableItemtMapper.convertKey(startKey))
         }
         val response = db.scan(requestBuilder.build()).thenApply { res ->

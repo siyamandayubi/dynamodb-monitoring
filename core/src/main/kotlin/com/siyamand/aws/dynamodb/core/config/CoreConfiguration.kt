@@ -108,6 +108,15 @@ open class CoreConfiguration {
     }
 
     @Bean
+    open fun getMetadataService(tableItemRepository: TableItemRepository,
+                                credentialProvider: CredentialProvider,
+                                monitorConfigProvider: MonitorConfigProvider,
+                                monitoringTableBuilder: MonitoringTableBuilder,
+                                monitoringItemConverter: MonitoringItemConverter): MetadataService {
+        return MetadataServiceImpl(tableItemRepository, credentialProvider, monitoringTableBuilder, monitorConfigProvider, monitoringItemConverter)
+    }
+
+    @Bean
     open fun getPrerequisiteService(
             monitorConfigProvider: MonitorConfigProvider,
             roleRepository: RoleRepository,

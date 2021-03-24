@@ -1,5 +1,7 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
+import com.siyamand.aws.dynamodb.core.common.PageResultEntity
+import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
 import com.siyamand.aws.dynamodb.core.monitoring.WorkflowService
 import com.siyamand.aws.dynamodb.core.monitoring.PrerequisiteService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
@@ -10,17 +12,17 @@ import com.siyamand.aws.dynamodb.web.models.CredentialModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
-class MonitoringConfigController(private val metadataService: WorkflowService, private val prerequisiteService: PrerequisiteService) {
+class MonitoringConfigController(
+        private val workflowService: WorkflowService,
+        private val metadataService: MetadataService,
+        private val prerequisiteService: PrerequisiteService) {
 
     @GetMapping("/api/monitoring/items")
-    suspend fun getMonitoringStatus(): HttpEntity<List<MonitoringBaseEntity<AggregateMonitoringEntity>>> {
-        val result = metadataService.getMonitoredTables()
+    suspend fun getMonitoringStatus(@RequestParam(required = false) startKey :String = ""): HttpEntity<PageResultEntity<MonitoringBaseEntity<AggregateMonitoringEntity>>> {
+        val result = metadataService.getMonitoredTables(startKey)
         return ResponseEntity(result, HttpStatus.OK)
     }
 
