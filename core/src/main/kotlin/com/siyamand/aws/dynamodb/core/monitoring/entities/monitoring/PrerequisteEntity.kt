@@ -8,5 +8,6 @@ class PrerequisteEntity(
         val lambdaRole: RoleEntity?,
         val rdsRole: RoleEntity?,
         val monitoringTable: TableDetailEntity?,
+        val resourceTable: TableDetailEntity?,
         val monitoringTableSourceTableIndex: IndexEntity?) {
 }

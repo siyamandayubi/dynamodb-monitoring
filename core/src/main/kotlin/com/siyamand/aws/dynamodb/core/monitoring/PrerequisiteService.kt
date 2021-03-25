@@ -7,9 +7,11 @@ import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableDetailEntity
 interface PrerequisiteReadonlyService {
     suspend fun getPrerequistes(): PrerequisteEntity
     suspend fun getMonitoringTable(): TableDetailEntity?
+    suspend fun getMonitoringResourceTable(): TableDetailEntity?
 }
 
 interface PrerequisiteService : PrerequisiteReadonlyService {
     suspend fun createPrerequistes(credentialEntity: CredentialEntity): PrerequisteEntity
     suspend fun getOrCreateMonitoringTable(): TableDetailEntity
+    suspend fun getOrCreateMonitoringResourceTable(): TableDetailEntity
 }

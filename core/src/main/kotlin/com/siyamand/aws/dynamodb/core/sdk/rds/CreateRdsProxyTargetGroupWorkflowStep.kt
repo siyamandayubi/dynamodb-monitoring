@@ -2,13 +2,15 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.sdk.rds.entities.CreateDbProxyTargetEntity
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: CredentialProvider,
                                             private val rdsRepository: RdsRepository,
-                                            private val resourceRepository: ResourceRepository) : WorkflowStep() {
+                                            private val resourceRepository: ResourceRepository,
+                                            private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String
         get() = "CreateRdsProxyTargetGroup"
 
@@ -48,6 +50,9 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
                         listOf(rds.instanceName))).first()
 
         val arn = result.targetResource?.arn ?: ""
+        if (!arn.isNullOrEmpty()) {
+            monitoringResourcePersister.persist(instance.id, arn)
+        }
         context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.PROXY_TARGET_GROUP_ARN to arn), "")
     }
@@ -57,6 +62,7 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
     }
 
     override suspend fun initialize() {
+        monitoringResourcePersister.threadSafe()
         this.credentialProvider = credentialProvider.threadSafe()
     }
 }

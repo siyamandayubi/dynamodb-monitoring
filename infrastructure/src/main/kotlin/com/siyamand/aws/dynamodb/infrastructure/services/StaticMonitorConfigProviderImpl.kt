@@ -5,6 +5,11 @@ import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 class StaticMonitorConfigProviderImpl : MonitorConfigProvider {
     // make it configurable
     private val version = "1"
+
+    override fun getMonitoringResourcesTableName(): String {
+        return "_MonitoringResources"
+    }
+
     override fun getMonitoringConfigMetadataTable(): String {
         return "_MonigoringMetadata"
     }

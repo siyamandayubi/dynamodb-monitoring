@@ -5,6 +5,7 @@ import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.sdk.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleRepository
@@ -16,7 +17,8 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
                                  private val rdsRepository: RdsRepository,
                                  private val vpcRepository: VpcRepository,
                                  private val rdsBuilder: RdsBuilder,
-                                 private val resourceRepository: ResourceRepository) : WorkflowStep() {
+                                 private val resourceRepository: ResourceRepository,
+                                 private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String
         get() = "CreateRdsProxy"
 
@@ -59,6 +61,7 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
         val proxy = if (existingProxies.items.any()) existingProxies.items.first() else rdsRepository.createProxy(request)
         context.sharedData[Keys.PROXY_NAME] = proxy.dbProxyName
         context.sharedData[Keys.PROXY_ARN_KEY] = proxy.dbProxyResource.arn
+        monitoringResourcePersister.persist(instance.id, proxy.dbProxyResource.arn)
         if (proxy.status == "creating") {
             return WorkflowResult(WorkflowResultType.WAITING, mapOf(Keys.PROXY_ARN_KEY to proxy.dbProxyResource.arn), "")
         }
@@ -92,6 +95,7 @@ class CreateRdsProxyWorkflowStep(private val roleRepository: RoleRepository,
     }
 
     override suspend fun initialize() {
+        this.monitoringResourcePersister.threadSafe()
         this.credentialProvider = credentialProvider.threadSafe()
     }
 }

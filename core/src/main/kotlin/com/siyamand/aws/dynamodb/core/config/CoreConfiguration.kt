@@ -43,6 +43,15 @@ import org.springframework.scheduling.TaskScheduler
 @ComponentScan
 open class CoreConfiguration {
     @Bean
+    open fun getMonitoringResourcePersister(
+            credentialProvider: CredentialProvider,
+            monitorConfigProvider: MonitorConfigProvider,
+            monitoringTableBuilder: MonitoringTableBuilder,
+            tableItemRepository: TableItemRepository): MonitoringResourcePersister {
+        return MonitoringResourcePersisterImpl(credentialProvider, monitorConfigProvider, tableItemRepository, monitoringTableBuilder)
+    }
+
+    @Bean
     open fun getRemoveVariableWorkflowStep(): WorkflowStep {
         return RemoveVariableWorkflowStep()
     }
@@ -130,8 +139,9 @@ open class CoreConfiguration {
     @Bean
     open fun getAddLambdaEventSourceWorkflowStep(credentialProvider: CredentialProvider,
                                                  functionBuilder: FunctionBuilder,
-                                                 lambdaRepository: LambdaRepository): WorkflowStep {
-        return AddLambdaEventSourceWorkflowStep(credentialProvider, functionBuilder, lambdaRepository)
+                                                 lambdaRepository: LambdaRepository,
+                                                 monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return AddLambdaEventSourceWorkflowStep(credentialProvider, functionBuilder, lambdaRepository, monitoringResourcePersister)
     }
 
     @Bean
@@ -142,7 +152,8 @@ open class CoreConfiguration {
             secretManagerRepository: SecretManagerRepository,
             roleRepository: RoleRepository,
             vpcRepository: VpcRepository,
-            functionBuilder: FunctionBuilder): WorkflowStep {
+            functionBuilder: FunctionBuilder,
+            monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
         return AddLambdaFunctionWorkflowStep(
                 credentialProvider,
                 lambdaRepository,
@@ -150,7 +161,8 @@ open class CoreConfiguration {
                 rdsRepository,
                 secretManagerRepository,
                 vpcRepository,
-                functionBuilder)
+                functionBuilder,
+                monitoringResourcePersister)
     }
 
     @Bean
@@ -166,8 +178,9 @@ open class CoreConfiguration {
     @Bean
     open fun getCreateRdsProxyTargetGroupWorkflowStep(credentialProvider: CredentialProvider,
                                                       rdsRepository: RdsRepository,
-                                                      resourceRepository: ResourceRepository): WorkflowStep {
-        return CreateRdsProxyTargetGroupWorkflowStep(credentialProvider, rdsRepository, resourceRepository)
+                                                      resourceRepository: ResourceRepository,
+                                                      monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return CreateRdsProxyTargetGroupWorkflowStep(credentialProvider, rdsRepository, resourceRepository, monitoringResourcePersister)
     }
 
     @Bean
@@ -177,16 +190,25 @@ open class CoreConfiguration {
                                            rdsRepository: RdsRepository,
                                            vpcRepository: VpcRepository,
                                            rdsBuilder: RdsBuilder,
-                                           resourceRepository: ResourceRepository): WorkflowStep {
-        return CreateRdsProxyWorkflowStep(roleRepository, monitorConfigProvider, credentialProvider, rdsRepository, vpcRepository, rdsBuilder, resourceRepository)
+                                           resourceRepository: ResourceRepository,
+                                           monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return CreateRdsProxyWorkflowStep(roleRepository,
+                monitorConfigProvider,
+                credentialProvider,
+                rdsRepository,
+                vpcRepository,
+                rdsBuilder,
+                resourceRepository,
+                monitoringResourcePersister)
     }
 
     @Bean
     open fun getAddLambdaLayerWorkflowStep(monitorConfigProvider: MonitorConfigProvider,
                                            credentialProvider: CredentialProvider,
                                            functionBuilder: FunctionBuilder,
-                                           lambdaRepository: LambdaRepository): WorkflowStep {
-        return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitorConfigProvider)
+                                           lambdaRepository: LambdaRepository,
+                                           monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitorConfigProvider, monitoringResourcePersister)
     }
 
     @Bean
@@ -235,16 +257,18 @@ open class CoreConfiguration {
             secretManagerRepository: SecretManagerRepository,
             credentialProvider: CredentialProvider,
             resourceRepository: ResourceRepository,
-            rdsBuilder: RdsBuilder): WorkflowStep {
-        return CreateRdsInstanceWorkflowStep(monitorConfigProvider, rdsRepository, secretManagerRepository, credentialProvider, resourceRepository, rdsBuilder)
+            rdsBuilder: RdsBuilder,
+            monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return CreateRdsInstanceWorkflowStep(monitorConfigProvider, rdsRepository, secretManagerRepository, credentialProvider, resourceRepository, rdsBuilder, monitoringResourcePersister)
     }
 
     @Bean
     open fun getCreateSecretManagerWorkflowStep(credentialProvider: CredentialProvider,
                                                 secretBuilder: SecretBuilder,
                                                 databaseCredentialBuilder: DatabaseCredentialBuilder,
-                                                secretManagerRepository: SecretManagerRepository): WorkflowStep {
-        return CreateSecretManagerWorkflowStep(credentialProvider, secretBuilder, databaseCredentialBuilder, secretManagerRepository)
+                                                secretManagerRepository: SecretManagerRepository,
+                                                monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
+        return CreateSecretManagerWorkflowStep(credentialProvider, secretBuilder, databaseCredentialBuilder, secretManagerRepository, monitoringResourcePersister)
     }
 
     @Bean

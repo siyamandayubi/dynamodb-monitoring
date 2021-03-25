@@ -3,6 +3,7 @@ package com.siyamand.aws.dynamodb.core.sdk.lambda
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.sdk.network.VpcRepository
 import com.siyamand.aws.dynamodb.core.sdk.rds.RdsRepository
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleRepository
@@ -15,7 +16,8 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
                                     private val rdsRepository: RdsRepository,
                                     private val secretManagerRepository: SecretManagerRepository,
                                     private val vpcRepository: VpcRepository,
-                                    private val functionBuilder: FunctionBuilder) : WorkflowStep() {
+                                    private val functionBuilder: FunctionBuilder,
+                                    private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String = "AddLambdaFunction"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
@@ -100,6 +102,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
                 securityGroups)
         val result = lambdaRepository.add(createFunctionEntity)
         instance.context.sharedData[Keys.LAMBDA_ARN] = result.arn
+        monitoringResourcePersister.persist(instance.id, result.arn)
 
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.LAMBDA_ARN to result.arn), "")
     }
@@ -109,6 +112,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
     }
 
     override suspend fun initialize() {
+        monitoringResourcePersister.threadSafe()
         this.credentialProvider = credentialProvider.threadSafe()
     }
 }

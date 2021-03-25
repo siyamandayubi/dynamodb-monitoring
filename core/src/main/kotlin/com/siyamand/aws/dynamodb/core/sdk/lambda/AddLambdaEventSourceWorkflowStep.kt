@@ -1,11 +1,13 @@
 package com.siyamand.aws.dynamodb.core.sdk.lambda
 
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.workflow.*
 
 class AddLambdaEventSourceWorkflowStep(private var credentialProvider: CredentialProvider,
                                        private val functionBuilder: FunctionBuilder,
-                                       private val lambdaRepository: LambdaRepository) : WorkflowStep() {
+                                       private val lambdaRepository: LambdaRepository,
+                                       private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String = "AddLambdaEventSource"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
@@ -20,6 +22,7 @@ class AddLambdaEventSourceWorkflowStep(private var credentialProvider: Credentia
 
         val request = functionBuilder.buildEventSourceCreateRequest(context.sharedData[Keys.STREAM__DYNAMODB_ARN]!!, context.sharedData[Keys.LAMBDA_ARN]!!)
         val result = lambdaRepository.add(request)
+        monitoringResourcePersister.persist(instance.id, result.arn)
         context.sharedData[Keys.EVENT_SOURCE_ARN] = result.arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.EVENT_SOURCE_ARN to result.arn), "")
     }
@@ -29,6 +32,7 @@ class AddLambdaEventSourceWorkflowStep(private var credentialProvider: Credentia
     }
 
     override suspend fun initialize() {
+        monitoringResourcePersister.threadSafe()
         this.credentialProvider = credentialProvider.threadSafe()
     }
 }

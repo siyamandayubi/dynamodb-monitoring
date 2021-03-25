@@ -4,6 +4,7 @@ import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialEntity
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceRepository
 import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import com.siyamand.aws.dynamodb.core.sdk.secretManager.SecretManagerRepository
@@ -16,7 +17,8 @@ class CreateRdsInstanceWorkflowStep(
         private val secretManagerRepository: SecretManagerRepository,
         private var credentialProvider: CredentialProvider,
         private val resourceRepository: ResourceRepository,
-        private val rdsBuilder: RdsBuilder
+        private val rdsBuilder: RdsBuilder,
+        private val monitoringResourcePersister: MonitoringResourcePersister
 ) : WorkflowStep() {
     override val name: String = "CreateRdsInstance"
 
@@ -73,6 +75,7 @@ class CreateRdsInstanceWorkflowStep(
 
         val createRequest = rdsBuilder.build(instanceName, databaseName, databaseCredential, secretEntity.resourceEntity, workflowInstance.id)
         val rdsEntity = rdsRepository.createRds(createRequest)
+        monitoringResourcePersister.persist(workflowInstance.id, rdsEntity.resource.arn)
         context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
         val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
         return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
@@ -99,6 +102,7 @@ class CreateRdsInstanceWorkflowStep(
     }
 
     override suspend fun initialize() {
+        this.monitoringResourcePersister.threadSafe()
         this.credentialProvider = credentialProvider.threadSafe()
     }
 

@@ -2,6 +2,7 @@ package com.siyamand.aws.dynamodb.core.sdk.secretManager
 
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.database.DatabaseCredentialBuilder
+import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.workflow.*
 import java.time.LocalDate
 
@@ -9,7 +10,8 @@ class CreateSecretManagerWorkflowStep(
         private var credentialProvider: CredentialProvider,
         private val secretBuilder: SecretBuilder,
         private val databaseCredentialBuilder: DatabaseCredentialBuilder,
-        private val secretManagerRepository: SecretManagerRepository) : WorkflowStep() {
+        private val secretManagerRepository: SecretManagerRepository,
+        private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String = "CreateSecret"
 
     override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
@@ -27,6 +29,7 @@ class CreateSecretManagerWorkflowStep(
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
+        monitoringResourcePersister.persist(instance.id, credentialResource.arn)
         instance.context.sharedData[Keys.SECRET_ARN_KEY] = credentialResource.arn
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(Keys.SECRET_ARN_KEY to credentialResource.arn), "")
     }
@@ -37,6 +40,7 @@ class CreateSecretManagerWorkflowStep(
 
     override suspend fun initialize() {
         this.credentialProvider = credentialProvider.threadSafe()
+        monitoringResourcePersister.threadSafe()
         val credential = credentialProvider.getCredential()
                 ?: throw SecurityException("No Credential has been provided");
 

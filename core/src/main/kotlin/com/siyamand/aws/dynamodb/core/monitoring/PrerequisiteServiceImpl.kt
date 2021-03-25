@@ -24,10 +24,11 @@ class PrerequisiteServiceImpl(
         credentialProvider.initializeRepositoriesWithGlobalRegion(roleRepository)
         val lambdaRole = roleRepository.getRole(monitorConfigProvider.getLambdaRole())
         val rdsRole = roleRepository.getRole(monitorConfigProvider.getRdsProxyRole())
-        val table = getMonitoringTable()
+        val monitoringTable = getMonitoringTable()
+        val resourceTable = getMonitoringResourceTable()
 
-        val index = table?.indexes?.firstOrNull { it.indexName == monitorConfigProvider.getMonitoringTableSourceTableIndexName() }
-        return PrerequisteEntity(lambdaRole, rdsRole, table, index)
+        val index = monitoringTable?.indexes?.firstOrNull { it.indexName == monitorConfigProvider.getMonitoringTableSourceTableIndexName() }
+        return PrerequisteEntity(lambdaRole, rdsRole, monitoringTable, resourceTable, index)
     }
 
     override suspend fun getMonitoringTable(): TableDetailEntity? {
@@ -40,16 +41,27 @@ class PrerequisiteServiceImpl(
         return tableRepository.getDetail(tableName)
     }
 
+    override suspend fun getMonitoringResourceTable(): TableDetailEntity? {
+        credentialProvider.initializeRepositories(tableRepository)
+        val tableName = monitorConfigProvider.getMonitoringResourcesTableName()
+        if (tableName.isNullOrEmpty()) {
+            throw Exception("No config name for Monitoring Dynamodb table")
+        }
+
+        return tableRepository.getDetail(tableName)
+    }
+
     override suspend fun createPrerequistes(credentialEntity: CredentialEntity): PrerequisteEntity {
         val lambdaRole = roleService.getOrCreateLambdaRole(credentialEntity)
         val rdsRole = roleService.getOrCreateRdsProxyRole(credentialEntity)
-        var table = getOrCreateMonitoringTable()
-        val index = table.indexes.firstOrNull { it.indexName == monitorConfigProvider.getMonitoringTableSourceTableIndexName() }
+        var monitoringTable = getOrCreateMonitoringTable()
+        var resourceTable = getOrCreateMonitoringResourceTable()
+        val index = monitoringTable.indexes.firstOrNull { it.indexName == monitorConfigProvider.getMonitoringTableSourceTableIndexName() }
         if (index == null) {
-            table = getOrCreateMonitoringTableIndexes()
+            monitoringTable = getOrCreateMonitoringTableIndexes()
         }
 
-        return PrerequisteEntity(lambdaRole, rdsRole, table, index)
+        return PrerequisteEntity(lambdaRole, rdsRole, monitoringTable, resourceTable, index)
     }
 
     suspend fun getOrCreateMonitoringTableIndexes(): TableDetailEntity {
@@ -71,6 +83,22 @@ class PrerequisiteServiceImpl(
             return table
         }
 
-        return tableRepository.add(monitoringTableBuilder.build(tableName))
+        return tableRepository.add(monitoringTableBuilder.buildMonitoringMetadataTable())
+    }
+
+    override suspend fun getOrCreateMonitoringResourceTable(): TableDetailEntity {
+        credentialProvider.initializeRepositories(tableRepository)
+
+        val tableName = monitorConfigProvider.getMonitoringResourcesTableName()
+        if (tableName.isNullOrEmpty()) {
+            throw Exception("No config name for Monitoring Dynamodb table")
+        }
+
+        var table = tableRepository.getDetail(tableName)
+        if (table != null) {
+            return table
+        }
+
+        return tableRepository.add(monitoringTableBuilder.buildMonitoringResourceTable())
     }
 }
