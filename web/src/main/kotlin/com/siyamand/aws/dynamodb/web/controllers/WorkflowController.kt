@@ -19,18 +19,8 @@ import java.time.Instant
 class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, private val metadataService: WorkflowService) {
     @PostMapping("/api/workflow/start")
     suspend fun startWorkflow(@RequestBody startWorkflowModel: StartWorkflowModel): HttpEntity<String> {
-        val aggregateMonitoringEntity = AggregateMonitoringEntity()
-        aggregateMonitoringEntity.databaseName = startWorkflowModel.databaseName
-        aggregateMonitoringEntity.instancesCount = 2
-        aggregateMonitoringEntity.groups.add({
-            val groupByEntity = GroupByEntity()
-            groupByEntity.fieldName = "category"
-            groupByEntity.tableName = "categoryAggr"
-            groupByEntity.path = "category"
-            groupByEntity.fields.add(AggregateFieldEntity("name", "name", Instant.now()))
-            groupByEntity
-        }())
-        metadataService.startWorkflow(startWorkflowModel.sourceTableName, startWorkflowModel.workflowName, aggregateMonitoringEntity)
+
+        metadataService.startWorkflow(startWorkflowModel.sourceTableName, startWorkflowModel.workflowName, startWorkflowModel.definition!!)
         return ResponseEntity("result", HttpStatus.OK)
     }
 

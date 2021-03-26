@@ -14,7 +14,7 @@ import org.springframework.scheduling.TaskScheduler
 
 class WorkflowServiceImpl(
         private val s3Service: S3Service,
-        private val prerequisiteReadonlyService: PrerequisiteReadonlyService,
+        private val prerequisiteService: PrerequisiteReadonlyService,
         private val workflowConverter: WorkflowConverter,
         private val monitorConfigProvider: MonitorConfigProvider,
         private val credentialProvider: CredentialProvider,
@@ -62,7 +62,7 @@ class WorkflowServiceImpl(
 
     override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository)
-        val monitoringTable = prerequisiteReadonlyService.getMonitoringTable()
+        val monitoringTable = prerequisiteService.getMonitoringTable()
                 ?: throw Exception("monitoring table has not been created")
 
         val sourceTable = tableRepository.getDetail(sourceTableName)

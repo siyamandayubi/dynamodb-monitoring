@@ -6,9 +6,10 @@ import kotlinx.serialization.Serializable
 import java.time.Instant
 
 @Serializable
-class AggregateFieldEntity(
-        val name: String,
-        val path: String,
-        @Serializable(InstantSerializer::class)
-        val from: Instant) {
+class AggregateFieldEntity {
+    var name: String = ""
+    var path: String = ""
+
+    @Serializable(InstantSerializer::class)
+    var from: Instant = Instant.now()
 }

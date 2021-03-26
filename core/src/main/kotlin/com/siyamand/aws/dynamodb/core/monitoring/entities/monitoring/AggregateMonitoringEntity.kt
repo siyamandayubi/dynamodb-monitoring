@@ -5,8 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class AggregateMonitoringEntity {
     var databaseName: String = ""
-    var databaseInstanceArn: String = ""
-    var instancesCount: Int = 1
+    var instancesCount: Int = 2
     val groups: MutableList<GroupByEntity> = mutableListOf()
 }
 
