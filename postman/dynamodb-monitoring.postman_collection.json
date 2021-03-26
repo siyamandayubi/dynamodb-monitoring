@@ -6,6 +6,521 @@
 	},
 	"item": [
 		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "createRdsRole",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/roles/createLambdaRole",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"roles",
+								"createLambdaRole"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "roles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/tables",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"tables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createLambdaRole",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\":\"{{accesskey}}\",\r\n    \"secretKeyId\":\"{{secret}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/roles/createLambdaRole",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"roles",
+								"createLambdaRole"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAppConfigRole",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\":\"{{accesskey}}\",\r\n    \"secretKeyId\":\"{{secret}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/roles/createLambdaRole",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"roles",
+								"createLambdaRole"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "lambda",
+			"item": [
+				{
+					"name": "functions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/functions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLayers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/functions/function1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions",
+								"function1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create function",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/functions/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addAggregateLayer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"aggregate-v1-layer\",\r\n    \"path\": \"lambda/layers/aggretate_v1/aggregate_v1.zip\",\r\n    \"description\":\"The layer contains helper functions to generate sql statement from dynamodb change stream\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/functions/createLayer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions",
+								"createLayer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addMysqlLayer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"mysql-layer\",\r\n    \"path\": \"lambda/layers/mysql/mysql.zip\",\r\n    \"description\":\"The layer contains mysql module and helper functions to execute queries and loading secrets from secret manager\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/functions/createLayer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions",
+								"createLayer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getfunction",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/functions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getLayer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/functions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"functions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "monitoring",
+			"item": [
+				{
+					"name": "create Prerequisites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"keyId\":\"{{accesskey}}\",\r\n    \"secretKeyId\":\"{{secret}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/monitoring/create-prerequisites",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitoring",
+								"create-prerequisites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "monitoring items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/monitoring/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitoring",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "monitoring prerequisite",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/monitoring/prerequisite",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"monitoring",
+								"prerequisite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createWorkflow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"sourceTableName\": \"temp\",\r\n    \"workflowName\": \"AggregateSimpleMysqlDatabaseTemplate\",\r\n    \"instanceCount\":2,\r\n    \"definition\":{\r\n        \"databaseName\":\"tesintDatabase\",\r\n        \"groups\":[\r\n            {\r\n                \"fieldName\":\"author\",\r\n                \"tableName\":\"authorAggr\",\r\n                \"path\":\"author\",\r\n                \"fields\":[{\r\n                    \"name\":\"name\",\r\n                    \"path\":\"name\"\r\n                }]\r\n            }\r\n        ]    \r\n    }\r\n}\r\n ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/workflow/start",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"workflow",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "continueWorkflow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Auth",
+								"type": "text",
+								"value": "{{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/Workflow/continue",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"Workflow",
+								"continue"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "login",
 			"event": [
 				{
@@ -24,7 +539,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"keyId\":\"AKIAW6BQ7KNRYZS3AXAF\",\r\n    \"secretKeyId\":\"+5GvXDx1+/E1JeC6J611nWUIIO9iMQ3j8AitlIzs\"\r\n}",
+					"raw": "{\r\n    \"keyId\":\"{{accesskey}}\",\r\n    \"secretKeyId\":\"{{secret}}\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -72,86 +587,6 @@
 			"response": []
 		},
 		{
-			"name": "monitoring items",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Auth",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/monitoring/items",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"monitoring",
-						"items"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "monitoring prerequisite",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Auth",
-						"type": "text",
-						"value": "{{token}}"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/monitoring/prerequisite",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"monitoring",
-						"prerequisite"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "functions",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Auth",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/functions",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"functions"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "buckets",
 			"request": {
 				"method": "GET",
@@ -173,33 +608,6 @@
 						"api",
 						"s3",
 						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "get function By Name",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "X-Auth",
-						"type": "text",
-						"value": "{{token}}"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/functions/function1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"functions",
-						"function1"
 					]
 				}
 			},
@@ -260,69 +668,6 @@
 			"response": []
 		},
 		{
-			"name": "createLambdaRole",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-Auth",
-						"value": "{{token}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/roles/createLambdaRole",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"roles",
-						"createLambdaRole"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "createWorkflow",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-Auth",
-						"type": "text",
-						"value": "{{token}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"sourceTableName\": \"temp\",\r\n    \"workflowName\": \"AggregateSimpleMysqlDatabaseTemplate\",\r\n    \"entity\":{\r\n        \"databaseName\":\"tesintDatabase\",\r\n        \"fields\":[\r\n            {\r\n                \"name\":\"test\",\r\n                \"path\":\"test\",\r\n                \"tableName\":\"tableName\"\r\n            }\r\n        ]\r\n    }\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/workflow/start",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"workflow",
-						"start"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "createRds",
 			"request": {
 				"method": "POST",
@@ -371,7 +716,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
+					"raw": "{\r\n    \"name\":\"testdb1\",\r\n    \"secretId\":\"testdb1_1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -425,42 +770,6 @@
 						"api",
 						"rds",
 						"create-database"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "create function",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "X-Auth",
-						"type": "text",
-						"value": "{{token}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"testdb1\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/functions/create",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"functions",
-						"create"
 					]
 				}
 			},
@@ -539,7 +848,43 @@
 			"response": []
 		},
 		{
-			"name": "continueWorkflow",
+			"name": "enable-bucket-versioning",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Auth",
+						"type": "text",
+						"value": "{{token}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/s3/create-object",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"s3",
+						"create-object"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create App Config",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -551,7 +896,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"applicationName\": \"application\",\r\n    \"environment\": \"production\",\r\n    \"strategyName\": \"simple\",\r\n    \"profileName\": \"profile 1\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -559,7 +904,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/Workflow/continue",
+					"raw": "http://localhost:8080/api/appConfig/Create",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -567,8 +912,8 @@
 					"port": "8080",
 					"path": [
 						"api",
-						"Workflow",
-						"continue"
+						"appConfig",
+						"Create"
 					]
 				}
 			},
