@@ -59,6 +59,7 @@ class TableMapper {
             return GlobalSecondaryIndex
                     .builder()
                     .indexName(createIndexEntity.indexName)
+                    .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
                     .keySchema(createIndexEntity.keySchema.map { convertToKeySchemaDefinition(it.attributeName, it.keyType) })
                     .build()
         }

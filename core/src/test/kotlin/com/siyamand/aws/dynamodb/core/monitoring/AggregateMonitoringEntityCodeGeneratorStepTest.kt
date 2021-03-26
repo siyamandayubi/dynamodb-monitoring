@@ -27,7 +27,11 @@ internal class AggregateMonitoringEntityCodeGeneratorStepTest {
             val groupBy = GroupByEntity()
             groupBy.fieldName = "group1"
             groupBy.tableName = "table1"
-            groupBy.fields.add(AggregateFieldEntity("field1", "field2", Instant.now()))
+            val fieldDef = AggregateFieldEntity()
+            fieldDef.name = "field1"
+            fieldDef.path = "field2"
+            fieldDef.from = Instant.now()
+            groupBy.fields.add(fieldDef)
             owner.relatedData.groups.add(groupBy)
             val result = classUnderTest.execute(workflowInstance, owner, params)
             val code = workflowInstance.context.sharedData[Keys.CODE_RESULT]

@@ -7,6 +7,7 @@ import com.siyamand.aws.dynamodb.core.sdk.dynamodb.*
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
+import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.StartMonitoringWorkflowEntity
 import com.siyamand.aws.dynamodb.core.sdk.s3.S3Service
 import com.siyamand.aws.dynamodb.core.workflow.*
 import kotlinx.coroutines.runBlocking
@@ -60,28 +61,31 @@ class WorkflowServiceImpl(
         scheduler.schedule(task, scheduler.clock.instant().plusMillis(500))
     }
 
-    override suspend fun startWorkflow(sourceTableName: String, workflowName: String, entity: AggregateMonitoringEntity) {
+    override suspend fun startWorkflow(model: StartMonitoringWorkflowEntity) {
         credentialProvider.initializeRepositories(tableRepository, tableItemRepository)
         val monitoringTable = prerequisiteService.getMonitoringTable()
                 ?: throw Exception("monitoring table has not been created")
 
-        val sourceTable = tableRepository.getDetail(sourceTableName)
-        var workflowInstance = workflowBuilder.create(workflowName, mapOf(
-                Keys.DATABASE_NAME to entity.databaseName,
-                "lambda-name" to entity.databaseName,
-                Keys.SOURCE_DYNAMODB_ARN to (sourceTable?.arn ?: ""),
-                "dbInstanceName" to entity.databaseName,
-                "instancesCount" to entity.instancesCount.toString(),
-                "tableNames" to (entity.groups.map { it.tableName }.joinToString(separator = ","))))
+        val definition = model.definition!!
+        val sourceTable = tableRepository.getDetail(model.sourceTableName)
+                ?: throw Exception("Source table '${model.sourceTableName}' doesn't exists.")
+
+        var workflowInstance = workflowBuilder.create(model.workflowName, mapOf(
+                Keys.DATABASE_NAME to definition.databaseName,
+                "lambda-name" to model.lambdaName,
+                Keys.SOURCE_DYNAMODB_ARN to (sourceTable!!.arn),
+                "dbInstanceName" to model.instanceName,
+                "instancesCount" to definition.instancesCount.toString(),
+                "tableNames" to (definition.groups.map { it.tableName }.joinToString(separator = ","))))
 
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(
                 workflowInstance.id,
-                sourceTableName,
-                workflowName,
+                model.sourceTableName,
+                model.workflowName,
                 MonitorStatus.INITIAL,
                 workflowInstance.template.version,
                 "",
-                entity
+                definition
         )
 
         tableItemRepository.add(monitoringItemConverter.convert(monitoringTable.tableName, monitoringEntity))

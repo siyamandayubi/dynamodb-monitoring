@@ -64,6 +64,10 @@ class CreateRdsInstanceWorkflowStep(
             }
 
             val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
+            if (workflowResultType == WorkflowResultType.SUCCESS){
+                monitoringResourcePersister.persist(workflowInstance.id, rdsEntity.resource.arn)
+            }
+
             return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
         }
 
