@@ -16,7 +16,7 @@ class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, pri
     @PostMapping("/api/workflow/start")
     suspend fun startWorkflow(@RequestBody model: StartMonitoringWorkflowEntity): HttpEntity<String> {
 
-        if (model.definition == null){
+        if (model.definition == null) {
             return ResponseEntity("definition is mandatory", HttpStatus.BAD_REQUEST)
         }
         metadataService.startWorkflow(model)
