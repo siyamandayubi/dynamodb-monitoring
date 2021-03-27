@@ -25,10 +25,10 @@ exports.handler = async function (event, context) {
     var group, field;
     <#list entity.groups as group>
         tables.${group.tableName} = tables.${group.tableName} || { groups: [] };
-        group = { fieldName: "${group.fieldName}", path:"${group.path}", tableName:"${group.tableName}", fields:[]};
+        group = { fieldName: "${group.fieldName}", path:["${group.path}"], tableName:"${group.tableName}", fields:[]};
         fieldReferences.groups.push(group);
         <#list group.fields as field>
-            field = {fieldName: "${field.name}", path:"${field.path}" };
+            field = {fieldName: "${field.name}", path:["${field.path}"] };
             group.fields.push(field);
         </#list>
     </#list>
@@ -51,7 +51,7 @@ exports.handler = async function (event, context) {
                     ssl: true,
                     password: token.password
                 };
-                await mysqlUtil.executeSqls(connectionConfig, script.script);
+                await mysqlUtil.executeSql(connectionConfig, script.script);
             }
        };
     }
