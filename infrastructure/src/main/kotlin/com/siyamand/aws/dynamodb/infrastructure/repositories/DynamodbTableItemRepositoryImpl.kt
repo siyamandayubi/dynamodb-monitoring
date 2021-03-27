@@ -40,6 +40,10 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         return fromFuture(response).awaitFirst()
     }
 
+    override suspend fun getItem(tableName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity> {
+        return getItem(tableName, "", key)
+    }
+
     override suspend fun update(entity: TableItemEntity): TableItemEntity {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
         val request = TableItemtMapper.convertUpdateRequest(entity)
@@ -52,9 +56,9 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         return fromFuture(response).awaitFirst()
     }
 
-    override suspend fun getItem(tableName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity> {
+    override suspend fun getItem(tableName: String, indexName: String, key: Map<String, AttributeValueEntity>): List<TableItemEntity> {
         val db = getClient(clientBuilder::buildAsyncDynamodb)
-        val query = convert(tableName, key)
+        val query = convert(tableName, indexName, key)
 
         val response = db.query(query).thenApply {
             it.items().map { it ->
@@ -67,7 +71,7 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
         return fromFuture(response).awaitFirst()
     }
 
-    private fun convert(tableName: String, key: Map<String, AttributeValueEntity>): QueryRequest {
+    private fun convert(tableName: String, indexName: String, key: Map<String, AttributeValueEntity>): QueryRequest {
         val requestBuilder = QueryRequest.builder().tableName(tableName)
         val values = mutableMapOf<String, AttributeValue>()
         val expression = key.map {
@@ -78,6 +82,10 @@ class DynamodbTableItemRepositoryImpl(private val clientBuilder: ClientBuilder) 
 
         requestBuilder.keyConditionExpression(expression)
         requestBuilder.expressionAttributeValues(values)
+
+        if (!indexName.isNullOrEmpty()) {
+            requestBuilder.indexName(indexName)
+        }
 
         return requestBuilder.build()
     }

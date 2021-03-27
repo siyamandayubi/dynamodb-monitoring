@@ -18,7 +18,7 @@ class MonitoringResourcePersisterImpl(
     override suspend fun persist(monitoringId: String, arn: String) {
         credentialProvider.initializeRepositories(tableItemRepository)
         val item = monitoringTableBuilder.createResourceItem(monitoringId, arn)
-        val entity = tableItemRepository.getItem(item.tableName, item.key)
+        val entity = tableItemRepository.getItem(item.tableName,  item.key)
         if (!entity.any()) {
             tableItemRepository.add(item)
         }
