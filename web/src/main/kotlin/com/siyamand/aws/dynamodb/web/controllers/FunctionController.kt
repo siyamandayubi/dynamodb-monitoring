@@ -31,13 +31,6 @@ class FunctionController(private val functionService: FunctionService) {
         return ResponseEntity(functionService.getLayer(name ?: ""), HttpStatus.OK)
     }
 
-    @PostMapping("/api/functions/create")
-    suspend fun create(): HttpEntity<ResourceEntity> {
-        val code = "exports.handler = async (event) => {    const response = {        statusCode: 200,        body: JSON.stringify('Hello from Lambda!'),    };    return response;};"
-        val resource = functionService.addLambda("function3", code)
-        return ResponseEntity(resource, HttpStatus.OK)
-    }
-
     @PostMapping("/api/functions/createLayer")
     suspend fun createLayer(@RequestBody model: CreateLayerModel): HttpEntity<FunctionLayerEntity> {
         val layer = functionService.addLayer(model.name, model.path, model.description)
