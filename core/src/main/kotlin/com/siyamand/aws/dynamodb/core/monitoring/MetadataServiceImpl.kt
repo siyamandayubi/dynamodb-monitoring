@@ -5,6 +5,7 @@ import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
+import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
@@ -15,7 +16,7 @@ class MetadataServiceImpl(private val tableItemRepository: TableItemRepository,
                           private val monitorConfigProvider: MonitorConfigProvider,
                           private val monitoringItemConverter: MonitoringItemConverter) : MetadataService {
 
-    override suspend fun getMonitoredTables(startKey: String): PageResultEntity<MonitoringBaseEntity<AggregateMonitoringEntity>> {
+    override suspend fun getMonitoringRecords(startKey: String): PageResultEntity<MonitoringBaseEntity<AggregateMonitoringEntity>> {
         credentialProvider.initializeRepositories(tableItemRepository)
 
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
@@ -37,7 +38,18 @@ class MetadataServiceImpl(private val tableItemRepository: TableItemRepository,
         )
     }
 
-    suspend fun getMonitoringItemResources() {
+    override suspend fun getMonitoringRecord(id: String): MonitoringBaseEntity<AggregateMonitoringEntity>? {
+        credentialProvider.initializeRepositories(tableItemRepository)
+        val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
+        val item = tableItemRepository.getItem(tableName, mapOf(monitoringTableBuilder.keyName to AttributeValueEntity(id))).firstOrNull()
+                ?: return null
+        return monitoringItemConverter.convertToAggregateEntity(item)
+    }
 
+    override suspend fun getMonitoringItemResources(id: String): List<MonitoringResourceEntity> {
+        credentialProvider.initializeRepositories(tableItemRepository)
+        val tableName = monitorConfigProvider.getMonitoringResourcesTableName()
+        val items = tableItemRepository.getItem(tableName, mapOf(monitoringTableBuilder.keyName to AttributeValueEntity(id)))
+        return items.map { monitoringItemConverter.convertToMonitoringResourceEntity(it) }
     }
 }

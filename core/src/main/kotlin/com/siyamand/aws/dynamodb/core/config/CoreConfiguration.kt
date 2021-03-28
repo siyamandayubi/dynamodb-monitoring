@@ -284,8 +284,8 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getMonitoringItemBuilder(): MonitoringItemConverter {
-        return MonitoringItemConverterImpl()
+    open fun getMonitoringItemBuilder(resourceRepository: ResourceRepository): MonitoringItemConverter {
+        return MonitoringItemConverterImpl(resourceRepository)
     }
 
     @Bean

@@ -50,7 +50,7 @@ class MonitoringTableBuilderImpl(val configProvider: MonitorConfigProvider) : Mo
                 ),
                 mutableListOf(TableKeyScheme(keyName, "HASH", "S"),
                         TableKeyScheme(resouceColumnName, "RANGE", "S")),
-                listOf(IndexEntity("${resouceColumnName}Index", "", listOf(TableKeyScheme(resouceColumnName, "HASH", "S")))),
+                listOf(IndexEntity(configProvider.getMonitoringResourceTableIndexName(), "", listOf(TableKeyScheme(resouceColumnName, "HASH", "S")))),
                 "",
                 false,
                 null)

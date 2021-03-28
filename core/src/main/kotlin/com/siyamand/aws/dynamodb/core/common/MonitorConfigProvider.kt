@@ -13,4 +13,5 @@ interface MonitorConfigProvider {
     fun getAppConfigLayerArn(region: String): String
     fun getMonitoringTableSourceTableIndexName(): String
     fun getMonitoringResourcesTableName(): String
+    fun getMonitoringResourceTableIndexName(): String
 }

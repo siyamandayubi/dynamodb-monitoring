@@ -9,6 +9,7 @@ import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringB
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.PrerequisteEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.BasicCredentialEntity
 import com.siyamand.aws.dynamodb.web.models.CredentialModel
+import com.siyamand.aws.dynamodb.web.models.MonitoringDetailModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,9 +22,16 @@ class MonitoringConfigController(
         private val prerequisiteService: PrerequisiteService) {
 
     @GetMapping("/api/monitoring/items")
-    suspend fun getMonitoringStatus(@RequestParam(required = false) startKey :String = ""): HttpEntity<PageResultEntity<MonitoringBaseEntity<AggregateMonitoringEntity>>> {
-        val result = metadataService.getMonitoredTables(startKey)
+    suspend fun getMonitoringRecords(@RequestParam(required = false) startKey: String = ""): HttpEntity<PageResultEntity<MonitoringBaseEntity<AggregateMonitoringEntity>>> {
+        val result = metadataService.getMonitoringRecords(startKey)
         return ResponseEntity(result, HttpStatus.OK)
+    }
+
+    @GetMapping("/api/monitoring/items/{id}")
+    suspend fun getMonitoringRecord(@PathVariable() id: String = ""): HttpEntity<MonitoringDetailModel> {
+        val detail = metadataService.getMonitoringRecord(id) ?: throw Exception("no record found with id=$id")
+        val resources = metadataService.getMonitoringItemResources(id)
+        return ResponseEntity(MonitoringDetailModel(detail, resources), HttpStatus.OK)
     }
 
     @GetMapping("/api/monitoring/prerequisite")
