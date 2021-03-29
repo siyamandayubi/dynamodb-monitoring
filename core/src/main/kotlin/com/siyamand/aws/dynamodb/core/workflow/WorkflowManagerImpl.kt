@@ -7,21 +7,21 @@ class WorkflowManagerImpl() : WorkflowManager {
 
     var logger: Logger = LoggerFactory.getLogger(WorkflowManagerImpl::class.java)
 
-    override suspend fun execute(input: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): WorkflowResult {
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, workflowPersister: WorkflowPersister?): WorkflowResult {
 
-        logger.info("executing ${input.template.name}")
+        logger.info("executing ${instance.template.name}")
 
-        if (!input.steps.any()) {
+        if (!instance.steps.any()) {
             throw  Exception("no step has been defined")
         }
 
-        if (input.currentStep >= input.steps.size ||
-                input.currentStep < 0) {
+        if (instance.currentStep >= instance.steps.size ||
+                instance.currentStep < 0) {
             throw Exception("Current step is out of order")
         }
 
         var lastResult = WorkflowResultType.SUCCESS
-        var currentInstance = input
+        var currentInstance = instance
         while (currentInstance.currentStep < currentInstance.steps.size && (
                         lastResult == WorkflowResultType.SUCCESS || lastResult == WorkflowResultType.WAITING)
         ) {
@@ -99,7 +99,7 @@ class WorkflowManagerImpl() : WorkflowManager {
     private fun mergeParams(instance: WorkflowInstance, currentStep: WorkflowStepInstance): MutableMap<String, String> {
         val params = mutableMapOf<String, String>()
         if (instance.lastResult?.params?.any() == true) {
-            params.putAll(instance.lastResult!!.params)
+            params.putAll(instance.lastResult.params)
         }
         if (currentStep.params.any()) {
             params.putAll(currentStep.params)

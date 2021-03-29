@@ -22,8 +22,8 @@ class CreateRdsInstanceWorkflowStep(
 ) : WorkflowStep() {
     override val name: String = "CreateRdsInstance"
 
-    override suspend fun execute(workflowInstance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        val context = workflowInstance.context
+    override suspend fun execute(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = instance.context
         if (!context.sharedData.containsKey(Keys.SECRET_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No Secret key ${Keys.SECRET_ARN_KEY} found")
         }
@@ -59,34 +59,34 @@ class CreateRdsInstanceWorkflowStep(
             context.sharedData[Keys.SECRET_ARN_KEY] = secretTag!!.value
 
             // delete new generate secret key
-            if (secretEntity?.resourceEntity?.arn != secretTag?.value) {
-                secretManagerRepository.deleteSecret(secretEntity!!.resourceEntity!!.arn)
+            if (secretEntity?.resourceEntity?.arn != secretTag.value) {
+                secretManagerRepository.deleteSecret(secretEntity!!.resourceEntity.arn)
             }
 
             val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
             if (workflowResultType == WorkflowResultType.SUCCESS){
-                monitoringResourcePersister.persist(workflowInstance.id, rdsEntity.resource.arn)
+                monitoringResourcePersister.persist(instance.id, rdsEntity.resource.arn)
             }
 
             return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
         }
 
         if (context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
-            return isWaiting(workflowInstance, context, params)
+            return isWaiting(instance, context, params)
         }
 
         val databaseCredential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), secretEntity!!.secretData)
 
-        val createRequest = rdsBuilder.build(instanceName, databaseName, databaseCredential, secretEntity.resourceEntity, workflowInstance.id)
+        val createRequest = rdsBuilder.build(instanceName, databaseName, databaseCredential, secretEntity.resourceEntity, instance.id)
         val rdsEntity = rdsRepository.createRds(createRequest)
-        monitoringResourcePersister.persist(workflowInstance.id, rdsEntity.resource.arn)
+        monitoringResourcePersister.persist(instance.id, rdsEntity.resource.arn)
         context.sharedData[Keys.RDS_ARN_KEY] = rdsEntity.resource.arn
         val workflowResultType = if (rdsEntity.status == "available") WorkflowResultType.SUCCESS else WorkflowResultType.WAITING
         return WorkflowResult(workflowResultType, mapOf(Keys.RDS_ARN_KEY to rdsEntity.resource.arn), "")
     }
 
-    override suspend fun isWaiting(workflowInstance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
-        val context = workflowInstance.context
+    override suspend fun isWaiting(instance: WorkflowInstance, owner: Any, params: Map<String, String>): WorkflowResult {
+        val context = instance.context
         if (!context.sharedData.containsKey(Keys.RDS_ARN_KEY)) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS_ARN_KEY ${Keys.RDS_ARN_KEY} found")
         }
@@ -95,7 +95,7 @@ class CreateRdsInstanceWorkflowStep(
 
         val arn = context.sharedData[Keys.RDS_ARN_KEY]!!
         val rdsEntities = rdsRepository.getRds(arn)
-        if (!rdsEntities?.any()) {
+        if (!rdsEntities.any()) {
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "No RDS ${Keys.RDS_ARN_KEY} found")
         }
 

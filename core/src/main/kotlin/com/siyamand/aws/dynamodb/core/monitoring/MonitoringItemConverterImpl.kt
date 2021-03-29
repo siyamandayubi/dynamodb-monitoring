@@ -42,19 +42,19 @@ class MonitoringItemConverterImpl(private val resourceRepository: ResourceReposi
                 resourceRepository.convert(tableItemEntity.attributes["arn"]?.stringValue!!))
     }
 
-    override fun convert(tableName: String, entity: MonitoringBaseEntity<AggregateMonitoringEntity>): TableItemEntity {
-        val relatedData = Json.encodeToString(entity.relatedData)
+    override fun convert(tableName: String, monitoringBaseEntity: MonitoringBaseEntity<AggregateMonitoringEntity>): TableItemEntity {
+        val relatedData = Json.encodeToString(monitoringBaseEntity.relatedData)
         val attributes = mapOf(
-                "id" to AttributeValueEntity(entity.id),
-                "sourceTable" to AttributeValueEntity(entity.sourceTable),
-                "type" to AttributeValueEntity(entity.type),
-                "status" to AttributeValueEntity(entity.status.name),
-                "version" to AttributeValueEntity(entity.version),
-                "workflowS3Arn" to AttributeValueEntity(entity.workflowS3Key),
+                "id" to AttributeValueEntity(monitoringBaseEntity.id),
+                "sourceTable" to AttributeValueEntity(monitoringBaseEntity.sourceTable),
+                "type" to AttributeValueEntity(monitoringBaseEntity.type),
+                "status" to AttributeValueEntity(monitoringBaseEntity.status.name),
+                "version" to AttributeValueEntity(monitoringBaseEntity.version),
+                "workflowS3Arn" to AttributeValueEntity(monitoringBaseEntity.workflowS3Key),
                 "relatedData" to AttributeValueEntity(relatedData)
         )
 
-        val key = mapOf("id" to AttributeValueEntity(entity.id))
+        val key = mapOf("id" to AttributeValueEntity(monitoringBaseEntity.id))
 
         val returnValue = TableItemEntity(tableName)
         returnValue.attributes.putAll(attributes)

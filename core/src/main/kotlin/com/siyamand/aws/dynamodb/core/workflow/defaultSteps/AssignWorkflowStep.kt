@@ -19,7 +19,7 @@ class AssignWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowS
         }
 
         val variable = params["variable"]!!
-        instance.context.sharedData[variable] = templateEngine.execute(params["newValue"]!!, instance.context.sharedData.mapValues { it.value as Any })
+        instance.context.sharedData[variable] = templateEngine.execute(params["newValue"]!!, instance.context.sharedData.mapValues { it.value })
 
         return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(), "")
     }

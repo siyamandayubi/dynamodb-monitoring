@@ -1,5 +1,6 @@
 package com.siyamand.aws.dynamodb.core.common
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -27,15 +28,30 @@ class InstantSerializer() : KSerializer<Instant> {
 }
 
 internal class PrimitiveSerialDescriptor(
+        @ExperimentalSerializationApi
         override val serialName: String,
+
+        @ExperimentalSerializationApi
         override val kind: PrimitiveKind
 ) : SerialDescriptor {
+    @ExperimentalSerializationApi
     override val elementsCount: Int get() = 0
+
+    @ExperimentalSerializationApi
     override fun getElementName(index: Int): String = error()
+
+    @ExperimentalSerializationApi
     override fun getElementIndex(name: String): Int = error()
+
+    @ExperimentalSerializationApi
     override fun isElementOptional(index: Int): Boolean = error()
+
+    @ExperimentalSerializationApi
     override fun getElementDescriptor(index: Int): SerialDescriptor = error()
+
+    @ExperimentalSerializationApi
     override fun getElementAnnotations(index: Int): List<Annotation> = error()
+
     override fun toString(): String = "PrimitiveDescriptor($serialName)"
     private fun error(): Nothing = throw IllegalStateException("Primitive descriptor does not have elements")
 }

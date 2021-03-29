@@ -23,7 +23,7 @@ class WorkflowPersisterImpl(
     override suspend fun load(id: String): WorkflowInstance {
         credentialProvider.initializeRepositories(tableItemRepository)
         val item = tableItemRepository.getItem(monitorConfigProvider.getMonitoringConfigMetadataTable(), mapOf("id" to AttributeValueEntity(id)))
-        if (item!!.any()) {
+        if (item.any()) {
             throw Exception("no item have been found")
         }
         val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
@@ -38,7 +38,7 @@ class WorkflowPersisterImpl(
     override suspend fun save(instance: WorkflowInstance) {
         credentialProvider.initializeRepositories(tableItemRepository)
         val items = tableItemRepository.getItem(monitorConfigProvider.getMonitoringConfigMetadataTable(), mapOf("id" to AttributeValueEntity(instance.id)))
-        if (!items?.any()) {
+        if (!items.any()) {
             throw Exception("no item have been found")
         }
 

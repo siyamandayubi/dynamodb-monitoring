@@ -46,7 +46,7 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
         val result = rdsRepository.registerDbProxyTarget(
                 CreateDbProxyTargetEntity(
                         proxyName,
-                        targetGroup.groupName ?: "",
+                        targetGroup.groupName,
                         listOf(rds.instanceName))).first()
 
         val arn = result.targetResource?.arn ?: ""

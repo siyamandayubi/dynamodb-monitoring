@@ -18,7 +18,7 @@ class IfElseWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowS
             return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "'else' field is not provided")
         }
 
-        val resultStr = templateEngine.execute(params["condition"]!!, instance.context.sharedData.mapValues { it.value as Any })
+        val resultStr = templateEngine.execute(params["condition"]!!, instance.context.sharedData.mapValues { it.value })
         val result = try {
             resultStr.trim(' ', '\n').toBoolean()
         } catch (ex: Exception) {

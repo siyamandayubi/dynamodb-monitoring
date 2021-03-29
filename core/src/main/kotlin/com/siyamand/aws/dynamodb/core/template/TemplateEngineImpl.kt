@@ -18,6 +18,6 @@ class TemplateEngineImpl : TemplateEngine {
         val out: Writer = StringWriter()
         t.process(context, out)
 
-        return out.toString() ?: ""
+        return out.toString()
     }
 }

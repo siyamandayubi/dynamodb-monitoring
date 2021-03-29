@@ -73,7 +73,7 @@ class WorkflowServiceImpl(
         var workflowInstance = workflowBuilder.create(model.workflowName, mapOf(
                 Keys.DATABASE_NAME to definition.databaseName,
                 "lambda-name" to model.lambdaName,
-                Keys.SOURCE_DYNAMODB_ARN to (sourceTable!!.arn),
+                Keys.SOURCE_DYNAMODB_ARN to (sourceTable.arn),
                 "dbInstanceName" to model.instanceName,
                 "instancesCount" to definition.instancesCount.toString(),
                 "tableNames" to (definition.groups.map { it.tableName }.joinToString(separator = ","))))

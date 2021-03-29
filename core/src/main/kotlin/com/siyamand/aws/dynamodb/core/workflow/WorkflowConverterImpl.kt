@@ -7,9 +7,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
 class WorkflowConverterImpl(private val templates: Iterable<WorkflowTemplate>) : WorkflowConverter {
-    override suspend fun build(entity: MonitoringBaseEntity<AggregateMonitoringEntity>, workflowString: String): WorkflowInstance {
-        val template = templates.firstOrNull { it.name == entity.type }
-                ?: throw  Exception("No templates has been found '${entity.type}'")
+    override suspend fun build(monitoringBaseEntity: MonitoringBaseEntity<AggregateMonitoringEntity>, workflowString: String): WorkflowInstance {
+        val template = templates.firstOrNull { it.name == monitoringBaseEntity.type }
+                ?: throw  Exception("No templates has been found '${monitoringBaseEntity.type}'")
 
         val workflowInstance = Json.decodeFromString<WorkflowInstance>(workflowString)
         workflowInstance.template = template
