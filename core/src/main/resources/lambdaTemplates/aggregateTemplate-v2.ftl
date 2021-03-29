@@ -34,7 +34,7 @@ exports.handler = async function (event, context) {
     </#list>
 
     aggregateUtil.fillTables(tables, fieldReferences, event.Records,(v)=>{return crypto.createHash('sha256').update(v).digest("hex");});
-    var scripts = aggregateUtil.buildScripts(tables)
+    var scripts = buildScripts(tables)
 
     if(scripts.length > 0){
        for(var i = 0; i < scripts.length; i++)
@@ -55,6 +55,49 @@ exports.handler = async function (event, context) {
             }
        };
     }
+}
+
+const buildScripts = (tables) => {
+    let scripts = [];
+    const scriptTemplate = "INSERT INTO @table (GroupValue,     FieldName,    FieldValue,     StartDate,   EndDate,    InsertCount, UpdateCount, DeleteCount,   Max,    Min, MinItemsCount, MaxItemsCount, Sum,   Hash)" +
+    "VALUES            ('@GroupValue', '@FieldName', '@FieldValue', '@StartDate', '@EndDate', @InsertCount, @UpdateCount, @DeleteCount, '@Max', '@Min', @MinItemCount, @MaxItemCount, @Sum, '@Hash')" +
+    " ON DUPLICATE KEY UPDATE InsertCount = InsertCount + @InsertCount,  UpdateCount = UpdateCount + @UpdateCount,  DeleteCount = DeleteCount + @DeleteCount, Min = IF(Min<'@Min',Min,'@Min'),  Max = IF(Max>'@Max',Max,'@Max')";
+    const date = getDate(new Date());
+    for (const tableName in tables) {
+        if (!tables.hasOwnProperty(tableName)) {
+             continue;
+        }
+
+        const table = tables[tableName];
+        table.groups.forEach(groupValue => {
+            groupValue.items.forEach((item) => {
+                let script = scriptTemplate.replace("@table", tableName);
+                script = script
+                    .replaceAll("@Hash", item.hash)
+                    .replaceAll("@GroupValue", groupValue.groupValue.value)
+                    .replaceAll("@FieldName", item.fieldName)
+                    .replaceAll("@FieldValue", item.fieldValue)
+                    .replaceAll("@InsertCount", item.insertCount)
+                    .replaceAll("@UpdateCount", item.updateCount)
+                    .replaceAll("@DeleteCount", item.deleteCount)
+                    .replaceAll("@Sum", item.sum)
+                    .replaceAll("@MinItemCount", item.minItemCount)
+                    .replaceAll("@MaxItemCount", item.maxItemCount)
+                    .replaceAll("@Min", item.min)
+                    .replaceAll("@Max", item.max)
+                    .replaceAll("@EndDate", date)
+                    .replaceAll("@StartDate", date);
+
+                scripts.push({script: script, hash: item.hash});
+            })
+        });
+    }
+
+    return scripts;
+}
+
+const getDate = (date) => {
+    return date.getFullYear().toString() + "-" + (date.getMonth() + 1).toString() + "-" + date.getDate().toString();
 }
 
 const dbConfigs = ${dbConfig};

@@ -43,7 +43,7 @@ const executeSql = async function (connectionConfig, sql, values) {
             }
 
 
-            connection.end(function (error, results) {
+            connection.end(function (error, errResults) {
                 if (error) {
                     //return "error";
                     reject("ERROR");
@@ -59,20 +59,5 @@ const executeSql = async function (connectionConfig, sql, values) {
     return promise;
 }
 
-const executeSqls = async function (connectionConfig, sqls) {
-    if (sqls == null || sqls.length == 0){
-        return;
-    }
-
-    const conn = mysql.createConnection(connectionConfig);
-
-    // node native promisify
-    const query = util.promisify(conn.query).bind(conn);
-    for(const sql of sqls ){
-        await query(sql);
-    }
-}
-
 exports.getPrivateKeyValue = getPrivateKeyValue;
 exports.executeSql = executeSql
-exports.executeSqls = executeSqls
