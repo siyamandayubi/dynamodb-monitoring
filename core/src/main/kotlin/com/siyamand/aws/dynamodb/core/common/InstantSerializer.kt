@@ -14,11 +14,12 @@ import java.time.format.DateTimeFormatter
 
 
 class InstantSerializer() : KSerializer<Instant> {
+    @ExperimentalSerializationApi
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Instant", PrimitiveKind.STRING)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.from(ZoneOffset.UTC))
 
     override fun deserialize(decoder: Decoder): Instant {
-        val dt: LocalDateTime = formatter.parse(decoder.decodeString(), LocalDateTime::from);
+        val dt: LocalDateTime = formatter.parse(decoder.decodeString(), LocalDateTime::from)
         return dt.toInstant(ZoneOffset.UTC)
     }
 
@@ -27,6 +28,7 @@ class InstantSerializer() : KSerializer<Instant> {
     }
 }
 
+@ExperimentalSerializationApi
 internal class PrimitiveSerialDescriptor(
         @ExperimentalSerializationApi
         override val serialName: String,

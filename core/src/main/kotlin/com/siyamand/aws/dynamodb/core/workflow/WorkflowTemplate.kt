@@ -11,7 +11,6 @@ data class RequiredWorkflowParameter(val name: String, val type: WorkflowParamet
 
 enum class WorkflowParameterType {
     STRING,
-    JSON,
     INT
 }
 

@@ -11,11 +11,11 @@ import reactor.core.publisher.Mono
 import software.amazon.awssdk.services.rds.model.*
 
 class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepository, AwsBaseRepositoryImpl() {
-    override suspend fun getRds(vararg identifier: String): List<RdsEntity> {
+    override suspend fun getRds(vararg name: String): List<RdsEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val response = client.describeDBInstances(DescribeDbInstancesRequest
                 .builder()
-                .filters(Filter.builder().name("db-instance-id").values(identifier.toList()).build())
+                .filters(Filter.builder().name("db-instance-id").values(name.toList()).build())
                 .build())
                 .thenApply { it.dbInstances().map(RdsMapper::convert) }
 
@@ -25,7 +25,7 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
     override suspend fun list(marker: String): RdsListEntity {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = DescribeDbInstancesRequest.builder()
-        if (!marker.isNullOrEmpty()) {
+        if (marker.isNotEmpty()) {
             request.marker(marker)
         }
         val response = client.describeDBInstances(request.build())
@@ -38,7 +38,6 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val request = RdsMapper.convert(entity)
         val response = client.createDBProxy(request).thenApply { RdsMapper.convert(it.dbProxy()) }
-        val x = DBProxyTarget.builder().build()
         return Mono.fromFuture(response).awaitFirst()
     }
 
@@ -56,7 +55,7 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
     override suspend fun listProxies(marker: String): PageResultEntity<RdsProxyEntity> {
         val client = getClient(clientBuilder::buildAsyncRdsClient)
         val requestBuilder = DescribeDbProxiesRequest.builder()
-        if (!marker.isNullOrEmpty()){
+        if (marker.isNotEmpty()){
             requestBuilder.marker(marker)
         }
         val response = client
@@ -90,7 +89,7 @@ class RdsRepositoryImpl(private val clientBuilder: ClientBuilder) : RdsRepositor
         val response = client
                 .describeDBProxyTargetGroups(DescribeDbProxyTargetGroupsRequest.builder().dbProxyName(dbProxyName).build())
                 .thenApply {
-                    PageResultEntity<DbProxyTargetGroupEntity>(it.targetGroups().map(RdsMapper::convert), it.marker()
+                    PageResultEntity(it.targetGroups().map(RdsMapper::convert), it.marker()
                             ?: "")
                 }
         return Mono.fromFuture(response).awaitFirst()

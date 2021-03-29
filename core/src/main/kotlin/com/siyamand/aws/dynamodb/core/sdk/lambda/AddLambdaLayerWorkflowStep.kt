@@ -1,7 +1,6 @@
 package com.siyamand.aws.dynamodb.core.sdk.lambda
 
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.monitoring.MonitoringResourcePersister
 import com.siyamand.aws.dynamodb.core.workflow.*
@@ -10,7 +9,6 @@ class AddLambdaLayerWorkflowStep(
         private var credentialProvider: CredentialProvider,
         private val lambdaRepository: LambdaRepository,
         private val functionBuilder: FunctionBuilder,
-        private val monitorConfigProvider: MonitorConfigProvider,
         private val monitoringResourcePersister: MonitoringResourcePersister) : WorkflowStep() {
     override val name: String = "AddLambdaLayer"
 
@@ -24,19 +22,19 @@ class AddLambdaLayerWorkflowStep(
 
         val outputKey = if (params.containsKey("output")) (params["output"])!! else Keys.LAMBDA_LAYER_ARN_KEY
 
-        var forceCreation = params.containsKey(Keys.FORCE_CREATE) && params[Keys.FORCE_CREATE] == "true"
+        val forceCreation = params.containsKey(Keys.FORCE_CREATE) && params[Keys.FORCE_CREATE] == "true"
 
         credentialProvider.initializeRepositories(lambdaRepository)
 
         val existingVersions = lambdaRepository.getLayer(params[Keys.LAMBDA_LAYER_NAME]!!)
         if (!forceCreation && existingVersions.items.any()) {
-            var layer = existingVersions.items.maxByOrNull { it.version }!!
+            val layer = existingVersions.items.maxByOrNull { it.version }!!
             context.sharedData[outputKey] = layer.layerVersionEntity.arn
             return WorkflowResult(WorkflowResultType.SUCCESS, mapOf(outputKey to layer.layerVersionEntity.arn), "")
         }
 
         val description = if (params.containsKey("description")) params["description"] else ""
-        var layer = lambdaRepository.add(functionBuilder.buildLayer(params[Keys.LAMBDA_LAYER_NAME] ?: "", description
+        val layer = lambdaRepository.add(functionBuilder.buildLayer(params[Keys.LAMBDA_LAYER_NAME] ?: "", description
                 ?: "", params[Keys.LAMBDA_LAYER_PATH] ?: ""))
         context.sharedData[outputKey] = layer.layerVersionEntity.arn
         monitoringResourcePersister.persist(instance.id, layer.layerVersionEntity.arn)

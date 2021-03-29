@@ -50,7 +50,7 @@ class CreateRdsProxyTargetGroupWorkflowStep(private var credentialProvider: Cred
                         listOf(rds.instanceName))).first()
 
         val arn = result.targetResource?.arn ?: ""
-        if (!arn.isNullOrEmpty()) {
+        if (!arn.isEmpty()) {
             monitoringResourcePersister.persist(instance.id, arn)
         }
         context.sharedData[Keys.PROXY_TARGET_GROUP_ARN] = arn

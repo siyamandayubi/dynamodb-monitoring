@@ -11,7 +11,7 @@ interface PrerequisiteReadonlyService {
 }
 
 interface PrerequisiteService : PrerequisiteReadonlyService {
-    suspend fun createPrerequistes(credentialEntity: CredentialEntity): PrerequisteEntity
+    suspend fun createPrerequisites(credentialEntity: CredentialEntity): PrerequisteEntity
     suspend fun getOrCreateMonitoringTable(): TableDetailEntity
     suspend fun getOrCreateMonitoringResourceTable(): TableDetailEntity
 }

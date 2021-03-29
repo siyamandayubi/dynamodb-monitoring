@@ -24,14 +24,14 @@ class RoleServiceImpl(
         val credential = credentialEntity ?: credentialProvider.getCredential()
         ?: throw SecurityException("No Credential has been provided")
 
-        roleRepository.initialize(credential, credentialProvider.getGlobalRegion());
+        roleRepository.initialize(credential, credentialProvider.getGlobalRegion())
         resourceRepository.initialize(credential, credentialProvider.getRegion())
     }
 
     override suspend fun getOrCreateLambdaRole(credentialEntity: CredentialEntity?): RoleEntity {
         initialize(credentialEntity)
 
-        val createRoleRequest = roleBuilder.createLambdaRole();
+        val createRoleRequest = roleBuilder.createLambdaRole()
         val role = try {
             roleRepository.getRole(createRoleRequest.roleName)
         } catch (exp: NotExistException) {
@@ -53,7 +53,7 @@ class RoleServiceImpl(
     override suspend fun getOrCreateAppConfigRole(credentialEntity: CredentialEntity?): RoleEntity {
         initialize(credentialEntity)
 
-        val createRoleRequest = roleBuilder.createAppConfigRole();
+        val createRoleRequest = roleBuilder.createAppConfigRole()
         val role = try {
             roleRepository.getRole(createRoleRequest.roleName)
         } catch (exp: NotExistException) {
@@ -69,7 +69,7 @@ class RoleServiceImpl(
     override suspend fun getOrCreateRdsProxyRole(credentialEntity: CredentialEntity?): RoleEntity {
         initialize(credentialEntity)
 
-        val createRoleRequest = roleBuilder.createRdsProxyRole();
+        val createRoleRequest = roleBuilder.createRdsProxyRole()
         val role = try {
             roleRepository.getRole(createRoleRequest.roleName)
         } catch (exp: NotExistException) {

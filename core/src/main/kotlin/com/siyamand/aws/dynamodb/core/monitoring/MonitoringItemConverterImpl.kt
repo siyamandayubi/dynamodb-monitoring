@@ -15,7 +15,7 @@ class MonitoringItemConverterImpl(private val resourceRepository: ResourceReposi
 
         val reader = TableItemReaderDecorator(tableItemEntity.attributes)
         val relatedDataStr = reader.str("relatedData")
-        val aggregateMonitoringEntity = if (relatedDataStr.isNullOrEmpty()) AggregateMonitoringEntity() else Json.decodeFromString(relatedDataStr)
+        val aggregateMonitoringEntity = if (relatedDataStr.isEmpty()) AggregateMonitoringEntity() else Json.decodeFromString(relatedDataStr)
 
         return MonitoringBaseEntity(
                 reader.str("id"),

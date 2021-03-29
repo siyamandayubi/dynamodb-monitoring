@@ -38,9 +38,9 @@ class EndpointMapper {
                     .policyDocument(entity.policyDocument)
                     .privateDnsEnabled(entity.dnsEnabled)
                     .vpcId(entity.vpcId)
-                    .vpcEndpointType(entity.vpcEndpointType);
+                    .vpcEndpointType(entity.vpcEndpointType)
 
-            if (!entity.serviceName.isNullOrEmpty()) {
+            if (!entity.serviceName.isEmpty()) {
                 builder.serviceName(entity.serviceName)
             }
 

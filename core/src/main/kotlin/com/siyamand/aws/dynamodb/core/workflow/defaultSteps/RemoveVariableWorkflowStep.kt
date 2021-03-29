@@ -1,11 +1,9 @@
 package com.siyamand.aws.dynamodb.core.workflow.defaultSteps
 
-import com.siyamand.aws.dynamodb.core.template.TemplateEngine
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowInstance
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowResultType
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowStep
-import kotlin.contracts.contract
 
 class RemoveVariableWorkflowStep : WorkflowStep() {
     override val name: String = "Remove"

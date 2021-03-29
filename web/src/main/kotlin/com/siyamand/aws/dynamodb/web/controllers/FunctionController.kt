@@ -2,7 +2,6 @@ package com.siyamand.aws.dynamodb.web.controllers
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.sdk.lambda.*
-import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.web.models.CreateLayerModel
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus

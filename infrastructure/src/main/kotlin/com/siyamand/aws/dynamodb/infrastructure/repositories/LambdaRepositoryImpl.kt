@@ -30,7 +30,7 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
     override suspend fun getLayers(marker: String): PageResultEntity<FunctionLayerListEntity> {
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
         val requestBuilder = ListLayersRequest.builder()
-        if (!marker.isNullOrEmpty()) {
+        if (!marker.isEmpty()) {
             requestBuilder.marker(marker)
         }
         val response = awsLambda
@@ -50,17 +50,17 @@ class LambdaRepositoryImpl(private val clientBuilder: ClientBuilder) : LambdaRep
         }
     }
 
-    override suspend fun add(requestEntity: CreateFunctionRequestEntity): ResourceEntity {
-        val request = FunctionMapper.convert(requestEntity)
+    override suspend fun add(request: CreateFunctionRequestEntity): ResourceEntity {
+        val requestFunction = FunctionMapper.convert(request)
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
-        val response = awsLambda.createFunction(request).thenApply { ResourceMapper.convert(it.functionArn()) }
+        val response = awsLambda.createFunction(requestFunction).thenApply { ResourceMapper.convert(it.functionArn()) }
         return Mono.fromFuture(response).awaitFirst()
     }
 
-    override suspend fun add(requestEntity: CreateEventSourceRequestEntity): ResourceEntity {
-        val request = FunctionMapper.convert(requestEntity)
+    override suspend fun add(request: CreateEventSourceRequestEntity): ResourceEntity {
+        val requestEventSource = FunctionMapper.convert(request)
         val awsLambda = getClient(clientBuilder::buildAsyncAwsLambda)
-        val response = awsLambda.createEventSourceMapping(request).thenApply { ResourceMapper.convert(it.eventSourceArn()) }
+        val response = awsLambda.createEventSourceMapping(requestEventSource).thenApply { ResourceMapper.convert(it.eventSourceArn()) }
         return Mono.fromFuture(response).awaitFirst()
     }
 

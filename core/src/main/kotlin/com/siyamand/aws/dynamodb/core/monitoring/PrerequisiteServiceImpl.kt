@@ -34,7 +34,7 @@ class PrerequisiteServiceImpl(
     override suspend fun getMonitoringTable(): TableDetailEntity? {
         credentialProvider.initializeRepositories(tableRepository)
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
@@ -44,18 +44,18 @@ class PrerequisiteServiceImpl(
     override suspend fun getMonitoringResourceTable(): TableDetailEntity? {
         credentialProvider.initializeRepositories(tableRepository)
         val tableName = monitorConfigProvider.getMonitoringResourcesTableName()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
         return tableRepository.getDetail(tableName)
     }
 
-    override suspend fun createPrerequistes(credentialEntity: CredentialEntity): PrerequisteEntity {
+    override suspend fun createPrerequisites(credentialEntity: CredentialEntity): PrerequisteEntity {
         val lambdaRole = roleService.getOrCreateLambdaRole(credentialEntity)
         val rdsRole = roleService.getOrCreateRdsProxyRole(credentialEntity)
         var monitoringTable = getOrCreateMonitoringTable()
-        var resourceTable = getOrCreateMonitoringResourceTable()
+        val resourceTable = getOrCreateMonitoringResourceTable()
         val index = monitoringTable.indexes.firstOrNull { it.indexName == monitorConfigProvider.getMonitoringTableSourceTableIndexName() }
         if (index == null) {
             monitoringTable = getOrCreateMonitoringTableIndexes()
@@ -74,11 +74,11 @@ class PrerequisiteServiceImpl(
         credentialProvider.initializeRepositories(tableRepository)
 
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
-        var table = tableRepository.getDetail(tableName)
+        val table = tableRepository.getDetail(tableName)
         if (table != null) {
             return table
         }
@@ -90,11 +90,11 @@ class PrerequisiteServiceImpl(
         credentialProvider.initializeRepositories(tableRepository)
 
         val tableName = monitorConfigProvider.getMonitoringResourcesTableName()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
-        var table = tableRepository.getDetail(tableName)
+        val table = tableRepository.getDetail(tableName)
         if (table != null) {
             return table
         }

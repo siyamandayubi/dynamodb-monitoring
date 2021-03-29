@@ -2,14 +2,12 @@ package com.siyamand.aws.dynamodb.core.sdk.lambda
 
 import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.common.initializeRepositoriesWithGlobalRegion
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleService
 
 class FunctionServiceImpl(
-        private val monitorConfigProvider: MonitorConfigProvider,
         private val functionBuilder: FunctionBuilder,
         private val roleService: RoleService,
         private val lambdaRepository: LambdaRepository,
@@ -21,9 +19,9 @@ class FunctionServiceImpl(
 
     override suspend fun getDetail(name: String): FunctionDetailEntity? {
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
-        lambdaRepository.initialize(credential, credentialProvider.getRegion());
+        lambdaRepository.initialize(credential, credentialProvider.getRegion())
         return lambdaRepository.getDetail(name)
     }
 
@@ -51,8 +49,8 @@ class FunctionServiceImpl(
 
     private suspend fun initialize() {
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
-        lambdaRepository.initialize(credential, credentialProvider.getRegion());
+        lambdaRepository.initialize(credential, credentialProvider.getRegion())
     }
 }

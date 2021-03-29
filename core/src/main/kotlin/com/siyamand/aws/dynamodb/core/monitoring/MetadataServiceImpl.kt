@@ -22,15 +22,15 @@ class MetadataServiceImpl(private val tableItemRepository: TableItemRepository,
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
         val startKeyMap = mutableMapOf<String, AttributeValueEntity>()
 
-        if (!startKey.isNullOrEmpty()) {
+        if (!startKey.isEmpty()) {
             startKeyMap[monitoringTableBuilder.keyName] = AttributeValueEntity(startKey)
         }
 
-        var batch = tableItemRepository.getList(tableName, startKeyMap)
+        val batch = tableItemRepository.getList(tableName, startKeyMap)
 
         var nextKey = ""
         if (batch.nextPageToken?.containsKey(monitoringTableBuilder.keyName) == true) {
-            nextKey = batch.nextPageToken!![monitoringTableBuilder.keyName]!!.stringValue ?: ""
+            nextKey = batch.nextPageToken[monitoringTableBuilder.keyName]!!.stringValue ?: ""
         }
         return PageResultEntity(
                 batch.items.map { monitoringItemConverter.convertToAggregateEntity(it) },

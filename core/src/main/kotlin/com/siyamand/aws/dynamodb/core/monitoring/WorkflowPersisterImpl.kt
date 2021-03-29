@@ -2,14 +2,15 @@ package com.siyamand.aws.dynamodb.core.monitoring
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
-import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
-import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitorStatus
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.sdk.s3.CreateS3ObjectRequestEntity
-import com.siyamand.aws.dynamodb.core.sdk.s3.S3Repository
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.AttributeValueEntity
+import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 import com.siyamand.aws.dynamodb.core.sdk.s3.S3Service
-import com.siyamand.aws.dynamodb.core.workflow.*
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowConverter
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowInstance
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowPersister
+import com.siyamand.aws.dynamodb.core.workflow.WorkflowResultType
 import java.nio.charset.StandardCharsets
 
 class WorkflowPersisterImpl(
@@ -27,7 +28,7 @@ class WorkflowPersisterImpl(
             throw Exception("no item have been found")
         }
         val monitoringItem = monitoringItemBuilder.convertToAggregateEntity(item.first())
-        val workflowObject = if (!monitoringItem.workflowS3Key.isNullOrEmpty())
+        val workflowObject = if (!monitoringItem.workflowS3Key.isEmpty())
             s3Service.getObject(monitoringItem.workflowS3Key)
         else null
 

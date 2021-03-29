@@ -9,11 +9,7 @@ class TableMapper {
     companion object {
 
         @Async
-        fun convertDetail(describeTableResponse: DescribeTableResponse): TableDetailEntity? {
-            if (describeTableResponse == null) {
-                return null
-            }
-
+        fun convertDetail(describeTableResponse: DescribeTableResponse): TableDetailEntity {
             val table = describeTableResponse.table()
             return convertDetail(table)
         }
@@ -28,10 +24,10 @@ class TableMapper {
                     table.tableName(),
                     attributes.toMutableList(),
                     keySchema.toMutableList(),
-                    table.globalSecondaryIndexes().map { IndexEntity(it.indexName(), it.indexStatusAsString(), it.keySchema().map { TableKeyScheme(it.attributeName(), it.keyType().name, "") }) },
+                    table.globalSecondaryIndexes().map { it -> IndexEntity(it.indexName(), it.indexStatusAsString(), it.keySchema().map { TableKeyScheme(it.attributeName(), it.keyType().name, "") }) },
                     table.tableStatusAsString(),
                     table.streamSpecification()?.streamEnabled() ?: false,
-                    if (streamArn.isNullOrEmpty()) null else ResourceMapper.convert(streamArn!!)
+                    if (streamArn.isNullOrEmpty()) null else ResourceMapper.convert(streamArn)
             )
         }
 

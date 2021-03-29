@@ -2,7 +2,6 @@ package com.siyamand.aws.dynamodb.core.sdk.rds
 
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsEntity
 import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsProxyEntity
 import com.siyamand.aws.dynamodb.core.workflow.*
 import kotlinx.serialization.encodeToString
@@ -36,7 +35,7 @@ class RdsConfigBuilderWorkflowStep(
 
         val proxyNames = instance.context.sharedData[params["proxyList"]!!]!!.split(',').map { it.trim() }
 
-        var proxies = getProxies(proxyNames)
+        val proxies = getProxies(proxyNames)
         val config = rdsConfigBuilder.create(proxies, params[Keys.DATABASE_NAME]!!)
         instance.context.sharedData[params["output"]!!] = Json.encodeToString(config)
 

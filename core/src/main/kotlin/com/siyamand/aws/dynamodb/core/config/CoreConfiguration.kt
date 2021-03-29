@@ -48,7 +48,7 @@ open class CoreConfiguration {
             monitorConfigProvider: MonitorConfigProvider,
             monitoringTableBuilder: MonitoringTableBuilder,
             tableItemRepository: TableItemRepository): MonitoringResourcePersister {
-        return MonitoringResourcePersisterImpl(credentialProvider, monitorConfigProvider, tableItemRepository, monitoringTableBuilder)
+        return MonitoringResourcePersisterImpl(credentialProvider, tableItemRepository, monitoringTableBuilder)
     }
 
     @Bean
@@ -208,7 +208,7 @@ open class CoreConfiguration {
                                            functionBuilder: FunctionBuilder,
                                            lambdaRepository: LambdaRepository,
                                            monitoringResourcePersister: MonitoringResourcePersister): WorkflowStep {
-        return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitorConfigProvider, monitoringResourcePersister)
+        return AddLambdaLayerWorkflowStep(credentialProvider, lambdaRepository, functionBuilder, monitoringResourcePersister)
     }
 
     @Bean
@@ -379,11 +379,6 @@ open class CoreConfiguration {
     }
 
     @Bean
-    open fun getDatabaseService(monitorConfigProvider: MonitorConfigProvider, databaseRepository: DatabaseRepository): DatabaseService {
-        return DatabaseServiceImpl(monitorConfigProvider, databaseRepository)
-    }
-
-    @Bean
     open fun getRdsBuilder(monitorConfigProvider: MonitorConfigProvider): RdsBuilder {
         return RdsBuilderImpl(monitorConfigProvider)
     }
@@ -422,7 +417,7 @@ open class CoreConfiguration {
             functionBuilder: FunctionBuilder,
             lambdaRepository: LambdaRepository,
             credentialProvider: CredentialProvider): FunctionService {
-        return FunctionServiceImpl(monitorConfigProvider, functionBuilder, roleService, lambdaRepository, credentialProvider)
+        return FunctionServiceImpl(functionBuilder, roleService, lambdaRepository, credentialProvider)
     }
 
     @Bean

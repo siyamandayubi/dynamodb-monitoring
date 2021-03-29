@@ -21,10 +21,10 @@ class CreateSecretManagerWorkflowStep(
 
         var existingSecret = secretManagerRepository.getSecretDetail(createSecretRequest.name)
 
-        var counter = 0;
+        var counter = 0
         while (existingSecret != null) {
-            counter++;
-            createSecretRequest.name = "${createSecretRequest.name}_$counter";
+            counter++
+            createSecretRequest.name = "${createSecretRequest.name}_$counter"
             existingSecret = secretManagerRepository.getSecretDetail(createSecretRequest.name)
         }
 
@@ -42,7 +42,7 @@ class CreateSecretManagerWorkflowStep(
         this.credentialProvider = credentialProvider.threadSafe()
         monitoringResourcePersister.threadSafe()
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
         secretManagerRepository.initialize(credential, credentialProvider.getRegion())
     }

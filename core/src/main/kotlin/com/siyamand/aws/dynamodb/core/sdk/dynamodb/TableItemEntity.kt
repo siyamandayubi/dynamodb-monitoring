@@ -3,8 +3,8 @@ package com.siyamand.aws.dynamodb.core.sdk.dynamodb
 import java.time.Instant
 
 class TableItemEntity(val tableName: String) {
-    public val attributes: MutableMap<String, AttributeValueEntity> = mutableMapOf()
-    public val key : MutableMap<String, AttributeValueEntity> = mutableMapOf()
+     val attributes: MutableMap<String, AttributeValueEntity> = mutableMapOf()
+     val key : MutableMap<String, AttributeValueEntity> = mutableMapOf()
 }
 
 class TableItemReaderDecorator(private val tableItemEntity: Map<String, AttributeValueEntity>) {
@@ -31,7 +31,7 @@ class TableItemReaderDecorator(private val tableItemEntity: Map<String, Attribut
             return null
         }
 
-        return attr?.intValue
+        return attr.intValue
     }
 
     fun instant(name: String): Instant {
@@ -44,7 +44,7 @@ class TableItemReaderDecorator(private val tableItemEntity: Map<String, Attribut
             return Instant.MIN
         }
 
-        return attr?.instantValue ?: Instant.MIN
+        return attr.instantValue ?: Instant.MIN
     }
 
     fun complex(name: String): TableItemReaderDecorator {
@@ -57,6 +57,6 @@ class TableItemReaderDecorator(private val tableItemEntity: Map<String, Attribut
             return TableItemReaderDecorator(mapOf())
         }
 
-        return TableItemReaderDecorator(attr?.complexValue ?: mapOf())
+        return TableItemReaderDecorator(attr.complexValue ?: mapOf())
     }
 }

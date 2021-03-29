@@ -10,11 +10,11 @@ import java.util.*
 
 
 class TokenRepositoryImpl(private val clientBuilder: ClientBuilder) : TokenRepository {
-    private var region: String = "us-east-2";
+    private var region: String = "us-east-2"
     override suspend fun getAccessToken(keyId: String, secretAcessId: String): TokenCredentialEntity {
-        var client = clientBuilder.buildSecurityTokenAsync(this.region, keyId, secretAcessId)
+        val client = clientBuilder.buildSecurityTokenAsync(this.region, keyId, secretAcessId)
 
-        var request = GetSessionTokenRequest.builder().durationSeconds(7200).build()
+        val request = GetSessionTokenRequest.builder().durationSeconds(7200).build()
         val result = client.getSessionToken(request).thenApply {
             val credential = it.credentials()
             TokenCredentialEntity(

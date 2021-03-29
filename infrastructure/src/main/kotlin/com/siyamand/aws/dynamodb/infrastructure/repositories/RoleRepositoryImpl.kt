@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleRepository, AwsBaseRepositoryImpl() {
     override suspend fun getRoles(): List<RoleEntity> {
         val client = getClient(clientBuilder::buildAmazonIdentityManagementAsyncClient)
-        val response = client.listRoles().thenApply { it.roles().map { RoleMapper.convert(it) } }
+        val response = client.listRoles().thenApply { role -> role.roles().map { RoleMapper.convert(it) } }
         return Mono.fromFuture(response).awaitFirst()
     }
 

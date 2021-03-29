@@ -78,9 +78,9 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
 
         val originalName = (params["name"])!!
         var name = originalName
-        var counter = 0;
+        var counter = 0
         while (lambdaRepository.getDetail(name) != null) {
-            counter++;
+            counter++
             name = "$originalName-$counter"
         }
 
@@ -89,7 +89,7 @@ class AddLambdaFunctionWorkflowStep(private var credentialProvider: CredentialPr
         val layers = layersStr
                 .split(",")
                 .map { if (context.sharedData.containsKey(it)) (context.sharedData[it])!! else "" }
-                .filter { !it.isNullOrEmpty() }
+                .filter { !it.isEmpty() }
 
         val code = (context.sharedData[Keys.CODE_RESULT])!!
         val role = roleRepository.getRole(roleName)

@@ -10,10 +10,10 @@ import software.amazon.awssdk.services.ec2.model.*
 
 class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepository, AwsBaseRepositoryImpl() {
     companion object {
-        val VPC_ID_FILTER_NAME = "vpc-id"
+        const val VPC_ID_FILTER_NAME = "vpc-id"
     }
 
-    override fun getSubnets(vpcs: List<String>): List<String> {
+    override fun getSubnets(vpc: List<String>): List<String> {
         val client = getClient(clientBuilder::buildEc2Client)
         val response = client.describeSubnets(
                 DescribeSubnetsRequest
@@ -21,7 +21,7 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
                         .filters(Filter
                                 .builder()
                                 .name(VPC_ID_FILTER_NAME)
-                                .values(vpcs)
+                                .values(vpc)
                                 .build())
                         .build())
 
@@ -53,7 +53,7 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
 
     override fun getVpcs(isDefault: Boolean, vpcIds: List<String>): PageResultEntity<VpcEntity> {
         val client = getClient(clientBuilder::buildEc2Client)
-        var requestBuilder = DescribeVpcsRequest.builder();
+        val requestBuilder = DescribeVpcsRequest.builder()
         if (vpcIds.any()) {
             requestBuilder.vpcIds(vpcIds)
         }
@@ -62,7 +62,7 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
             requestBuilder.filters(Filter.builder().name("isDefault").values("true").build())
         }
         val response = client.describeVpcs(requestBuilder.build())
-        return PageResultEntity<VpcEntity>(response.vpcs().map(VpcMapper::convert), response.nextToken() ?: "")
+        return PageResultEntity(response.vpcs().map(VpcMapper::convert), response.nextToken() ?: "")
     }
 
     override fun createEndpoint(entity: CreateEndpointEntity): EndpointEntity {

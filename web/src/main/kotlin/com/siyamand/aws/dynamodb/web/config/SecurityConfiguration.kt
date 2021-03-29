@@ -1,19 +1,15 @@
 package com.siyamand.aws.dynamodb.web.config
 
-import com.siyamand.aws.dynamodb.web.JwtAuthenticationManager
-import com.siyamand.aws.dynamodb.web.filters.JwtRequestFilter
 import com.siyamand.aws.dynamodb.web.services.JwtSignerService
 import com.siyamand.aws.dynamodb.web.services.JwtSignerServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
-import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
-import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
 
 @Configuration

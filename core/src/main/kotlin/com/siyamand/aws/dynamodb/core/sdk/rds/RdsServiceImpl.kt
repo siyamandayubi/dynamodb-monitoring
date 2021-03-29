@@ -36,15 +36,15 @@ class RdsServiceImpl(
 
         var existingSecret = secretManagerRepository.getSecretValue(createSecretRequest.name)
 
-        var counter = 0;
+        var counter = 0
         while (existingSecret != null) {
-            counter++;
-            createSecretRequest.name = "${name}_$counter";
+            counter++
+            createSecretRequest.name = "${name}_$counter"
             existingSecret = secretManagerRepository.getSecretValue(createSecretRequest.name)
         }
 
         val credentialResource = secretManagerRepository.addSecret(createSecretRequest)
-        val createRequest = rdsBuilder.build(name, name, databaseCredential, credentialResource, metadataId)
+        val createRequest = rdsBuilder.build(name, name, databaseCredential, credentialResource, metadataId, "")
 
         return rdsRepository.createRds(createRequest).resource
     }
@@ -56,21 +56,21 @@ class RdsServiceImpl(
 
     override suspend fun createDatabase(rdsIdentifier: String, secretName: String) {
         initialize()
-        var existingSecret = secretManagerRepository.getSecretValue(secretName)
+        val existingSecret = secretManagerRepository.getSecretValue(secretName)
         val credential = Json.decodeFromString(DatabaseCredentialEntity.serializer(), existingSecret!!.secretData)
         val rdsList = rdsRepository.getRds(rdsIdentifier)
         if (!rdsList.any()) {
             throw Exception("No Rds has been found")
         }
         val rds = rdsList.first()
-        val databaseConnectionEntity = DatabaseConnectionEntity(credential,rds.endPoint, "test", rds.port)
+        val databaseConnectionEntity = DatabaseConnectionEntity(credential, rds.endPoint, "test", rds.port)
         databaseRepository.createDatabase(databaseConnectionEntity)
     }
 
     override suspend fun createProxy(rdsIdentifier: String, secretName: String): ResourceEntity {
         initialize()
         val role = roleService.getOrCreateLambdaRole(null)
-        var existingSecret = secretManagerRepository.getSecretValue(secretName)
+        val existingSecret = secretManagerRepository.getSecretValue(secretName)
         val rdsList = rdsRepository.getRds(rdsIdentifier)
         if (!rdsList.any()) {
             throw Exception("No Rds has been found")
@@ -84,9 +84,9 @@ class RdsServiceImpl(
 
     private suspend fun initialize() {
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
-        rdsRepository.initialize(credential, credentialProvider.getRegion());
+        rdsRepository.initialize(credential, credentialProvider.getRegion())
         secretManagerRepository.initialize(credential, credentialProvider.getRegion())
         resourceRepository.initialize(credential, credentialProvider.getRegion())
         vpcRepository.initialize(credential, credentialProvider.getRegion())

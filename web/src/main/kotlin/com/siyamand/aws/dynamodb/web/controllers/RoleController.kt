@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class RoleController(private val roleService: RoleService) {
     @GetMapping("/api/roles")
     suspend fun getRoles(): HttpEntity<List<RoleEntity>> {
-        val roles = this.roleService.getRoles();
+        val roles = this.roleService.getRoles()
         return ResponseEntity(roles, HttpStatus.OK)
     }
 

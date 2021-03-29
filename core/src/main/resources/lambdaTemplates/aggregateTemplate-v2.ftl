@@ -25,10 +25,14 @@ exports.handler = async function (event, context) {
     var group, field;
     <#list entity.groups as group>
         tables.${group.tableName} = tables.${group.tableName} || { groups: [] };
-        group = { fieldName: "${group.fieldName}", path:[${group.path}], tableName:"${group.tableName}", fields:[]};
+        <#assign pathList = group.path?map(p -> "'" + p + "'") >
+        <#assign path = pathList?join(", ") >
+        group = { fieldName: "${group.fieldName}", path:[${path}], tableName:"${group.tableName}", fields:[]};
         fieldReferences.groups.push(group);
         <#list group.fields as field>
-            field = {fieldName: "${field.name}", path:[${field.path}] };
+            <#assign pathList = field.path?map(p -> "'" + p + "'") >
+            <#assign path = pathList?join(", ") >
+            field = {fieldName: "${field.name}", path:[${path}] };
             group.fields.push(field);
         </#list>
     </#list>

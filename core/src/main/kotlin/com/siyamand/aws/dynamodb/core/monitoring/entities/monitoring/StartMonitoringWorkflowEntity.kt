@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 class StartMonitoringWorkflowEntity {
     var sourceTableName: String = ""
     var workflowName: String = ""
-    var instanceSize: String = ""
+    val instanceClass: String = ""
     var lambdaName: String = ""
     var instanceName: String = ""
     var definition: AggregateMonitoringEntity? = null

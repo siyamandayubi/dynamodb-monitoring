@@ -1,8 +1,7 @@
 package com.siyamand.aws.dynamodb.core.sdk.s3
 
-import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
-import com.siyamand.aws.dynamodb.core.helpers.ZipHelper
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
+import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 
 class S3ServiceImpl(
         private var credentialProvider: CredentialProvider,
@@ -25,7 +24,7 @@ class S3ServiceImpl(
 
     override suspend fun addObject(name: String, mimeType: String, monitoringId: String, data: ByteArray): S3ObjectEntity {
         initialize()
-        val buckets = s3Repository.getBuckets();
+        val buckets = s3Repository.getBuckets()
         var bucket = buckets.filter { it == monitorConfigProvider.getS3BucketDefaultName() }.firstOrNull()
         if (bucket == null) {
             bucket = s3Repository.addBucket(CreateBucketRequestEntity(monitorConfigProvider.getS3BucketDefaultName()))
@@ -67,8 +66,8 @@ class S3ServiceImpl(
 
     private suspend fun initialize() {
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
-        s3Repository.initialize(credential, credentialProvider.getRegion());
+        s3Repository.initialize(credential, credentialProvider.getRegion())
     }
 }

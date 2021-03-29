@@ -1,6 +1,5 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.sdk.rds.*
 import com.siyamand.aws.dynamodb.core.sdk.rds.entities.*
 import com.siyamand.aws.dynamodb.core.sdk.resource.TagEntity
 import software.amazon.awssdk.services.rds.model.*
@@ -122,7 +121,7 @@ class RdsMapper {
                 builder.vpcSecurityGroupIds(entity.vpcSecurityGroupIds)
             }
 
-            if (!entity.availabilityZone.isNullOrEmpty()) {
+            if (!entity.availabilityZone.isEmpty()) {
                 builder.availabilityZone(entity.availabilityZone)
             }
 

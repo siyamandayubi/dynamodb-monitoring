@@ -1,6 +1,5 @@
 package com.siyamand.aws.dynamodb.core.workflow
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 

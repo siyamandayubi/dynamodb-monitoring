@@ -1,13 +1,11 @@
 package com.siyamand.aws.dynamodb.core.monitoring
 
-import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
 import com.siyamand.aws.dynamodb.core.common.initializeRepositories
 import com.siyamand.aws.dynamodb.core.sdk.authentication.CredentialProvider
 import com.siyamand.aws.dynamodb.core.sdk.dynamodb.TableItemRepository
 
 class MonitoringResourcePersisterImpl(
         private var credentialProvider: CredentialProvider,
-        private val monitorConfigProvider: MonitorConfigProvider,
         private val tableItemRepository: TableItemRepository,
         private val monitoringTableBuilder: MonitoringTableBuilder) : MonitoringResourcePersister {
 

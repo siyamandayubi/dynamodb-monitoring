@@ -1,6 +1,5 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
-import com.siyamand.aws.dynamodb.core.sdk.appconfig.*
 import com.siyamand.aws.dynamodb.core.sdk.appconfig.entities.*
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.services.appconfig.model.*
@@ -35,7 +34,7 @@ class AppConfigMapper {
                     .retrievalRoleArn(entity.retrievalRoleArn)
                     .tags(entity.tags)
 
-            if (!entity.locationUri.isNullOrEmpty()){
+            if (!entity.locationUri.isEmpty()){
                 builder.locationUri(entity.locationUri)
             }
             return builder.build()
@@ -63,7 +62,7 @@ class AppConfigMapper {
                     .content(SdkBytes.fromByteArray(entity.content))
                     .contentType(entity.contentType)
 
-            if (!entity.configurationProfileId.isNullOrEmpty()){
+            if (!entity.configurationProfileId.isEmpty()){
                 builder.configurationProfileId(entity.configurationProfileId)
             }
 

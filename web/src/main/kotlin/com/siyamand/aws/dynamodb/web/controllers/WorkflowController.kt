@@ -26,7 +26,7 @@ class WorkflowController(private val workflowJobHandler: WorkflowJobHandler, pri
 
     @PostMapping("/api/Workflow/continue")
     suspend fun continueWorkflows(@RequestBody resumeWorkflowModel: ResumeWorkflowModel): HttpEntity<String> {
-        val result = metadataService.resumeWorkflow(resumeWorkflowModel.id)
+        metadataService.resumeWorkflow(resumeWorkflowModel.id)
         return ResponseEntity("Finished", HttpStatus.OK)
     }
 }

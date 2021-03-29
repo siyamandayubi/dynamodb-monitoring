@@ -9,7 +9,7 @@ class MonitoringTableBuilderImpl(val configProvider: MonitorConfigProvider) : Mo
     override fun buildMonitoringMetadataTable(): TableDetailEntity {
 
         val tableName = configProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
@@ -37,7 +37,7 @@ class MonitoringTableBuilderImpl(val configProvider: MonitorConfigProvider) : Mo
 
     override fun buildMonitoringResourceTable(): TableDetailEntity {
         val tableName = configProvider.getMonitoringResourcesTableName()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 

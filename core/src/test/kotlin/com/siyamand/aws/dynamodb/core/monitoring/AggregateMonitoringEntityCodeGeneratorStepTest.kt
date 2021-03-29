@@ -23,7 +23,7 @@ internal class AggregateMonitoringEntityCodeGeneratorStepTest {
 
             val params = mapOf("code-path" to "lambdaTemplates/aggregateTemplate.ftl")
             val workflowInstance = WorkflowInstance("id", WorkflowContext(), listOf(), 0, null)
-            val owner = MonitoringBaseEntity<AggregateMonitoringEntity>("id", "sourceTable", "type", MonitorStatus.INITIAL, 1, "workflow", AggregateMonitoringEntity())
+            val owner = MonitoringBaseEntity("id", "sourceTable", "type", MonitorStatus.INITIAL, 1, "workflow", AggregateMonitoringEntity())
             val groupBy = GroupByEntity()
             groupBy.fieldName = "group1"
             groupBy.tableName = "table1"
@@ -33,7 +33,7 @@ internal class AggregateMonitoringEntityCodeGeneratorStepTest {
             fieldDef.from = Instant.now()
             groupBy.fields.add(fieldDef)
             owner.relatedData.groups.add(groupBy)
-            val result = classUnderTest.execute(workflowInstance, owner, params)
+            classUnderTest.execute(workflowInstance, owner, params)
             val code = workflowInstance.context.sharedData[Keys.CODE_RESULT]
             assertNotNull(code)
         }

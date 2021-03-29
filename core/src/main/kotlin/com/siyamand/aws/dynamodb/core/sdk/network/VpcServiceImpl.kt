@@ -13,8 +13,8 @@ class VpcServiceImpl(
 
     private suspend fun initialize() {
         val credential = credentialProvider.getCredential()
-                ?: throw SecurityException("No Credential has been provided");
+                ?: throw SecurityException("No Credential has been provided")
 
-        vpcRepository.initialize(credential, credentialProvider.getRegion());
+        vpcRepository.initialize(credential, credentialProvider.getRegion())
     }
 }

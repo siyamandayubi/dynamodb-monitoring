@@ -2,7 +2,6 @@ package com.siyamand.aws.dynamodb.web.controllers
 
 import com.siyamand.aws.dynamodb.core.common.PageResultEntity
 import com.siyamand.aws.dynamodb.core.monitoring.MetadataService
-import com.siyamand.aws.dynamodb.core.monitoring.WorkflowService
 import com.siyamand.aws.dynamodb.core.monitoring.PrerequisiteService
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.AggregateMonitoringEntity
 import com.siyamand.aws.dynamodb.core.monitoring.entities.monitoring.MonitoringBaseEntity
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class MonitoringConfigController(
-        private val workflowService: WorkflowService,
         private val metadataService: MetadataService,
         private val prerequisiteService: PrerequisiteService) {
 
@@ -28,7 +26,7 @@ class MonitoringConfigController(
     }
 
     @GetMapping("/api/monitoring/items/{id}")
-    suspend fun getMonitoringRecord(@PathVariable() id: String = ""): HttpEntity<MonitoringDetailModel> {
+    suspend fun getMonitoringRecord(@PathVariable id: String = ""): HttpEntity<MonitoringDetailModel> {
         val detail = metadataService.getMonitoringRecord(id) ?: throw Exception("no record found with id=$id")
         val resources = metadataService.getMonitoringItemResources(id)
         return ResponseEntity(MonitoringDetailModel(detail, resources), HttpStatus.OK)
@@ -42,7 +40,7 @@ class MonitoringConfigController(
 
     @PostMapping("/api/monitoring/create-prerequisites")
     suspend fun createPrerequisites(@RequestBody credentialModel: CredentialModel): HttpEntity<PrerequisteEntity> {
-        val result = prerequisiteService.createPrerequistes(BasicCredentialEntity(credentialModel.keyId, credentialModel.secretKeyId, null))
+        val result = prerequisiteService.createPrerequisites(BasicCredentialEntity(credentialModel.keyId, credentialModel.secretKeyId, null))
         return ResponseEntity(result, HttpStatus.OK)
     }
 }

@@ -14,6 +14,7 @@ object Keys {
     const val LAMBDA_LAYER_NAME = "lambdaLayerName"
     const val FORCE_CREATE = "forceCreate"
     const val DATABASE_NAME = "databaseName"
+    const val DB_INSTANCE_CLASS = "instanceClass"
     const val PROXY_TARGET_GROUP_NAME = "rdsProxyTargetGroupName"
     const val CODE_RESULT = "codeResult"
     const val LAMBDA_ROLE = "lambdaRole"

@@ -8,6 +8,11 @@ import com.siyamand.aws.dynamodb.core.sdk.rds.entities.RdsEntity
 import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
 
 interface RdsBuilder {
-    fun build(instanceName: String, databaseName: String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity, metadataId: String): CreateDbInstanceEntity
+    fun build(instanceName: String,
+              databaseName: String,
+              credential: DatabaseCredentialEntity,
+              credentialResourceEntity: ResourceEntity,
+              metadataId: String,
+              instanceClass: String?): CreateDbInstanceEntity
     fun createProxyEntity(role: RoleEntity, subnets: List<String>, rds: RdsEntity, secretArn: String, metadataId: String): CreateProxyEntity
 }

@@ -5,7 +5,6 @@ import com.siyamand.aws.dynamodb.core.workflow.WorkflowInstance
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowResult
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowResultType
 import com.siyamand.aws.dynamodb.core.workflow.WorkflowStep
-import kotlin.contracts.contract
 
 class AssignWorkflowStep(private val templateEngine: TemplateEngine) : WorkflowStep() {
     override val name: String = "Assign"

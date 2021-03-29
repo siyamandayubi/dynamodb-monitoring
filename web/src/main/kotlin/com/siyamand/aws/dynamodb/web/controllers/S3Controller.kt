@@ -1,7 +1,5 @@
 package com.siyamand.aws.dynamodb.web.controllers
 
-import com.siyamand.aws.dynamodb.core.helpers.ZipHelper
-import com.siyamand.aws.dynamodb.core.sdk.s3.S3ObjectEntity
 import com.siyamand.aws.dynamodb.core.sdk.s3.S3Service
 import com.siyamand.aws.dynamodb.web.models.BucketListModel
 import com.siyamand.aws.dynamodb.web.models.EnableBucketVersioningModel

@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono
 @Configuration
 @Order(-2)
 open class GlobalErrorHandler : ErrorWebExceptionHandler {
-    var logger: Logger = LoggerFactory.getLogger(WorkflowManagerImpl::class.java)
+    private var logger: Logger = LoggerFactory.getLogger(WorkflowManagerImpl::class.java)
 
     override fun handle(serverWebExchange: ServerWebExchange, ex: Throwable): Mono<Void> {
         val response = serverWebExchange.response

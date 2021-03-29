@@ -45,6 +45,7 @@ class TableItemtMapper {
                 AttributeValueType.STRING_ARRAY -> builder.ss(value.stringArrayValue?.toList())
                 AttributeValueType.INT_ARRAY -> builder.ns(value.intArrayValue?.map { it.toString() })
                 AttributeValueType.COMPLEX -> builder.m(value.complexValue?.mapValues { convertAttributeValue(it.value) })
+                else -> builder.s(value.toString())
             }
 
             return builder.build()

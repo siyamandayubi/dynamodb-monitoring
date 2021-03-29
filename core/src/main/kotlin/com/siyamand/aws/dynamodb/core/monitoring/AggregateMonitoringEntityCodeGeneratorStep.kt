@@ -6,7 +6,6 @@ import com.siyamand.aws.dynamodb.core.template.TemplateEngine
 import com.siyamand.aws.dynamodb.core.workflow.*
 import java.nio.file.Files
 import java.nio.file.Paths
-import kotlin.reflect.KClass
 
 class AggregateMonitoringEntityCodeGeneratorStep(private val templateEngine: TemplateEngine) : WorkflowStep() {
     override val name: String = "AggregateMonitoringEntityCodeGenerator"
@@ -20,7 +19,7 @@ class AggregateMonitoringEntityCodeGeneratorStep(private val templateEngine: Tem
                 ?: return WorkflowResult(WorkflowResultType.ERROR, mapOf(), "type mismatch: owner")
 
         val dbConfigKey = if (params.containsKey("dbConfig")) params["dbConfig"]!! else ""
-        val dbConfig = if (!dbConfigKey.isNullOrEmpty() && instance.context.sharedData.containsKey(dbConfigKey))
+        val dbConfig = if (dbConfigKey.isNotEmpty() && instance.context.sharedData.containsKey(dbConfigKey))
             instance.context.sharedData[dbConfigKey]!!
         else ""
 

@@ -18,7 +18,7 @@ class WorkflowJobHandlerImpl(private val monitorConfigProvider: MonitorConfigPro
                              private val tableItemRepository: TableItemRepository) : WorkflowJobHandler {
     override suspend fun execute() {
         val tableName = monitorConfigProvider.getMonitoringConfigMetadataTable()
-        if (tableName.isNullOrEmpty()) {
+        if (tableName.isEmpty()) {
             throw Exception("No config name for Monitoring Dynamodb table")
         }
 
@@ -27,7 +27,7 @@ class WorkflowJobHandlerImpl(private val monitorConfigProvider: MonitorConfigPro
             val monitoringItems = list.items.map { monitoringItemConverter.convertToAggregateEntity(it) }
                     .filter { it.status == MonitorStatus.INITIAL || it.status == MonitorStatus.PENDING }
             for (monitoringItem in monitoringItems) {
-                val workflowStr: String = if (!monitoringItem.workflowS3Key.isNullOrEmpty()) {
+                val workflowStr: String = if (!monitoringItem.workflowS3Key.isEmpty()) {
                     val s3Obj = s3Service.getObject(monitoringItem.workflowS3Key)
                     s3Obj.data.decodeToString()
                 } else {

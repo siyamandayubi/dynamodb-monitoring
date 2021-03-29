@@ -31,7 +31,7 @@ class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : Resourc
 
         val response = client.getResources(requestBuilder.build())
 
-        var items = response.resourceTagMappingList().map { ResourceMapper.convert(it) }
+        val items = response.resourceTagMappingList().map { ResourceMapper.convert(it) }
 
         return PageResultEntity(items, response.paginationToken())
     }
@@ -45,7 +45,7 @@ class ResourceRepositoryImpl(private val clientBuilder: ClientBuilder) : Resourc
             throw IllegalArgumentException("token is not provider")
         }
 
-        if (this.region.isNullOrEmpty()) {
+        if (this.region.isEmpty()) {
             throw java.lang.IllegalArgumentException("region is not provider")
         }
 

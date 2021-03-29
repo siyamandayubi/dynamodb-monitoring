@@ -1,16 +1,14 @@
 package com.siyamand.aws.dynamodb.infrastructure.mappers
 
 import com.siyamand.aws.dynamodb.core.sdk.lambda.*
-import com.siyamand.aws.dynamodb.core.sdk.resource.ResourceEntity
 import software.amazon.awssdk.core.SdkBytes
 import software.amazon.awssdk.services.lambda.model.*
 import java.nio.charset.Charset
-import java.util.*
 
 class FunctionMapper {
     companion object {
 
-        fun convert(function: software.amazon.awssdk.services.lambda.model.FunctionConfiguration): FunctionEntity {
+        fun convert(function: FunctionConfiguration): FunctionEntity {
             return FunctionEntity(
                     function.functionName(),
                     function.runtimeAsString(),
@@ -100,7 +98,6 @@ class FunctionMapper {
         }
 
         fun convert(entity: CreateFunctionRequestEntity): CreateFunctionRequest {
-            val encodedCode = Base64.getEncoder().encode(entity.code)
             val builder = CreateFunctionRequest.builder()
                     .functionName(entity.functionName)
                     .code(FunctionCode.builder().zipFile(SdkBytes.fromByteArray(entity.code)).build())

@@ -59,11 +59,11 @@ class CreateAppConfigWorkflowStep(
 
         //environment
         var environment = appConfigRepository
-                .getEnvironments(application.id!!, "")
+                .getEnvironments(application.id, "")
                 .items
                 .firstOrNull { it.name == environmentName }
         if (environment == null) {
-            val request = appConfigBuilder.build(application.id!!, environmentName, monitoringId)
+            val request = appConfigBuilder.build(application.id, environmentName, monitoringId)
             environment = appConfigRepository.addEnvironment(request)
         }
 
@@ -77,35 +77,35 @@ class CreateAppConfigWorkflowStep(
         }
 
         var profile = appConfigRepository
-                .getProfiles(application.id!!, "")
+                .getProfiles(application.id, "")
                 .items
                 .firstOrNull { it.name == profileName }
         val objectName = "$applicationName-config"
         if (profile == null) {
             val role = roleService.getAppConfigRole()
             val configS3 = s3Service.addObject(objectName, monitoringId, "json", content.toByteArray(StandardCharsets.UTF_8))
-            val request = appConfigBuilder.buildProfile(application.id!!, profileName, "s3://${configS3.bucket}/${configS3.key}", role!!.resource.arn, monitoringId)
+            val request = appConfigBuilder.buildProfile(application.id, profileName, "s3://${configS3.bucket}/${configS3.key}", role!!.resource.arn, monitoringId)
             profile = appConfigRepository.addConfigurationProfile(request)
         }
 
         val objectVersion = s3Service.getObjectVersions(objectName).sortedByDescending { it.versionId }.first()
 
         var deployment = appConfigRepository
-                .getDeployments(application.id!!, environment.id!!)
+                .getDeployments(application.id, environment.id)
                 .items
                 .sortedByDescending { it.deploymentNumber }
                 .firstOrNull()
         if (deployment == null) {
-            val request = appConfigBuilder.buildDeployment(application.id!!,
-                    environment!!.id!!,
-                    deploymentStrategy!!.id!!,
+            val request = appConfigBuilder.buildDeployment(application.id,
+                    environment.id,
+                    deploymentStrategy.id,
                     profile.id,
                     objectVersion.versionId,
                     monitoringId)
             deployment = appConfigRepository.startDeployment(request)
         }
 
-        instance.context.sharedData[Keys.DEPLOYMNET_NUMBER] = deployment!!.deploymentNumber?.toString() ?: ""
+        instance.context.sharedData[Keys.DEPLOYMNET_NUMBER] = deployment.deploymentNumber.toString()
 
         val workflowResult = if (deployment.state == "COMPLETE") {
             WorkflowResultType.SUCCESS

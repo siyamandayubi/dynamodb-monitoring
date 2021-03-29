@@ -17,7 +17,12 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         const val INSTANCE_CLASS = "db.t2.micro"
     }
 
-    override fun build(instanceName: String, databaseName:String, credential: DatabaseCredentialEntity, credentialResourceEntity: ResourceEntity, metadataId: String): CreateDbInstanceEntity {
+    override fun build(instanceName: String,
+                       databaseName: String,
+                       credential: DatabaseCredentialEntity,
+                       credentialResourceEntity: ResourceEntity,
+                       metadataId: String,
+                       instanceClass: String?): CreateDbInstanceEntity {
         return CreateDbInstanceEntityImpl(
                 databaseName,
                 instanceName,
@@ -26,7 +31,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
                 ENGINE,
                 ENGINE_VERSION,
                 "",
-                INSTANCE_CLASS,
+                if (!instanceClass.isNullOrEmpty()) instanceClass!! else INSTANCE_CLASS,
                 true,
                 20,
                 mutableListOf(

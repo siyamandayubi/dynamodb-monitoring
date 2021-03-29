@@ -1,7 +1,6 @@
 package com.siyamand.aws.dynamodb.core.sdk.appconfig
 
 import com.siyamand.aws.dynamodb.core.common.MonitorConfigProvider
-import com.siyamand.aws.dynamodb.core.helpers.ZipHelper
 import com.siyamand.aws.dynamodb.core.sdk.appconfig.entities.*
 import java.nio.charset.StandardCharsets
 
