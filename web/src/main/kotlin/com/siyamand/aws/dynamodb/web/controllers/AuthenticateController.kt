@@ -7,6 +7,7 @@ import com.siyamand.aws.dynamodb.web.services.JwtSignerService
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -14,6 +15,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 
+@CrossOrigin(maxAge = 3600)
 @RestController
 class AuthenticateController(private val jwtSignerService: JwtSignerService, private val authenticationService: AuthenticationService) {
     @PostMapping("/login")

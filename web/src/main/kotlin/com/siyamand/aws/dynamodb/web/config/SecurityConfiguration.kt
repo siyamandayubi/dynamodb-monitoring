@@ -26,7 +26,7 @@ open class SecurityConfiguration {
         val authenticationWebFilter = AuthenticationWebFilter(jwtAuthenticationManager)
         authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter)
 
-        return http.authorizeExchange()
+        return http.cors().and().authorizeExchange()
                 .pathMatchers("/login")
                 .permitAll()
                 .pathMatchers("/api/**")
