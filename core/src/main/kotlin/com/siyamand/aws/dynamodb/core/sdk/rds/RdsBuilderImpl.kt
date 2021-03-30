@@ -11,7 +11,6 @@ import com.siyamand.aws.dynamodb.core.sdk.role.RoleEntity
 
 class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) : RdsBuilder {
     private companion object {
-        const val USER_NAME = "root"
         const val ENGINE = "mysql"
         const val ENGINE_VERSION = "5.7.31"
         const val INSTANCE_CLASS = "db.t2.micro"
@@ -31,7 +30,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
                 ENGINE,
                 ENGINE_VERSION,
                 "",
-                if (!instanceClass.isNullOrEmpty()) instanceClass!! else INSTANCE_CLASS,
+                if (!instanceClass.isNullOrEmpty()) instanceClass else INSTANCE_CLASS,
                 true,
                 20,
                 mutableListOf(
@@ -47,7 +46,7 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
         request.dbProxyName = rds.instanceName
         request.vpcSubnetIds = subnets
         request.vpcSecurityGroupIds = rds.VpcSecurityGroupMemberships.map { it.vpcSecurityGroupId }
-        var auth = UserAuthConfigEntity()
+        val auth = UserAuthConfigEntity()
         auth.secretArn = secretArn
         request.auth.add(auth)
         request.tags.add(TagEntity(monitorConfigProvider.getMonitoringMetadataIdTagName(), metadataId))
@@ -67,6 +66,5 @@ class RdsBuilderImpl(private val monitorConfigProvider: MonitorConfigProvider) :
             override val publiclyAccessible: Boolean,
             override val allocatedStorage: Int,
             override val tags: MutableList<TagEntity> = mutableListOf(),
-            override val vpcSecurityGroupIds: MutableList<String> = mutableListOf()) : CreateDbInstanceEntity {
-    }
+            override val vpcSecurityGroupIds: MutableList<String> = mutableListOf()) : CreateDbInstanceEntity
 }

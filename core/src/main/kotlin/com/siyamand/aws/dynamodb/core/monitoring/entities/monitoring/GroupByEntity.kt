@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class GroupByEntity {
     var fieldName: String = ""
-    var path: String = ""
+    var path: MutableList<String> = mutableListOf()
     var tableName: String = ""
 
     /// Only for numeric fields

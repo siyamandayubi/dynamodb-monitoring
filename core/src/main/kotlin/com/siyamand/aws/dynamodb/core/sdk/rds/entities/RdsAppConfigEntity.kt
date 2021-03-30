@@ -1,12 +1,12 @@
 package com.siyamand.aws.dynamodb.core.sdk.rds.entities
 
 import com.siyamand.aws.dynamodb.core.common.PrimitiveSerialDescriptor
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.*
 
 @Serializable
@@ -26,6 +26,7 @@ class RdsAppConfigItemEntity {
 }
 
 class RdsAppConfigItemEntitySerializer : KSerializer<RdsAppConfigItemEntity> {
+    @ExperimentalSerializationApi
     override val descriptor: SerialDescriptor =
             buildClassSerialDescriptor("RdsAppConfigItemEntity") {
                 element("arn", PrimitiveSerialDescriptor("r", PrimitiveKind.STRING))
@@ -36,6 +37,7 @@ class RdsAppConfigItemEntitySerializer : KSerializer<RdsAppConfigItemEntity> {
                 element("order", PrimitiveSerialDescriptor("order", PrimitiveKind.INT))
             }
 
+    @ExperimentalSerializationApi
     override fun serialize(encoder: Encoder, value: RdsAppConfigItemEntity) {
         encoder.encodeStructure(descriptor)
         {

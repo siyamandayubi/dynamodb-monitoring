@@ -29,7 +29,7 @@ internal class AggregateMonitoringEntityCodeGeneratorStepTest {
             groupBy.tableName = "table1"
             val fieldDef = AggregateFieldEntity()
             fieldDef.name = "field1"
-            fieldDef.path = "field2"
+            fieldDef.path = mutableListOf("field2")
             fieldDef.from = Instant.now()
             groupBy.fields.add(fieldDef)
             owner.relatedData.groups.add(groupBy)

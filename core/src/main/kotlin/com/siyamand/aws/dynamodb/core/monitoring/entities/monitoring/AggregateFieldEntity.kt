@@ -8,7 +8,7 @@ import java.time.Instant
 @Serializable
 class AggregateFieldEntity {
     var name: String = ""
-    var path: String = ""
+    var path: MutableList<String> = mutableListOf()
 
     @Serializable(InstantSerializer::class)
     var from: Instant = Instant.now()
