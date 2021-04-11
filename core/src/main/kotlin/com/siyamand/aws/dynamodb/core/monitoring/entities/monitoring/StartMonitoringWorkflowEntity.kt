@@ -8,6 +8,7 @@ class StartMonitoringWorkflowEntity {
     var workflowName: String = ""
     val instanceClass: String = ""
     var lambdaName: String = ""
-    var instanceName: String = ""
+    var rdsInstanceNamePrefix: String = ""
+    var instancesCount: Int = 2
     var definition: AggregateMonitoringEntity? = null
 }

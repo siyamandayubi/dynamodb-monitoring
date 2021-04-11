@@ -5,6 +5,7 @@ import com.siyamand.aws.dynamodb.core.sdk.authentication.TokenCredentialEntity
 import com.siyamand.aws.dynamodb.core.sdk.authentication.TokenRepository
 import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import reactor.core.publisher.Mono
+import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain
 import software.amazon.awssdk.services.sts.model.GetSessionTokenRequest
 import java.util.*
 

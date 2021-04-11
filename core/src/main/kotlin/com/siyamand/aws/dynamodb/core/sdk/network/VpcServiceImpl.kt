@@ -8,7 +8,12 @@ class VpcServiceImpl(
 
     override suspend fun getEndpoints(): List<EndpointEntity> {
         initialize()
-        return vpcRepository.getEndpoints("",null).items
+        return vpcRepository.getEndpoints("", null).items
+    }
+
+    override suspend fun getRegions(): List<RegionEntity> {
+        initialize()
+        return vpcRepository.getRegions()
     }
 
     private suspend fun initialize() {

@@ -12,4 +12,5 @@ interface VpcRepository : AWSBaseRepository {
     fun createInternetGateway(tags: Map<String, String>): InternetGatewayEntity
     fun getVpcs(isDefault: Boolean, vpcIds: List<String>): PageResultEntity<VpcEntity>
     fun getSecurityGroupsByVpcs(vpcIds: List<String>): List<String>
+    fun getRegions(): List<RegionEntity>
 }

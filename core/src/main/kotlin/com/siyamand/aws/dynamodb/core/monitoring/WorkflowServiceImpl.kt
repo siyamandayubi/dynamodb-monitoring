@@ -75,8 +75,8 @@ class WorkflowServiceImpl(
                 "lambda-name" to model.lambdaName,
                 Keys.DB_INSTANCE_CLASS to model.instanceClass,
                 Keys.SOURCE_DYNAMODB_ARN to (sourceTable.arn),
-                "dbInstanceName" to model.instanceName,
-                "instancesCount" to definition.instancesCount.toString(),
+                "dbInstanceName" to model.rdsInstanceNamePrefix,
+                "instancesCount" to model.instancesCount.toString(),
                 "tableNames" to (definition.groups.map { it.tableName }.joinToString(separator = ","))))
 
         val monitoringEntity = MonitoringBaseEntity<AggregateMonitoringEntity>(

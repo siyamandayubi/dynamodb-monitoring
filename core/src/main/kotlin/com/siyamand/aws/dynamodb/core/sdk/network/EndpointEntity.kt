@@ -61,7 +61,7 @@ class InternetGatewayEntity(
 
 class InternetGatewayAttachmentEntity(val vpcId: String, val status: String)
 
-class VpcEntity{
+class VpcEntity {
     var cidrBlock: String? = null
 
     var dhcpOptionsId: String? = null
@@ -77,5 +77,6 @@ class VpcEntity{
     var isDefault: Boolean? = null
 
     var tags: List<TagEntity> = listOf()
-
 }
+
+class RegionEntity(val name: String, val endpoint: String)

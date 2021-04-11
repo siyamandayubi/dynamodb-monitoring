@@ -13,6 +13,16 @@ class VpcRepositoryImpl(private val clientBuilder: ClientBuilder) : VpcRepositor
         const val VPC_ID_FILTER_NAME = "vpc-id"
     }
 
+    override fun getRegions(): List<RegionEntity> {
+        val client = getClient(clientBuilder::buildEc2Client)
+        val response = client.describeRegions()
+        if (!response.hasRegions()) {
+            return listOf()
+        }
+
+        return response!!.regions().map { RegionEntity(it.regionName() ?: "", it.endpoint() ?: "") }
+    }
+
     override fun getSubnets(vpc: List<String>): List<String> {
         val client = getClient(clientBuilder::buildEc2Client)
         val response = client.describeSubnets(

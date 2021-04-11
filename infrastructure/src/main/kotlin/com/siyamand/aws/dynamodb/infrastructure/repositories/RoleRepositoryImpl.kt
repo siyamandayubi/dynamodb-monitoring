@@ -11,6 +11,7 @@ import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import com.siyamand.aws.dynamodb.infrastructure.mappers.ResourceMapper
 import com.siyamand.aws.dynamodb.infrastructure.mappers.RoleMapper
 import reactor.core.publisher.Mono
+import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain
 import software.amazon.awssdk.services.iam.model.*
 import java.util.concurrent.TimeUnit
 
@@ -29,7 +30,7 @@ class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleReposit
             return if (exp is NoSuchEntityException) NotExistException(exp)
             else exp
         }
-
+        DefaultAwsRegionProviderChain.builder().build().region
         return Mono.fromFuture(response).onErrorMap(errorHandler).awaitFirst()
     }
 
