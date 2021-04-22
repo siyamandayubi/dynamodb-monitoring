@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import java.time.Duration
-import java.time.Instant
+import java.time.*
 import java.util.*
 
 @CrossOrigin(maxAge = 3600)
@@ -21,7 +20,7 @@ class AuthenticateController(private val jwtSignerService: JwtSignerService, pri
     @PostMapping("/login")
     suspend fun login(@RequestBody user : CredentialModel): HttpEntity<TokenModel>{
         val response = authenticationService.getToken(user.keyId, user.secretKeyId)
-        val expiredIn = response.expiredIn ?: Date.from(Instant.now().plus(Duration.ofMinutes(15)))
+        val expiredIn = response.expiredIn ?: ZonedDateTime.ofInstant(Instant.now().plus(Duration.ofMinutes(15)), ZoneOffset.UTC)
         val jwt = jwtSignerService.createJwt(response.accessKey,response.secretKey,response.sessionToken, expiredIn)
         return ResponseEntity(TokenModel(jwt, response.expiredIn), HttpStatus.OK)
     }

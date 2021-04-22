@@ -7,7 +7,8 @@ import com.siyamand.aws.dynamodb.infrastructure.ClientBuilder
 import reactor.core.publisher.Mono
 import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain
 import software.amazon.awssdk.services.sts.model.GetSessionTokenRequest
-import java.util.*
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 
 
 class TokenRepositoryImpl(private val clientBuilder: ClientBuilder) : TokenRepository {
@@ -22,7 +23,7 @@ class TokenRepositoryImpl(private val clientBuilder: ClientBuilder) : TokenRepos
                     credential.accessKeyId(),
                     credential.secretAccessKey(),
                     credential.sessionToken(),
-                    Date.from(credential.expiration()))
+                    ZonedDateTime.ofInstant(credential.expiration(), ZoneOffset.UTC))
         }
         return Mono.fromFuture(result).awaitFirst()
     }
