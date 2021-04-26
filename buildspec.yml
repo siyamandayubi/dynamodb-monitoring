@@ -2,7 +2,7 @@ version: 0.1
 phases:
   install:
     runtime-versions:
-      java: openjdk14
+      java: openjdk11
     run-as: root
     commands:
       - echo This is a installation
