@@ -3,6 +3,8 @@ package com.siyamand.aws.dynamodb.infrastructure
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider
+import software.amazon.awssdk.core.client.builder.SdkDefaultClientBuilder
+import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.appconfig.AppConfigAsyncClient
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient
@@ -18,6 +20,7 @@ import software.amazon.awssdk.services.resourcegroupstaggingapi.ResourceGroupsTa
 import software.amazon.awssdk.services.s3.S3AsyncClient
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient
 import software.amazon.awssdk.services.sts.StsAsyncClient
+import software.amazon.awssdk.core.internal.http.loader.DefaultSdkAsyncHttpClientBuilder as DefaultSdkAsyncHttpClientBuilder
 
 class ClientBuilderImpl : ClientBuilder {
     override fun buildAmazonIdentityManagementAsyncClient(region: String, credential: AwsCredentialsProvider): IamAsyncClient {
@@ -33,6 +36,7 @@ class ClientBuilderImpl : ClientBuilder {
         return StsAsyncClient
                 .builder()
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(keyId, secretAcessId)))
+                .httpClientBuilder(NettyNioAsyncHttpClient.builder())
                 .region(Region.of(region))
                 .build()
     }
