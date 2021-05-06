@@ -30,7 +30,6 @@ class RoleRepositoryImpl(private val clientBuilder: ClientBuilder) : RoleReposit
             return if (exp is NoSuchEntityException) NotExistException(exp)
             else exp
         }
-        DefaultAwsRegionProviderChain.builder().build().region
         return Mono.fromFuture(response).onErrorMap(errorHandler).awaitFirst()
     }
 
