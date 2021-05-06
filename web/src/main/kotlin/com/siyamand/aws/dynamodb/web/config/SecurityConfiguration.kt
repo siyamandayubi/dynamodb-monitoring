@@ -5,12 +5,16 @@ import com.siyamand.aws.dynamodb.web.services.JwtSignerServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder
 import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.web.server.SecurityWebFilterChain
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter
+import org.springframework.security.web.server.authentication.HttpStatusServerEntryPoint
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter
+import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler
+
 
 @Configuration
 open class SecurityConfiguration {
@@ -24,6 +28,10 @@ open class SecurityConfiguration {
                                     jwtAuthenticationManager: ReactiveAuthenticationManager,
                                     jwtAuthenticationConverter: ServerAuthenticationConverter): SecurityWebFilterChain {
         val authenticationWebFilter = AuthenticationWebFilter(jwtAuthenticationManager)
+
+        // replace the original HttpBasicServerAuthenticationEntryPoint with HttpStatusServerEntryPoint
+        // HttpBasicServerAuthenticationEntryPoint adds WWW_AUTHENTICATE header to the response which prompts Authentication form popup in Chrome. The goal is preventing this popup
+        authenticationWebFilter.setAuthenticationFailureHandler(ServerAuthenticationEntryPointFailureHandler(HttpStatusServerEntryPoint(HttpStatus.UNAUTHORIZED)))
         authenticationWebFilter.setServerAuthenticationConverter(jwtAuthenticationConverter)
 
         return http.cors().and().authorizeExchange()
